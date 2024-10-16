@@ -290,7 +290,11 @@ export function NotificationDetails({
                 stateDownload={stateDownload}
               />
             </div>
-            <img src={singleData?.iconUrl} alt="Aucune" />
+            <img
+              src={imageUrl}
+              alt="Aucune"
+              className="w-[300px] h-[300px] object-cover "
+            />
           </div>
           <div className="space-y-1">
             <Label htmlFor="actionUrl">Action d'url</Label>
@@ -305,7 +309,7 @@ export function NotificationDetails({
         {startSending && (
           <div>Patienter l'action est en cours d'éxécution...</div>
         )}
-        <CardFooter className="flex flex-wrap justify-around">
+        <CardFooter className="flex flex-wrap justify-around gap-2">
           <Button
             onClick={updateNotification}
             disabled={startSending}

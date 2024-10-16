@@ -1,5 +1,4 @@
 import useWindowDimensions from "@/hook/useHeightAndWidthScreen";
-import React from "react";
 
 function HeaderBackoffice() {
   const windowSize = useWindowDimensions();

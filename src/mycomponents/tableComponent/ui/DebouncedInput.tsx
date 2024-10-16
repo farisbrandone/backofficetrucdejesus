@@ -1,11 +1,20 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+
+interface typeDebouncedInput {
+  value: any;
+  onChange: any;
+  className: string;
+  debounce: number;
+  placeholder: string;
+}
 
 function DebouncedInput({
   value: initValue,
   onChange,
   debounce = 500,
-  ...props
-}) {
+  className,
+  placeholder,
+}: typeDebouncedInput) {
   const [value, setValue] = useState(initValue);
 
   useEffect(() => {
@@ -24,7 +33,8 @@ function DebouncedInput({
 
   return (
     <input
-      {...props}
+      className={className}
+      placeholder={placeholder}
       value={value}
       onChange={(e) => setValue(e.target.value)}
     />

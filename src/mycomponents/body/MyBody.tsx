@@ -22,7 +22,6 @@ export function MyBody() {
   const [body, setBody] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [redirectionUrl, setRedirectionUrl] = useState("");
-  const [uploadUrl, setUploadUrl] = useState("");
   const [stateDownload, setStateDownload] = useState(false);
   const [classTitle, setClassTitle] = useState(false);
   const [classBody, setClassBody] = useState(false);
@@ -74,7 +73,7 @@ export function MyBody() {
         actionUrl: redirectionUrl,
       };
       const result = await axios.post(
-        "http://localhost:4000/api/firebase/send-notification",
+        "http://localhost:4000/api/firebase/send-multiple-notification",
         data
       );
       console.log(result);
@@ -114,35 +113,43 @@ export function MyBody() {
 
   return (
     <Tabs value={tabPage} className="max-w-screen-xl mx-auto  ">
-      <TabsList className="grid w-full grid-cols-3">
+      <TabsList className="grid w-full grid-cols-3 pt-2 sm:h-[60px]">
         <TabsTrigger
           value="envoyer les notifications"
           onClick={() => setTabPage("envoyer les notifications")}
+          className="text-[14px] sm:text-[18px]"
         >
-          Envoyer des Notifications
+          Envoyer{" "}
+          <span className="max-[600px]:hidden pl-2">des Notifications</span>
         </TabsTrigger>
         <TabsTrigger
           value="notifications envoyées"
           onClick={() => setTabPage("notifications envoyées")}
+          className="text-[14px] sm:text-[18px] "
         >
-          Notifications envoyées
+          Notifications{" "}
+          <span className="max-[600px]:hidden pl-2">envoyées</span>
         </TabsTrigger>
         <TabsTrigger
           value="détails notifications"
           onClick={() => setTabPage("détails notifications")}
+          className="text-[14px] sm:text-[18px]"
         >
-          Détails notifications
+          Détails{" "}
+          <span className="max-[600px]:hidden pl-2"> notifications</span>
         </TabsTrigger>
       </TabsList>
       <TabsContent value="envoyer les notifications">
         <Card>
           <CardHeader>
-            <CardTitle>Notification</CardTitle>
+            <CardTitle className="text-[12px] sm:text-[18px]">
+              Notification
+            </CardTitle>
             <CardDescription>
               Remplir les champs et envoyer des notifications
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className="space-y-2 text-[16px] sm:text-[18px]">
             <div className="space-y-1">
               <Label htmlFor="title">Titre de la notification *</Label>
               <Input

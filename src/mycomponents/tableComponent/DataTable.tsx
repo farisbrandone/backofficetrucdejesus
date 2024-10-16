@@ -81,7 +81,7 @@ function DataTable({ myid, setMyid, setTabPage }: typeDataTable) {
           setMyid(myData[0].id);
         }
 
-        setData((prev) => [...myData]);
+        setData(() => [...myData]);
       } catch (error) {
         console.log(error);
         setErrorData(
@@ -111,6 +111,7 @@ function DataTable({ myid, setMyid, setTabPage }: typeDataTable) {
           <div className="w-full flex items-center gap-1">
             <Search className="text-gray-800" />
             <DebouncedInput
+              debounce={500}
               value={globalFilter ?? ""}
               onChange={(value: any) => setGlobalFilter(String(value))}
               className="p-1 px-4 bg-transparent outline-none border-2 w-1/5 focus:w-1/3 duration-300 border-[#bd10e0] rounded-[80px]"
@@ -204,6 +205,7 @@ function DataTable({ myid, setMyid, setTabPage }: typeDataTable) {
           <span className="flex items-center gap-1">
             | Go to page:
             <input
+              title="entrer la page"
               type="number"
               defaultValue={table.getState().pagination.pageIndex + 1}
               onChange={(e) => {
@@ -215,6 +217,7 @@ function DataTable({ myid, setMyid, setTabPage }: typeDataTable) {
           </span>
 
           <select
+            title="selectionner la taille de pagination"
             name=""
             id=""
             value={table.getState().pagination.pageSize}
