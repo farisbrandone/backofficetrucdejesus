@@ -169,10 +169,10 @@ export function NotificationDetails({
         actionUrl: redirectionUrl,
       };
       const result = await axios.post(
-        "http://localhost:4000/api/firebase/send-notification",
+        "https://serverbackofficetrucdejesus.onrender.com/api/firebase/send-multiple-notification",
+        /*"http://localhost:4000/api/firebase/send-notification",*/
         data
       );
-      console.log(result);
 
       if (result.status === 200) {
         toast({
@@ -197,7 +197,6 @@ export function NotificationDetails({
           "Une erreur est survenue pendant l'envoie de la notification, vérifier votre connexion",
       });
       setStartSending(() => false);
-      console.error("");
     }
   };
 

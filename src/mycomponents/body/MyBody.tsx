@@ -73,7 +73,8 @@ export function MyBody() {
         actionUrl: redirectionUrl,
       };
       const result = await axios.post(
-        "http://localhost:4000/api/firebase/send-multiple-notification",
+        "https://serverbackofficetrucdejesus.onrender.com/api/firebase/send-multiple-notification",
+        /*"http://localhost:4000/api/firebase/send-multiple-notification",*/
         data
       );
       console.log(result);
