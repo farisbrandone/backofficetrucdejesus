@@ -1,4 +1,3 @@
-import React from "react";
 import { ButtonSideBar } from "./ui/ButtonSideBar";
 import { Outlet, useLoaderData, useNavigation } from "react-router-dom";
 
@@ -26,7 +25,7 @@ function SidebarComponents() {
   console.log(contacts);
   const navigation = useNavigation();
   const textButton = [
-    "ACCEUIL",
+    "/",
     "COMMUNAUTES",
     "GROUPES",
     "EVENEMENTS",
@@ -68,7 +67,11 @@ function SidebarComponents() {
       {/* all the other elements */}
       <div
         id="detail"
-        className={navigation.state === "loading" ? "loading flex-1" : "flex-1"}
+        className={
+          navigation.state === "loading"
+            ? "loading flex-1 relative"
+            : "flex-1 relative"
+        }
       >
         <Outlet />
       </div>

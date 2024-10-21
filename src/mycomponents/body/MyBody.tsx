@@ -113,7 +113,7 @@ export function MyBody() {
   };
 
   return (
-    <Tabs value={tabPage} className="max-w-screen-xl mx-auto  ">
+    <Tabs value={tabPage} className="max-w-screen-xl   ">
       <TabsList className="grid w-full grid-cols-3 pt-2 sm:h-[60px]">
         <TabsTrigger
           value="envoyer les notifications"
@@ -121,7 +121,7 @@ export function MyBody() {
           className="text-[14px] sm:text-[18px]"
         >
           Envoyer{" "}
-          <span className="max-[600px]:hidden pl-2">des Notifications</span>
+          <span className="max-[950px]:hidden pl-2">des Notifications</span>
         </TabsTrigger>
         <TabsTrigger
           value="notifications envoyées"
@@ -129,7 +129,7 @@ export function MyBody() {
           className="text-[14px] sm:text-[18px] "
         >
           Notifications{" "}
-          <span className="max-[600px]:hidden pl-2">envoyées</span>
+          <span className="max-[950px]:hidden pl-2">envoyées</span>
         </TabsTrigger>
         <TabsTrigger
           value="détails notifications"
@@ -137,7 +137,7 @@ export function MyBody() {
           className="text-[14px] sm:text-[18px]"
         >
           Détails{" "}
-          <span className="max-[600px]:hidden pl-2"> notifications</span>
+          <span className="max-[950px]:hidden pl-2"> notifications</span>
         </TabsTrigger>
       </TabsList>
       <TabsContent value="envoyer les notifications">

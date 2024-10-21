@@ -1,41 +1,41 @@
-import { FooterBackoffice } from "../acceuilPage/FooterBackoffice";
-import CardAddGroup from "../ui/CardAddGroup";
-import CarteCreer from "../ui/CarteCreer";
 import HeaderForAllBackOffice from "../ui/HeaderForAllBackOffice";
-import SearbarBackOffice from "../ui/SearbarBackOffice";
+import { FooterBackoffice } from "../acceuilPage/FooterBackoffice";
 import { faker } from "@faker-js/faker";
+import SearbarBackOffice from "../ui/SearbarBackOffice";
+import { mySaleIcon } from "../acceuilPage/Icon";
+import { dollarIcon } from "../integrationPage/IntegrationPage";
 
-export const eventIcon = (width: string, heigth: string) => (
+export const ordiIcon = (width: string, heigth: string) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={width}
     height={heigth}
-    viewBox="0 0 2048 2048"
+    viewBox="0 0 20 20"
   >
     <path
       fill="currentColor"
-      d="M2048 128v1792H0V128h384V0h128v128h1024V0h128v128zM128 256v256h1792V256h-256v128h-128V256H512v128H384V256zm1792 1536V640H128v1152zm-512-896v640h-128v-486q-27 14-62 26t-66 12V960q12 0 31-6t39-15t36-21t22-21v-1zm-384 192q0 39-11 70t-31 58t-44 51t-51 46t-51 46t-47 49h235v128H640v-36q0-19-1-38t4-38t10-36q11-27 33-53t50-53t55-51t51-49t39-47t15-47q0-27-19-45t-45-19q-23 0-40 14t-23 37l-125-26q6-33 23-61t44-48t57-32t64-12q40 0 75 15t61 41t41 61t15 75"
+      d="M4.5 5A1.5 1.5 0 0 0 3 6.5v6A1.5 1.5 0 0 0 4.5 14h7a2.5 2.5 0 0 1 1.773-.99A3 3 0 0 1 17 8.401V6.5A1.5 1.5 0 0 0 15.5 5zm-2 10h8.55q-.05.243-.05.5q0 .25.038.5H2.5a.5.5 0 0 1 0-1m15-4a2 2 0 1 1-4 0a2 2 0 0 1 4 0m1.5 4.5c0 1.245-1 2.5-3.5 2.5S12 16.75 12 15.5a1.5 1.5 0 0 1 1.5-1.5h4a1.5 1.5 0 0 1 1.5 1.5"
     />
   </svg>
 );
 
-function EvenementPage() {
+function MesVentesPage() {
   return (
-    <div className="w-full flex flex-col pl-3">
+    <div className="flex flex-col w-full px-3">
       <HeaderForAllBackOffice />
       <div className="w-full flex flex-col gap-4 max-[840px]:w-full min-[840px]:flex-row min-[840px]:items-center min-[840px]:justify-between mt-10">
         <div className="flex gap-3 ">
           <div className="titleAcceuil">
             <div className=" flex items-center gap-2 text-[#e91e63] mt-3">
-              {eventIcon("30", "30")}
+              {mySaleIcon}
               <h1 className=" text-[#344767] font-bold text-[18px] ">
-                EVENEMENTS
+                MES VENTES
               </h1>
             </div>
           </div>
-          <p className="bg-[#e91e63] px-2 py-1 align-middle self-center rounded-lg text-white ">
+          {/* <p className="bg-[#e91e63] px-2 py-1 align-middle self-center rounded-lg text-white ">
             Total: 6
-          </p>
+          </p> */}
         </div>
         <div className="flex gap-3">
           <p className="align-middle self-center">Communauté</p>
@@ -50,24 +50,25 @@ function EvenementPage() {
             <option value="FR">{faker.word.words(1)}</option>
             <option value="DE">{faker.word.words(1)}</option>
           </select>
-          <SearbarBackOffice placeholder="Recherche par nom d'évènement" />
+          <SearbarBackOffice placeholder="Recherche par nom de groupe..." />
         </div>
       </div>
-      <div className="flex flex-wrap gap-3 mt-6 px-5">
-        <CardAddGroup
-          icon={eventIcon("130", "130")}
-          text="CREER UNE NOUVELLE COMMUNAUTE"
-        />
-        <CarteCreer
-          value={0}
-          title="Réseau 100% JÉSUS"
-          date="18 Feb 2024"
-          subTitle="Faisons confiance"
-        />
+
+      <div className="flex gap-2 w-full mt-8">
+        <div className="flex items-center gap-2 px-5 py-3 rounded-lg shadow-xl cursor-pointer">
+          <div className="text-[#e91e63]"> {dollarIcon("25", "25")} </div>
+          <p className="text-[#e91e63] text-[14px] ">Actifs Vendu</p>
+        </div>
+        <div className="flex items-center gap-2 px-5 py-3 rounded-lg shadow-xl cursor-pointer">
+          <div className="text-[#000]"> {ordiIcon("25", "25")} </div>
+          <p className="text-[#000] text-[14px] ">Cannaux de ventes</p>
+        </div>
       </div>
+
+      <div></div>
       <FooterBackoffice />
     </div>
   );
 }
 
-export default EvenementPage;
+export default MesVentesPage;

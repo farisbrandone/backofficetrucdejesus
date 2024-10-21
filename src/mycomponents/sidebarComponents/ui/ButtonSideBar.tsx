@@ -1,10 +1,8 @@
-import { House } from "lucide-react";
-import React from "react";
-import { Outlet, Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 function ButtonSideBar({ text }: { text: string }) {
   let icon;
-  const textButton = [
+  /* const textButton = [
     "ACCEUIL",
     "COMMUNAUTES",
     "GROUPES",
@@ -15,9 +13,9 @@ function ButtonSideBar({ text }: { text: string }) {
     "ANALYTICS",
     "GERER LES MEMBRES",
     "NOTIFICATION",
-  ];
+  ]; */
   switch (text) {
-    case "ACCEUIL":
+    case "/":
       icon = <img src="./house.svg" alt="" width={25} height={25} />;
       break;
     case "COMMUNAUTES":
@@ -73,7 +71,7 @@ function ButtonSideBar({ text }: { text: string }) {
       <div className="w-[31px] h-[31px] rounded-full object-cover bg-[#fcfcfc] flex items-center justify-center p-[6px] ">
         {icon}
       </div>
-      <div>{text}</div>
+      <div>{text === "/" ? "ACCEUIL" : text}</div>
     </NavLink>
   );
 }

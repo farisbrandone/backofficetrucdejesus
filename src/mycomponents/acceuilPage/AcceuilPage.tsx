@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 import {
   analyticsIcon,
   arrayCard,
@@ -7,7 +7,6 @@ import {
   communauteIcon,
   doubleArrowIcon,
   houseIcon,
-  myicon,
   mySaleIcon,
   userIcon,
 } from "./Icon";
@@ -15,6 +14,8 @@ import CardGlogalData from "./CardGlobal";
 import { ChartAcceuil } from "./ChartComponent";
 import { format } from "date-fns";
 import { faker } from "@faker-js/faker";
+import HeaderForAllBackOffice from "../ui/HeaderForAllBackOffice";
+import { FooterBackoffice } from "./FooterBackoffice";
 
 export const arrayChart = [
   {
@@ -107,18 +108,8 @@ analyticsIcon;
 
 export default function AcceuilPage() {
   return (
-    <div className="flex flex-col pl-8 text-[#344767]">
-      <div className="headerAcceuil w-full h-[40px] flex p-0 pr-8 pt-2 justify-end">
-        <div className="avatarAcceuil p-0 w-[60px] h-[60px] rounded-full overflow-hidden flex items-center justify-center">
-          <img
-            src="./isabelle.jpg"
-            alt=""
-            width={40}
-            height={40}
-            className=" w-[40px] h-[40px] object-cover rounded-full p-0"
-          />
-        </div>
-      </div>
+    <div className=" flex flex-col pl-8 text-[#344767]">
+      <HeaderForAllBackOffice />
       <div className="titleAcceuil">
         <div className=" flex items-center gap-2 text-[#e91e63] mt-3">
           {houseIcon}
@@ -181,8 +172,8 @@ export default function AcceuilPage() {
           </div>
         ))}
       </div>
-      <div className="mt-6 flex-col min-[1170px]:flex items-center gap-2 w-full mb-8 p-3 ">
-        <div className="text-[#191919] shadow-2xl bg-white flex-1 self-start px-3">
+      <div className="mt-6 flex flex-col min-[1400px]:flex min-[1400px]:flex-row items-center gap-2 w-full mb-8 p-3 ">
+        <div className="text-[#191919] shadow-2xl bg-white flex-1 self-start px-3 w-full">
           <div className="flex flex-col gap-3 text-[14px] ">
             <p className="font-bold">My Sales</p>
             <div className="flex items-center gap-2">
@@ -202,7 +193,7 @@ export default function AcceuilPage() {
           </div>
         </div>
 
-        <div className="flex flex-col text-[14px] shadow-2xl pl-4 py-4 rounded-lg max-w-[500px] ">
+        <div className="flex flex-col text-[14px] shadow-2xl pl-4 py-4 rounded-lg min-[1300px]:w-[400px] flex-shrink-1 mr-auto ">
           <div className="flex flex-col gap-4 pt-4">
             <p className="font-bold ">Recent Activity</p>
             <div className="flex items-center">
@@ -213,7 +204,7 @@ export default function AcceuilPage() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 mt-3">
+          <div className="flex flex-col gap-3 mt-3 ">
             {dataUser.map((value, index) => (
               <div key={index} className="flex items-center gap-3">
                 <div>{userIcon}</div>
@@ -229,6 +220,7 @@ export default function AcceuilPage() {
           </div>
         </div>
       </div>
+      <FooterBackoffice />
     </div>
   );
 }
