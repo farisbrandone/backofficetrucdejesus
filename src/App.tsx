@@ -20,6 +20,12 @@ import ClientGerer from "./mycomponents/clientGererPage/ClientGerer";
 import MesVentesPage from "./mycomponents/mesVentesPage/MesVentesPage";
 import AnalyticsPage from "./mycomponents/analyticsPage/AnalyticsPage";
 import MembreGererPage from "./mycomponents/membreGererPage/MembreGererPage";
+import UpdateCommunaute from "./mycomponents/communautePage/UpdateCommunaute";
+import { CommunauteMain } from "./mycomponents/communautePage/CommunauteMain";
+import { Toaster } from "@/components/ui/toaster";
+import GroupeMain from "./mycomponents/groupePage/GroupeMain";
+import UpdateGroupePage from "./mycomponents/groupePage/UpdateGroupePage";
+import NewGroupePageCreate from "./mycomponents/groupePage/NewGroupePageCreate";
 /**we configure the loder create in root sidebar component to load data */
 
 const router = createBrowserRouter([
@@ -39,11 +45,35 @@ const router = createBrowserRouter([
       },
       {
         path: "/COMMUNAUTES",
-        element: <CommunautePage />,
+        element: <CommunauteMain />,
+        children: [
+          {
+            path: "/COMMUNAUTES",
+            element: <CommunautePage />,
+          },
+          {
+            path: "/COMMUNAUTES/update",
+            element: <UpdateCommunaute />,
+          },
+        ],
       },
       {
         path: "/GROUPES",
-        element: <GroupePage />,
+        element: <GroupeMain />,
+        children: [
+          {
+            path: "/GROUPES",
+            element: <GroupePage />,
+          },
+          {
+            path: "/GROUPES/create-new-groupe",
+            element: <NewGroupePageCreate />,
+          },
+          {
+            path: "/GROUPES/update-groupe-page/:groupeId",
+            element: <UpdateGroupePage />,
+          },
+        ],
       },
       {
         path: "/EVENEMENTS",
@@ -71,7 +101,7 @@ const router = createBrowserRouter([
       },
     ],
   },
-  /* MembreGererPage  ANALYTICS MES VENTES GERER LES CLIENS INTEGRATIONS EVENEMENTS GroupePage COMMUNAUTES{
+  /*updateCommunaute  MembreGererPage  ANALYTICS MES VENTES GERER LES CLIENS INTEGRATIONS EVENEMENTS GroupePage COMMUNAUTES{
     path: "/notification",
     element: <NotificationPage />,
     errorElement: <ErrorPage />,
@@ -86,6 +116,7 @@ function App() {
   return (
     <>
       <RouterProvider router={router} />
+      <Toaster />
     </>
   );
 }

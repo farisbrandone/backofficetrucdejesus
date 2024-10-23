@@ -162,3 +162,9 @@
     opacity: 0;
   }
 }
+
+.radio-button:checked + .label-button {
+  background-color: #e91e63;
+  color: white;
+  border: 2px solid rgb(250, 250, 7);
+}

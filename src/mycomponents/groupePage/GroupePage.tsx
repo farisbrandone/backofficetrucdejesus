@@ -1,11 +1,15 @@
 import { faker } from "@faker-js/faker";
 import CardAddGroup from "../ui/CardAddGroup";
-import CarteCreer from "../ui/CarteCreer";
-import HeaderForAllBackOffice from "../ui/HeaderForAllBackOffice";
+import { CarteCreerForGroup } from "../ui/CarteCreer";
+
 import SearbarBackOffice from "../ui/SearbarBackOffice";
 import { format } from "date-fns";
 import { DropdownMenuBackoffice } from "../ui/DropdownMenuBackoffice";
-import { FooterBackoffice } from "../acceuilPage/FooterBackoffice";
+
+import { Fragment } from "react/jsx-runtime";
+import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { GroupeDataType, requestTogetAllGroupeData } from "@/fakeData";
 
 export const groupeIcon = (
   <svg
@@ -33,9 +37,41 @@ export const dataForGroup = [
 ];
 
 function GroupePage() {
+  const [groupeData, setGroupeData] = useState<GroupeDataType[]>();
+
+  const [loadingFail, setLoadingFail] = useState(false);
+
+  useEffect(() => {
+    const getAllGroupeData = async () => {
+      try {
+        const data = await requestTogetAllGroupeData();
+        setGroupeData([...data]);
+      } catch (error) {
+        setLoadingFail(true);
+      }
+    };
+    getAllGroupeData();
+  }, []);
+
+  if (!groupeData && !loadingFail) {
+    return (
+      <div className="w-full text-center pt-4">
+        Le document est en cours de chargement ...
+      </div>
+    );
+  }
+
+  if (loadingFail) {
+    return (
+      <div className="w-full text-center pt-4">
+        Une erreur est survenue pendant le chargement ou problème de connexion
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col w-full px-3">
-      <HeaderForAllBackOffice />
+    <Fragment>
+      {/*  <HeaderForAllBackOffice /> */}
 
       <div className="w-full flex flex-col gap-4 max-[840px]:w-full min-[840px]:flex-row min-[840px]:items-center min-[840px]:justify-between mt-10">
         <div className="flex gap-3 ">
@@ -63,30 +99,32 @@ function GroupePage() {
             className=" w-[200px] bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500   p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           >
             <option selected>{faker.word.words(2)}</option>
-            <option value="US">{faker.word.words(1)}</option>
-            <option value="CA">{faker.word.words(1)}</option>
-            <option value="FR">{faker.word.words(1)}</option>
-            <option value="DE">{faker.word.words(1)}</option>
           </select>
           <SearbarBackOffice placeholder="Recherche par nom de groupe..." />
         </div>
       </div>
 
       <div className="flex flex-wrap items-center justify-around gap-6 mt-10">
-        <CardAddGroup icon={groupeIcon} text="CREER UN NOUVEAU GROUP" />
-        {[1, 2, 3, 4, 5].map((value, index) => (
+        <NavLink to="/GROUPES/create-new-groupe">
+          <CardAddGroup icon={groupeIcon} text="CREER UN NOUVEAU GROUP" />
+        </NavLink>
+
+        {groupeData?.map((value, index) => (
           <div key={index}>
-            <CarteCreer
-              title={dataForGroup[0].title}
-              date={dataForGroup[0].date}
-              subTitle={dataForGroup[0].subtitle}
-              value={value}
+            <CarteCreerForGroup
+              titleGroupe={value.titleGroupe}
+              descriptionGroupe={value.descriptionGroupe}
+              typeAccess={value.typeAccess}
+              dateGroupe={value.date}
+              logoUrlGroupe={value.logoUrlGroupe}
+              banniereGroupe={value.banniereUrlGroupe}
+              groupeId={value.id}
             />
           </div>
         ))}
       </div>
-      <FooterBackoffice />
-    </div>
+      {/*  <FooterBackoffice /> */}
+    </Fragment>
   );
 }
 

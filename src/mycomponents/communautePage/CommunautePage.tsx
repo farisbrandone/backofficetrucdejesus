@@ -1,9 +1,10 @@
 import { houseIcon } from "../acceuilPage/Icon";
-import HeaderForAllBackOffice from "../ui/HeaderForAllBackOffice";
 import SearbarBackOffice from "../ui/SearbarBackOffice";
 import CardAddGroup from "../ui/CardAddGroup";
 import CarteCreer from "../ui/CarteCreer";
-import { FooterBackoffice } from "../acceuilPage/FooterBackoffice";
+
+import { Fragment } from "react/jsx-runtime";
+import { communauteIcon } from "./UpdateCommunaute";
 
 export const icon = (
   <svg
@@ -21,13 +22,13 @@ export const icon = (
 
 function CommunautePage() {
   return (
-    <div className="w-full flex flex-col pl-3 ">
-      <HeaderForAllBackOffice />
+    <Fragment>
+      {/*  <HeaderForAllBackOffice /> */}
       <div className="w-full flex flex-col gap-4 max-[840px]:w-full min-[840px]:flex-row min-[840px]:items-center min-[840px]:justify-between mt-10">
         <div className="flex gap-3 ">
           <div className="titleAcceuil">
             <div className=" flex items-center gap-2 text-[#e91e63] mt-3">
-              {houseIcon}
+              {communauteIcon("30", "30")}
               <h1 className=" text-[#344767] font-bold text-[18px] ">
                 COMMUNAUTE
               </h1>
@@ -50,8 +51,7 @@ function CommunautePage() {
           subTitle="Faisons confiance"
         />
       </div>
-      <FooterBackoffice />
-    </div>
+    </Fragment>
   );
 }
 
