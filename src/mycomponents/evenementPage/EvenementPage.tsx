@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 import { FooterBackoffice } from "../acceuilPage/FooterBackoffice";
 import CardAddGroup from "../ui/CardAddGroup";
 import CarteCreer from "../ui/CarteCreer";
@@ -21,8 +22,8 @@ export const eventIcon = (width: string, heigth: string) => (
 
 function EvenementPage() {
   return (
-    <div className="w-full flex flex-col pl-3">
-      <HeaderForAllBackOffice />
+    <>
+      {/*  <HeaderForAllBackOffice /> */}
       <div className="w-full flex flex-col gap-4 max-[840px]:w-full min-[840px]:flex-row min-[840px]:items-center min-[840px]:justify-between mt-10">
         <div className="flex gap-3 ">
           <div className="titleAcceuil">
@@ -54,10 +55,12 @@ function EvenementPage() {
         </div>
       </div>
       <div className="flex flex-wrap gap-3 mt-6 px-5">
-        <CardAddGroup
-          icon={eventIcon("130", "130")}
-          text="CREER UNE NOUVELLE COMMUNAUTE"
-        />
+        <NavLink to="/EVENEMENTS/create-new-event">
+          <CardAddGroup
+            icon={eventIcon("130", "130")}
+            text="CREER UNE NOUVELLE COMMUNAUTE"
+          />
+        </NavLink>
         <CarteCreer
           value={0}
           title="Réseau 100% JÉSUS"
@@ -65,8 +68,8 @@ function EvenementPage() {
           subTitle="Faisons confiance"
         />
       </div>
-      <FooterBackoffice />
-    </div>
+      {/* <FooterBackoffice /> */}
+    </>
   );
 }
 

@@ -11,6 +11,7 @@ import { db } from "../firebaseConfig";
 import { communityDataType } from "./mycomponents/communautePage/UpdateCommunaute";
 import { faker } from "@faker-js/faker";
 import { format } from "date-fns";
+import { stateGroupeEvent } from "./mycomponents/evenementPage/hook/UseselectGroupeInEvent";
 export interface User {
   iconUrl: string;
   title: string;
@@ -28,6 +29,7 @@ export interface GroupeDataType {
   id: string;
   banniereUrlGroupe: string;
   logoUrlGroupe: string;
+  status: string;
 }
 
 /* export function createRandomUser(): User {
@@ -67,29 +69,36 @@ export async function requestTogetAllGroupeData(): Promise<GroupeDataType[]> {
   try {
     const querySnapshot = await getDocs(collection(db, "GroupeData"));
     console.log({ length: querySnapshot.docs.length });
-    querySnapshot.forEach((doc) => {
-      const id = doc.id;
-      const {
-        titleGroupe,
-        descriptionGroupe,
-        logoUrlGroupe,
-        banniereUrlGroupe,
-        typeAccess,
-        date,
-      } = doc.data();
-      groupeData.push({
-        id,
-        titleGroupe,
-        descriptionGroupe,
-        logoUrlGroupe,
-        banniereUrlGroupe,
-        typeAccess,
-        date,
+    if (querySnapshot.docs.length !== 0) {
+      querySnapshot.forEach((doc) => {
+        const id = doc.id;
+        const {
+          titleGroupe,
+          descriptionGroupe,
+          logoUrlGroupe,
+          banniereUrlGroupe,
+          typeAccess,
+          status,
+          date,
+        } = doc.data();
+        groupeData.push({
+          id,
+          titleGroupe,
+          descriptionGroupe,
+          logoUrlGroupe,
+          banniereUrlGroupe,
+          typeAccess,
+          date,
+          status,
+        });
       });
-    });
-    console.log({ drdr_drdr: groupeData[0].id });
-    return groupeData;
+      console.log({ drdr_drdr: groupeData[0].id });
+      return groupeData;
+    }
+
+    return [];
   } catch (error) {
+    console.log({ error: error });
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );
@@ -158,6 +167,29 @@ export async function requestToUpdateGroupeData(
   }
 }
 
+export async function requestToChangeStatus(id: string, status: string) {
+  const GroupeDataRef = collection(db, "GroupeData");
+  const date = format(
+    faker.date.between({ from: "2023-01-01", to: Date.now() }),
+    "'il ya' dd 'jours à' kk:mm"
+  );
+  try {
+    await setDoc(doc(GroupeDataRef, id), {
+      status,
+      date,
+    });
+    return {
+      message: "Le Status a été mis à jour avec success",
+      success: true,
+    };
+  } catch (error) {
+    return {
+      message: "Un problème est survenu pendant l'envoie des données",
+      success: false,
+    };
+  }
+}
+
 export async function requestToGetGroupDataWithId(
   groupeId: string
 ): Promise<GroupeDataType> {
@@ -174,6 +206,7 @@ export async function requestToGetGroupDataWithId(
         banniereUrlGroupe,
         logoUrlGroupe,
         date,
+        status,
       } = docSnap.data();
       return {
         id,
@@ -183,6 +216,7 @@ export async function requestToGetGroupDataWithId(
         banniereUrlGroupe,
         logoUrlGroupe,
         date,
+        status,
       };
     } else {
       throw new Error("Le document n'existe pas");
@@ -191,6 +225,22 @@ export async function requestToGetGroupDataWithId(
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );
+  }
+}
+
+export async function requestToDeleteGroupeWithId(dataId: string) {
+  const docRef = doc(db, "GroupeData", dataId);
+  try {
+    await deleteDoc(docRef);
+    return {
+      message: "le document à été supprimer avec success",
+      success: true,
+    };
+  } catch (error) {
+    return {
+      message: "Un problème est survenu pendant la suppression",
+      success: false,
+    };
   }
 }
 
@@ -270,3 +320,201 @@ export async function deleteDataWithId(dataId: string) {
 /*export const USERS = faker.helpers.multiple(createRandomUser, {
   count: 30,
 });*/
+
+export interface EventDataType {
+  titleEvent: string;
+  descriptionEvent: string;
+  imageUrlEvent: string;
+  typeAccess: string;
+  status: string;
+  dateOfEvent: Date;
+  typeEvent: string;
+  urlOfEvent: string;
+  textCTAEvent: string;
+  locationOfEvent: string;
+  groupeForEventSelect: stateGroupeEvent[];
+  date: string;
+  id: string;
+}
+
+export async function requestToSetEventData({
+  titleEvent,
+  descriptionEvent,
+  imageUrlEvent,
+  typeAccess,
+  status,
+  dateOfEvent,
+  typeEvent,
+  urlOfEvent,
+  textCTAEvent,
+  locationOfEvent,
+  groupeForEventSelect,
+}: EventDataType) {
+  try {
+    const NotifRef = collection(db, "EventData");
+    const date = format(
+      faker.date.between({ from: "2023-01-01", to: Date.now() }),
+      "'il ya' dd 'jours à' kk:mm"
+    );
+    await setDoc(doc(NotifRef), {
+      titleEvent,
+      descriptionEvent,
+      imageUrlEvent,
+      typeAccess,
+      status,
+      dateOfEvent,
+      typeEvent,
+      urlOfEvent,
+      textCTAEvent,
+      locationOfEvent,
+      groupeForEventSelect,
+      date,
+    });
+    return { message: "Le groupe a été créer avec success", success: true };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestToGetEventDataWithId(
+  groupeId: string
+): Promise<EventDataType> {
+  try {
+    const docRef = doc(db, "EventData", groupeId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      console.log("Document data:", docSnap.data());
+      const {
+        id,
+        titleEvent,
+        descriptionEvent,
+        imageUrlEvent,
+        typeAccess,
+        status,
+        dateOfEvent,
+        typeEvent,
+        urlOfEvent,
+        textCTAEvent,
+        locationOfEvent,
+        groupeForEventSelect,
+        date,
+      } = docSnap.data();
+      return {
+        id,
+        titleEvent,
+        descriptionEvent,
+        imageUrlEvent,
+        typeAccess,
+        status,
+        dateOfEvent,
+        typeEvent,
+        urlOfEvent,
+        textCTAEvent,
+        locationOfEvent,
+        groupeForEventSelect,
+        date,
+      };
+    } else {
+      throw new Error("Le document n'existe pas");
+    }
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestToSetEventDataWithId({
+  titleEvent,
+  descriptionEvent,
+  imageUrlEvent,
+  typeAccess,
+  status,
+  dateOfEvent,
+  typeEvent,
+  urlOfEvent,
+  textCTAEvent,
+  locationOfEvent,
+  groupeForEventSelect,
+  id,
+}: EventDataType) {
+  try {
+    const NotifRef = collection(db, "EventData");
+    const date = format(
+      faker.date.between({ from: "2023-01-01", to: Date.now() }),
+      "'il ya' dd 'jours à' kk:mm"
+    );
+    await setDoc(doc(NotifRef, id), {
+      titleEvent,
+      descriptionEvent,
+      imageUrlEvent,
+      typeAccess,
+      status,
+      dateOfEvent,
+      typeEvent,
+      urlOfEvent,
+      textCTAEvent,
+      locationOfEvent,
+      groupeForEventSelect,
+      date,
+    });
+    return { message: "Le groupe a été créer avec success", success: true };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestTogetAllEventData(): Promise<EventDataType[]> {
+  let groupeData: EventDataType[] = [];
+  try {
+    const querySnapshot = await getDocs(collection(db, "EventData"));
+    console.log({ length: querySnapshot.docs.length });
+    if (querySnapshot.docs.length !== 0) {
+      querySnapshot.forEach((doc) => {
+        const id = doc.id;
+        const {
+          titleEvent,
+          descriptionEvent,
+          imageUrlEvent,
+          typeAccess,
+          status,
+          dateOfEvent,
+          typeEvent,
+          urlOfEvent,
+          textCTAEvent,
+          locationOfEvent,
+          groupeForEventSelect,
+          date,
+        } = doc.data();
+        groupeData.push({
+          id,
+          titleEvent,
+          descriptionEvent,
+          imageUrlEvent,
+          typeAccess,
+          status,
+          dateOfEvent,
+          typeEvent,
+          urlOfEvent,
+          textCTAEvent,
+          locationOfEvent,
+          groupeForEventSelect,
+          date,
+        });
+      });
+      console.log({ drdr_drdr: groupeData[0].id });
+      return groupeData;
+    }
+
+    return [];
+  } catch (error) {
+    console.log({ error: error });
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}

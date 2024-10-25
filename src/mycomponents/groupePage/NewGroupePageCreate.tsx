@@ -15,22 +15,21 @@ import { Textarea } from "@/components/ui/textarea";
 import ButtonUploadFile from "../ui/ButtonUploadFile";
 import { Button } from "@/components/ui/button";
 import { NavLink } from "react-router-dom";
-import { ChangeEvent, ChangeEventHandler, useState } from "react";
-
+import { ChangeEvent, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-
 import { GroupeDataType, requestToSetGroupeData } from "@/fakeData";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 function NewGroupePageCreate() {
   const [titleGroupe, setTitleGroupe] = useState("");
   const [descriptionGroupe, setDescriptionGroupe] = useState("");
   const [logoUrlGroupe, setLogoUrlGroupe] = useState("");
+  const [status, setStatus] = useState("activate");
   const [banniereUrlGroupe, setBanniereUrlGroupe] = useState("");
   const [stateDownload, setStateDownload] = useState(false);
   const [classTitle, setClassTitle] = useState(false);
   const [classDescription, setClassDescription] = useState(false);
   const [startSending, setStartSending] = useState(false);
+  const [stateDownload1, setStateDownload1] = useState(false);
   const [typeAccess, setTypeAccess] = useState("Public");
   const { toast } = useToast();
 
@@ -51,6 +50,15 @@ function NewGroupePageCreate() {
   const handleBanniereUrlGroupe = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setBanniereUrlGroupe(() => e.target.value);
+  };
+
+  const handleChangeStatus = () => {
+    console.log(status);
+    if (status === "activate") {
+      setStatus("desactivate");
+      return;
+    }
+    setStatus("activate");
   };
 
   const handleChangeRadioGroupe = (val: string) => {
@@ -84,6 +92,7 @@ function NewGroupePageCreate() {
         logoUrlGroupe: logoUrlGroupe,
         banniereUrlGroupe: banniereUrlGroupe,
         typeAccess: typeAccess,
+        status: status,
         date: "",
         id: "",
       };
@@ -218,12 +227,28 @@ function NewGroupePageCreate() {
               </div>
             </div>
           </div>
-          <div className="space-y-1 ">
+          <div className="felx flex-col items-center mt-3">
+            <input
+              type="checkbox"
+              id="statusId"
+              value={status}
+              checked={status === "activate"}
+              onChange={handleChangeStatus}
+            />
+            <label
+              htmlFor="statusId"
+              className="ml-2 text-[16px] font-semibold"
+            >
+              Activé le groupe
+            </label>
+          </div>
+          <div className="space-y-1 " key="button1">
             <Label htmlFor="logoUrlGroupe">
               Insérer le logo de la communauté {" (optionnel)"}
             </Label>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2" key="button21">
               <Input
+                key="button11"
                 id="logoUrlGroupe"
                 name="logoUrlGroupe"
                 value={logoUrlGroupe}
@@ -232,19 +257,23 @@ function NewGroupePageCreate() {
                 disabled={stateDownload || startSending}
               />
               <ButtonUploadFile
+                name="file1"
+                valueForHtml="drop-zone-1"
+                key="button111"
                 setImageUrl={setLogoUrlGroupe}
-                setStateDownload={setStateDownload}
-                stateDownload={stateDownload}
+                setStateDownloadProps={setStateDownload}
+                stateDownloadProps={stateDownload}
               />
             </div>
           </div>
 
-          <div className="space-y-1 ">
-            <Label htmlFor="banniereUrl">
+          <div className="space-y-1 " key="button2">
+            <Label htmlFor="banniereUrlGroupe">
               Entrer l'image bannière du groupe {" (optionnel)"}
             </Label>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2" key="button21">
               <Input
+                key="button21"
                 id="banniereUrlGroupe"
                 name="banniereUrlGroupe"
                 value={banniereUrlGroupe}
@@ -253,9 +282,12 @@ function NewGroupePageCreate() {
                 disabled={stateDownload || startSending}
               />
               <ButtonUploadFile
+                name="file2"
+                valueForHtml="drop-zone-2"
+                key="button211"
                 setImageUrl={setBanniereUrlGroupe}
-                setStateDownload={setStateDownload}
-                stateDownload={stateDownload}
+                setStateDownloadProps={setStateDownload1}
+                stateDownloadProps={stateDownload1}
               />
             </div>
           </div>

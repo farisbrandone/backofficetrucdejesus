@@ -26,6 +26,9 @@ import { Toaster } from "@/components/ui/toaster";
 import GroupeMain from "./mycomponents/groupePage/GroupeMain";
 import UpdateGroupePage from "./mycomponents/groupePage/UpdateGroupePage";
 import NewGroupePageCreate from "./mycomponents/groupePage/NewGroupePageCreate";
+import EvenementMain from "./mycomponents/evenementPage/EvenementMain";
+import NewEvenementPage from "./mycomponents/evenementPage/NewEvenementPage";
+import UpdateEvenement from "./mycomponents/evenementPage/UpdateEvenement";
 /**we configure the loder create in root sidebar component to load data */
 
 const router = createBrowserRouter([
@@ -77,7 +80,18 @@ const router = createBrowserRouter([
       },
       {
         path: "/EVENEMENTS",
-        element: <EvenementPage />,
+        element: <EvenementMain />,
+        children: [
+          { path: "/EVENEMENTS", element: <EvenementPage /> },
+          {
+            path: "/EVENEMENTS/create-new-event",
+            element: <NewEvenementPage />,
+          },
+          {
+            path: "/EVENEMENTS/update-event-page/:eventId",
+            element: <UpdateEvenement />,
+          },
+        ],
       },
       {
         path: "/INTEGRATIONS",

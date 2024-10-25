@@ -5,6 +5,10 @@ import {
   DropdownMenuBackoffice,
   DropdownMenuForGroupe,
 } from "./DropdownMenuBackoffice";
+import { useState } from "react";
+import { requestToChangeStatus } from "@/fakeData";
+import { toast } from "@/hooks/use-toast";
+import LoadingTotal from "./LoadingTotal";
 
 export interface CarteCreerType {
   title: string;
@@ -70,6 +74,7 @@ export interface CarteCreerForGroupType {
   logoUrlGroupe: string;
   banniereGroupe: string;
   groupeId: string;
+  status: string;
 }
 
 export function CarteCreerForGroup({
@@ -80,7 +85,37 @@ export function CarteCreerForGroup({
   logoUrlGroupe,
   banniereGroupe,
   groupeId,
+  status,
 }: CarteCreerForGroupType) {
+  const [switchState, setSwitchState] = useState(status);
+  const [loadingStatus, setLoadingStatus] = useState(false);
+  const handleSwitch = async () => {
+    try {
+      setLoadingStatus(true);
+      let status;
+      if (switchState === "activate") {
+        status = "desactivate";
+      } else {
+        status = "desactivate";
+      }
+      const result = await requestToChangeStatus(groupeId, status);
+      if (result.success) {
+        setSwitchState(status);
+        toast({
+          title: "Success",
+          description: result.message,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: result.message,
+        });
+      }
+
+      setLoadingStatus(false);
+    } catch (error) {}
+  };
   return (
     <div className={`flex flex-col w-[300px] h-[300px] items-center`}>
       <div className="w-full h-[150px] flex items-center justify-center px-2 ">
@@ -93,7 +128,7 @@ export function CarteCreerForGroup({
           <img
             src={banniereGroupe}
             alt="Image bannière"
-            className="object-cover w-full "
+            className="object-cover w-full h-[150px] "
           />
         )}
       </div>
@@ -101,7 +136,15 @@ export function CarteCreerForGroup({
         <div className="flex justify-between items-center w-full">
           <p>{titleGroupe}</p>
           <div className="flex items-center space-x-2">
-            <Switch id="airplane-mode" />
+            {loadingStatus ? (
+              <LoadingTotal />
+            ) : (
+              <Switch
+                id="airplane-mode"
+                checked={switchState === "activate"}
+                onCheckedChange={handleSwitch}
+              />
+            )}
           </div>
         </div>
         <div className="text-[12px] mt-2 ">

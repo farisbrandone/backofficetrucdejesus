@@ -7,59 +7,53 @@ import { useToast } from "@/hooks/use-toast";
 type typesetStateBollean = React.Dispatch<React.SetStateAction<boolean>>;
 type typesetStatestring = React.Dispatch<React.SetStateAction<string>>;
 
-interface statePropsButtons {
-  name: string;
-  valueForHtml: string;
+interface statePropsButtonse {
   key: string;
-  setImageUrl: typesetStatestring;
-  setStateDownloadProps: typesetStateBollean;
-  stateDownloadProps: boolean;
+  setImageUrle: typesetStatestring;
+  setStateDownloadPropse: typesetStateBollean;
+  stateDownloadPropse: boolean;
 }
 
-function ButtonUploadFile({
-  name,
-  valueForHtml,
+function ButtonUploadFile2({
   key,
-  setImageUrl,
-  setStateDownloadProps,
-  stateDownloadProps,
-}: statePropsButtons) {
+  setImageUrle,
+  setStateDownloadPropse,
+  stateDownloadPropse,
+}: statePropsButtonse) {
   /* const [file, setFile] = useState(null);
-  const [url, setUrl] = useState(""); */
-  const [progress, setProgress] = useState(0);
+    const [url, setUrl] = useState(""); */
+  const [progress2, setProgress2] = useState(0);
   /*  const [errorDownload, setErrorDownload] = useState("");
-  const [successDownload, setSuccessDownload] = useState(""); */
+    const [successDownload, setSuccessDownload] = useState(""); */
   /* const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  }; */
+      setFile(e.target.files[0]);
+    }; */
   const { toast } = useToast();
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange2 = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
+    console.log("bunga");
     console.log(e.target.name);
-    console.log(valueForHtml);
     if (!e?.target.files) return;
-    if (e.target.name === "file1") return;
-    if (e.target.name === "file2") return;
     const file = e.target.files[0];
-
+    console.log("bunga");
     const storageRef = ref(storage, `images/${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
     uploadTask.on(
       "state_changed",
       (snapshot) => {
-        setStateDownloadProps(() => {
+        setStateDownloadPropse(() => {
           return true;
         });
-        console.log("ntamnyam");
+        console.log("sonko");
         const progression = Math.round(
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100
         );
-        setProgress(progression);
+        setProgress2(progression);
       },
       (error) => {
         /*  setErrorDownload("une erreur est survenue pendant le chargement"); */
-        setStateDownloadProps(false);
+        setStateDownloadPropse(false);
         toast({
           variant: "destructive",
           title: "Erreur",
@@ -71,8 +65,8 @@ function ButtonUploadFile({
       () => {
         // Get the download URL
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          setImageUrl(downloadURL);
-          setStateDownloadProps(false);
+          setImageUrle(downloadURL);
+          setStateDownloadPropse(false);
           /*  setSuccessDownload("le telechargement s'est fait avec success"); */
           toast({
             title: "Success",
@@ -89,13 +83,13 @@ function ButtonUploadFile({
       className="flex items-center justify-center w-[150px]"
     >
       <label
-        htmlFor={valueForHtml}
+        htmlFor="dropzone-file2"
         className="flex flex-col items-center justify-center w-full p-1 border-2 border-[#bd10e0] border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
       >
-        {stateDownloadProps ? (
+        {stateDownloadPropse ? (
           <div className="flex items-center">
             <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />{" "}
-            <span> {progress} </span>
+            <span> {progress2} </span>
           </div>
         ) : (
           <div className="flex  items-center gap-1 p-0">
@@ -115,26 +109,26 @@ function ButtonUploadFile({
               />
             </svg>
             <p className="text-[8px] text-gray-500 dark:text-gray-400">
-              <span className="font-semibold"> Upload </span>{" "}
+              <span className="font-semibold"> ouf </span>{" "}
               <span className="text-[8px] text-gray-500 dark:text-gray-400">
                 {" "}
-                (SVG, PNG, JPG or GIF)
+                (SVG, )
               </span>
             </p>
           </div>
         )}
 
         <input
-          name={name}
-          id={valueForHtml}
+          name="file2"
+          id="dropzone-file2"
           type="file"
           className="hidden"
-          onChange={handleFileChange}
-          disabled={stateDownloadProps}
+          onChange={handleFileChange2}
+          disabled={stateDownloadPropse}
         />
       </label>
     </div>
   );
 }
 
-export default ButtonUploadFile;
+export { ButtonUploadFile2 };

@@ -284,9 +284,12 @@ export function NotificationDetails({
                 disabled={stateDownload || startSending}
               />
               <ButtonUploadFile
+                name="fileNotification"
+                valueForHtml="drop-zone-notification"
+                key="button-notification"
                 setImageUrl={setImageUrl}
-                setStateDownload={setStateDownload}
-                stateDownload={stateDownload}
+                setStateDownloadProps={setStateDownload}
+                stateDownloadProps={stateDownload}
               />
             </div>
             <img

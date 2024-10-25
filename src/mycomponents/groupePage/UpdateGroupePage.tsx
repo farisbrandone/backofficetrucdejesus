@@ -18,8 +18,6 @@ import { NavLink } from "react-router-dom";
 import { ChangeEvent, useEffect, useState } from "react";
 
 import { useToast } from "@/hooks/use-toast";
-import { RadioGroup } from "@radix-ui/react-dropdown-menu";
-import { RadioGroupItem } from "@radix-ui/react-radio-group";
 import {
   GroupeDataType,
   requestToGetGroupDataWithId,
@@ -37,6 +35,7 @@ function UpdateGroupePage() {
   const [logoUrlGroupe, setLogoUrlGroupe] = useState("");
   const [banniereUrlGroupe, setBanniereUrlGroupe] = useState("");
   const [stateDownload, setStateDownload] = useState(false);
+  const [stateDownload1, setStateDownload1] = useState(false);
   const [classTitle, setClassTitle] = useState(false);
   const [classDescription, setClassDescription] = useState(false);
   const [startSending, setStartSending] = useState(false);
@@ -44,7 +43,14 @@ function UpdateGroupePage() {
   const [typeAccess, setTypeAccess] = useState("Public");
   const { groupeId } = useParams<string>();
   const { toast } = useToast();
+  const [status, setStatus] = useState("activate");
 
+  const handleChangeStatus = () => {
+    if (status === "activate") {
+      setStatus("desactivate");
+    }
+    setStatus("activate");
+  };
   const handleTitleGroupe = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setTitleGroupe(() => e.target.value);
@@ -98,6 +104,7 @@ function UpdateGroupePage() {
         logoUrlGroupe: logoUrlGroupe,
         banniereUrlGroupe: banniereUrlGroupe,
         typeAccess: typeAccess,
+        status: status,
         date: "",
         id: groupeId,
       };
@@ -142,6 +149,7 @@ function UpdateGroupePage() {
         setDescriptionGroupe(data.descriptionGroupe);
         setBanniereUrlGroupe(data.banniereUrlGroupe);
         setTypeAccess(data.typeAccess);
+        setStatus(data.status);
       } catch (error) {
         setLoadingFail(true);
       }
@@ -268,6 +276,16 @@ function UpdateGroupePage() {
               </div>
             </div>
           </div>
+          <div className="felx flex-col items-center">
+            <label htmlFor="statusId">Status</label>
+            <input
+              type="checkbox"
+              id="statusId"
+              value={status}
+              checked={status === "activate"}
+              onClick={handleChangeStatus}
+            />
+          </div>
           <div className="space-y-1 ">
             <Label htmlFor="logoUrlGroupe">
               Insérer le logo de la communauté {" (optionnel)"}
@@ -282,9 +300,12 @@ function UpdateGroupePage() {
                 disabled={stateDownload || startSending}
               />
               <ButtonUploadFile
+                name="fileGroupe1"
+                valueForHtml="drop-zone-update-group1"
+                key="update1"
                 setImageUrl={setLogoUrlGroupe}
-                setStateDownload={setStateDownload}
-                stateDownload={stateDownload}
+                setStateDownloadProps={setStateDownload}
+                stateDownloadProps={stateDownload}
               />
             </div>
           </div>
@@ -300,12 +321,15 @@ function UpdateGroupePage() {
                 value={banniereUrlGroupe}
                 placeholder="Entrer une image représentant la bannière de la communauté"
                 onChange={handleBanniereUrlGroupe}
-                disabled={stateDownload || startSending}
+                disabled={startSending || stateDownload1}
               />
               <ButtonUploadFile
+                name="fileGroupe2"
+                valueForHtml="drop-zone-update-group2"
+                key="update2"
                 setImageUrl={setBanniereUrlGroupe}
-                setStateDownload={setStateDownload}
-                stateDownload={stateDownload}
+                setStateDownloadProps={setStateDownload1}
+                stateDownloadProps={stateDownload1}
               />
             </div>
           </div>
@@ -315,13 +339,13 @@ function UpdateGroupePage() {
         )}
         <CardFooter className="flex items-center gap-3">
           <Button
-            disabled={stateDownload || startSending}
+            disabled={stateDownload || startSending || stateDownload1}
             onClick={CreateNewGroupe}
           >
             Envoyer les modifications
           </Button>
           <Button
-            disabled={stateDownload || startSending}
+            disabled={stateDownload || startSending || stateDownload1}
             className="p-0 flex items-center justify-center bg-[#e91e63] hover:bg-[#e91e62e0]"
           >
             <NavLink
