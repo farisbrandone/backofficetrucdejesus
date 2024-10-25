@@ -1,10 +1,10 @@
 import { NavLink } from "react-router-dom";
-import { FooterBackoffice } from "../acceuilPage/FooterBackoffice";
 import CardAddGroup from "../ui/CardAddGroup";
-import CarteCreer from "../ui/CarteCreer";
-import HeaderForAllBackOffice from "../ui/HeaderForAllBackOffice";
+import { CarteCreerForEvent } from "../ui/CarteCreer";
 import SearbarBackOffice from "../ui/SearbarBackOffice";
 import { faker } from "@faker-js/faker";
+import { EventDataType, requestTogetAllEventData } from "@/fakeData";
+import { useEffect, useState } from "react";
 
 export const eventIcon = (width: string, heigth: string) => (
   <svg
@@ -21,6 +21,38 @@ export const eventIcon = (width: string, heigth: string) => (
 );
 
 function EvenementPage() {
+  const [eventData, setEventData] = useState<EventDataType[]>();
+
+  const [loadingFail, setLoadingFail] = useState(false);
+
+  useEffect(() => {
+    const getAllEventData = async () => {
+      try {
+        const data = await requestTogetAllEventData();
+        setEventData([...data]);
+      } catch (error) {
+        setLoadingFail(true);
+      }
+    };
+    getAllEventData();
+  }, []);
+
+  if (!eventData && !loadingFail) {
+    return (
+      <div className="w-full text-center pt-4">
+        Le document est en cours de chargement ...
+      </div>
+    );
+  }
+
+  if (loadingFail) {
+    return (
+      <div className="w-full text-center pt-4">
+        Une erreur est survenue pendant le chargement ou problème de connexion
+      </div>
+    );
+  }
+
   return (
     <>
       {/*  <HeaderForAllBackOffice /> */}
@@ -46,10 +78,6 @@ function EvenementPage() {
             className=" w-[200px] bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500   p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           >
             <option selected>{faker.word.words(2)}</option>
-            <option value="US">{faker.word.words(1)}</option>
-            <option value="CA">{faker.word.words(1)}</option>
-            <option value="FR">{faker.word.words(1)}</option>
-            <option value="DE">{faker.word.words(1)}</option>
           </select>
           <SearbarBackOffice placeholder="Recherche par nom d'évènement" />
         </div>
@@ -61,12 +89,25 @@ function EvenementPage() {
             text="CREER UNE NOUVELLE COMMUNAUTE"
           />
         </NavLink>
-        <CarteCreer
-          value={0}
-          title="Réseau 100% JÉSUS"
-          date="18 Feb 2024"
-          subTitle="Faisons confiance"
-        />
+        {eventData?.map((value, index) => (
+          <div key={index}>
+            <CarteCreerForEvent
+              titleEvent={value.titleEvent}
+              descriptionEvent={value.descriptionEvent}
+              imageUrlEvent={value.imageUrlEvent}
+              typeAccess={value.typeAccess}
+              status={value.status}
+              dateOfEvent={value.dateOfEvent}
+              typeEvent={value.typeEvent}
+              urlOfEvent={value.urlOfEvent}
+              textCTAEvent={value.textCTAEvent}
+              locationOfEvent={value.locationOfEvent}
+              groupeForEventSelect={value.groupeForEventSelect}
+              eventId={value.id}
+              date={value.date}
+            />
+          </div>
+        ))}
       </div>
       {/* <FooterBackoffice /> */}
     </>

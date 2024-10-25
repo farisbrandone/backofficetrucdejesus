@@ -268,8 +268,11 @@ function UpdateCommunaute() {
               />
               <ButtonUploadFile
                 setImageUrl={setBanniereUrl}
-                setStateDownload={setStateDownload}
-                stateDownload={stateDownload}
+                setStateDownloadProps={setStateDownload}
+                stateDownloadProps={stateDownload}
+                name="updateCommunaute1"
+                valueForHtml="updateCommunaute1"
+                key="updateCommunaute1"
               />
             </div>
           </div>

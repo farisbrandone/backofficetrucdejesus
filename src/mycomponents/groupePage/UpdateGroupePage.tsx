@@ -75,7 +75,7 @@ function UpdateGroupePage() {
     setTypeAccess(() => val);
   };
 
-  const CreateNewGroupe = async () => {
+  const updateGroupeWithId = async () => {
     console.log("banga");
     setStartSending(() => true);
     if (!titleGroupe || !descriptionGroupe) {
@@ -340,7 +340,7 @@ function UpdateGroupePage() {
         <CardFooter className="flex items-center gap-3">
           <Button
             disabled={stateDownload || startSending || stateDownload1}
-            onClick={CreateNewGroupe}
+            onClick={updateGroupeWithId}
           >
             Envoyer les modifications
           </Button>

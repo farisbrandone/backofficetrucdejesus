@@ -9,6 +9,8 @@ import { useState } from "react";
 import { requestToChangeStatus } from "@/fakeData";
 import { toast } from "@/hooks/use-toast";
 import LoadingTotal from "./LoadingTotal";
+import { stateGroupeEvent } from "../evenementPage/hook/UseselectGroupeInEvent";
+import { format } from "date-fns";
 
 export interface CarteCreerType {
   title: string;
@@ -80,9 +82,9 @@ export interface CarteCreerForGroupType {
 export function CarteCreerForGroup({
   titleGroupe,
   descriptionGroupe,
-  typeAccess,
+  /*  typeAccess, */
   dateGroupe,
-  logoUrlGroupe,
+  /*  logoUrlGroupe, */
   banniereGroupe,
   groupeId,
   status,
@@ -162,6 +164,124 @@ export function CarteCreerForGroup({
         </div>
         <div>
           <DropdownMenuForGroupe title="Action" groupeId={groupeId} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export interface CarteCreerForEventType {
+  titleEvent: string;
+  descriptionEvent: string;
+  imageUrlEvent: string;
+  typeAccess: string;
+  status: string;
+  dateOfEvent: Date;
+  typeEvent: string;
+  urlOfEvent: string;
+  textCTAEvent: string;
+  locationOfEvent: string;
+  groupeForEventSelect: stateGroupeEvent[];
+  date: string;
+  eventId: string;
+}
+
+export function CarteCreerForEvent({
+  titleEvent,
+  descriptionEvent,
+  imageUrlEvent,
+  /*  typeAccess , */
+  status,
+  dateOfEvent,
+  /*  typeEvent ,
+               urlOfEvent ,
+               textCTAEvent , */
+  /*  locationOfEvent , */
+  groupeForEventSelect,
+  eventId,
+}: CarteCreerForEventType) {
+  const [switchState, setSwitchState] = useState(status);
+  const [loadingStatus, setLoadingStatus] = useState(false);
+  const handleSwitch = async () => {
+    try {
+      setLoadingStatus(true);
+      let status;
+      if (switchState === "activate") {
+        status = "desactivate";
+      } else {
+        status = "desactivate";
+      }
+      const result = await requestToChangeStatus(eventId, status);
+      if (result.success) {
+        setSwitchState(status);
+        toast({
+          title: "Success",
+          description: result.message,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: result.message,
+        });
+      }
+
+      setLoadingStatus(false);
+    } catch (error) {}
+  };
+  return (
+    <div className={`flex flex-col w-[300px] h-[300px] items-center`}>
+      <div className="w-full h-[150px] flex items-center justify-center px-2 ">
+        {imageUrlEvent.includes(".mp4") ? (
+          <video autoPlay={true} muted={true}>
+            <source src={imageUrlEvent} type="video/mp4" />
+            Votre navigateur ne supporte pas la balise vidéo.
+          </video>
+        ) : (
+          <img
+            src={imageUrlEvent}
+            alt="Image bannière"
+            className="object-cover w-full h-[150px] "
+          />
+        )}
+      </div>
+      <div className="w-full mt-5">
+        <div className="flex justify-between items-center w-full">
+          <p>{titleEvent}</p>
+          <div className="flex items-center space-x-2">
+            {loadingStatus ? (
+              <LoadingTotal />
+            ) : (
+              <Switch
+                id="airplane-mode"
+                checked={switchState === "activate"}
+                onCheckedChange={handleSwitch}
+              />
+            )}
+          </div>
+        </div>
+        <div className="text-[12px] mt-2 ">
+          <p>
+            l'événement aura lieu{" "}
+            {format(dateOfEvent, "' le' dd/mm/yyyy 'à' kk:mm")}
+          </p>
+          <p>
+            Nombre de groupes associés à cet événement:{" "}
+            {groupeForEventSelect.length}{" "}
+          </p>
+          <p>{descriptionEvent}</p>
+        </div>
+      </div>
+      <div className="flex items-center justify-between w-full mt-3 ">
+        <div className="flex ">
+          {[1, 2, 3, 4].map((_, index) => (
+            <div key={index} className={`${index > 0 ? "-ml-4" : ""}`}>
+              <AvatarBackoffice />
+            </div>
+          ))}
+        </div>
+        <div>
+          <DropdownMenuForGroupe title="Action" groupeId={eventId} />
         </div>
       </div>
     </div>

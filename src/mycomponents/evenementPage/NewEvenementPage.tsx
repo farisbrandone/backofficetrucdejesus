@@ -71,7 +71,6 @@ function NewEvenementPage() {
 
   const {
     groupeForEventSelect,
-    setGroupeForEventSelect,
     loadinggroupeForEvent,
     totalgroupeForEvent,
     handleSelectGroupeEvent,
