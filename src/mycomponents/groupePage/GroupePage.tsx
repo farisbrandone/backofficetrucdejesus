@@ -124,6 +124,9 @@ function GroupePage() {
               banniereUrlGroupe={value.banniereUrlGroupe}
               groupeId={value.id}
               status={value.status}
+              groupeData={groupeData}
+              setGroupeData={setGroupeData}
+              setLoadingFail={setLoadingFail}
             />
           </div>
         ))}

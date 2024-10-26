@@ -1,5 +1,5 @@
 import { Avatar } from "@/components/ui/avatar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { eyeCloseIcon, eyeOpenIcon } from "../clientGererPage/ClientGerer";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -10,9 +10,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ClientDataType, requestTodeleteClientDataWithId } from "@/fakeData";
+import {
+  ClientDataType,
+  requestToChangeStatus,
+  requestTodeleteClientDataWithId,
+  requestTogetAllClientData,
+} from "@/fakeData";
 import { NavLink } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import LoadingTotal from "../ui/LoadingTotal";
 
 export interface UserDataType {
   name: string;
@@ -27,13 +33,55 @@ export interface UserDataType {
 export interface ClientDataComponentType {
   value: ClientDataType;
   index: number;
+  setClientData: React.Dispatch<
+    React.SetStateAction<ClientDataType[] | undefined>
+  >;
+  setLoadingFail: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function ClientDataComponent({ value, index }: ClientDataComponentType) {
+function ClientDataComponent({
+  value,
+  index,
+  setClientData,
+  setLoadingFail,
+}: ClientDataComponentType) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [pageForDeletion, setPageForDeletion] = useState(false);
   const [stateSuppression, setStateSuppression] = useState(false);
   const { toast } = useToast();
+  const [switchState, setSwitchState] = useState(value.statusClient);
+  const [loadingStatus, setLoadingStatus] = useState(false);
+  const handleSwitch = async () => {
+    try {
+      setLoadingStatus(true);
+      let status;
+      if (switchState === "activate") {
+        status = "desactivate";
+      } else {
+        status = "activate";
+      }
+      const result = await requestToChangeStatus(
+        value.id,
+        status,
+        "ClientData"
+      );
+      if (result.success) {
+        setSwitchState(status);
+        toast({
+          title: "Success",
+          description: result.message,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: result.message,
+        });
+      }
+
+      setLoadingStatus(false);
+    } catch (error) {}
+  };
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
@@ -61,6 +109,18 @@ function ClientDataComponent({ value, index }: ClientDataComponentType) {
     setPageForDeletion(false);
     window.location.reload();
   };
+
+  useEffect(() => {
+    const getAllClientData = async () => {
+      try {
+        const data = await requestTogetAllClientData();
+        setClientData([...data]);
+      } catch (error) {
+        setLoadingFail(true);
+      }
+    };
+    getAllClientData();
+  }, [switchState]);
 
   return (
     <div className="w-full grid grid-cols-7  mb-2">
@@ -132,8 +192,16 @@ function ClientDataComponent({ value, index }: ClientDataComponentType) {
       </div>
       <div className=" place-content-center mx-auto">{value.dateCreated}</div>
       <div className="place-content-center mx-auto ">{value.dateUpdated}</div>
-      <div className="place-content-center mx-auto">
-        <Switch id="airplane-mode" />
+      <div className="flex items-center space-x-2">
+        {loadingStatus ? (
+          <LoadingTotal />
+        ) : (
+          <Switch
+            id="airplane-mode"
+            checked={switchState === "activate"}
+            onCheckedChange={handleSwitch}
+          />
+        )}
       </div>
       <div className=" place-content-center mx-auto ">
         <DropdownMenu>

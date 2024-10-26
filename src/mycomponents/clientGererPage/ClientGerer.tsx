@@ -254,7 +254,12 @@ function ClientGerer() {
           {clientData &&
             clientData.map((value, index) => (
               <Fragment key={index}>
-                <ClientDataComponent value={value} index={index} />
+                <ClientDataComponent
+                  value={value}
+                  index={index}
+                  setClientData={setClientData}
+                  setLoadingFail={setLoadingFail}
+                />
               </Fragment>
             ))}
         </div>

@@ -8,8 +8,10 @@ import {
 import { useEffect, useState } from "react";
 import {
   EventDataType,
+  GroupeDataType,
   requestToChangeStatus,
   requestTogetAllEventData,
+  requestTogetAllGroupeData,
 } from "@/fakeData";
 import { toast } from "@/hooks/use-toast";
 import LoadingTotal from "./LoadingTotal";
@@ -86,6 +88,11 @@ export interface CarteCreerForGroupType {
   banniereUrlGroupe: string;
   groupeId: string;
   status: string;
+  groupeData: GroupeDataType[];
+  setGroupeData: React.Dispatch<
+    React.SetStateAction<GroupeDataType[] | undefined>
+  >;
+  setLoadingFail: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export function CarteCreerForGroup({
@@ -97,6 +104,8 @@ export function CarteCreerForGroup({
   banniereUrlGroupe,
   groupeId,
   status,
+  setGroupeData,
+  setLoadingFail,
 }: CarteCreerForGroupType) {
   console.log({ titleGroupe, status });
   const [switchState, setSwitchState] = useState(status);
@@ -132,6 +141,19 @@ export function CarteCreerForGroup({
       setLoadingStatus(false);
     } catch (error) {}
   };
+
+  useEffect(() => {
+    const getAllGroupeData = async () => {
+      try {
+        const data = await requestTogetAllGroupeData();
+        setGroupeData([...data]);
+      } catch (error) {
+        setLoadingFail(true);
+      }
+    };
+    getAllGroupeData();
+  }, [switchState]);
+
   return (
     <div className={`flex flex-col w-[300px] h-[300px] items-center`}>
       <div className="w-full h-[150px] flex items-center justify-center px-2 ">
