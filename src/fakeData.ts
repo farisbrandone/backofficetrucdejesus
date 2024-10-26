@@ -38,7 +38,8 @@ export interface ClientDataType {
   emailClient: string;
   passwordClient: string;
   logoClient: string;
-  date: string;
+  dateCreated: string;
+  dateUpdated: string;
   statusClient: string;
   id: string;
 }
@@ -565,7 +566,12 @@ export async function requestToSetClientData({
 }: ClientDataType) {
   try {
     const NotifRef = collection(db, "ClientData");
-    const date = format(
+    const dateCreated = format(
+      faker.date.between({ from: "2023-01-01", to: Date.now() }),
+      "'il ya' dd 'jours à' kk:mm"
+    );
+
+    const dateUpdated = format(
       faker.date.between({ from: "2023-01-01", to: Date.now() }),
       "'il ya' dd 'jours à' kk:mm"
     );
@@ -574,7 +580,8 @@ export async function requestToSetClientData({
       emailClient,
       passwordClient,
       logoClient,
-      date,
+      dateCreated,
+      dateUpdated,
     });
     return { message: "Le groupe a été créer avec success", success: true };
   } catch (error) {
@@ -587,7 +594,7 @@ export async function requestToSetClientData({
 export async function requestTogetAllClientData(): Promise<ClientDataType[]> {
   let clientData: ClientDataType[] = [];
   try {
-    const querySnapshot = await getDocs(collection(db, "EventData"));
+    const querySnapshot = await getDocs(collection(db, "ClientData"));
     console.log({ length: querySnapshot.docs.length });
     if (querySnapshot.docs.length !== 0) {
       querySnapshot.forEach((doc) => {
@@ -597,7 +604,8 @@ export async function requestTogetAllClientData(): Promise<ClientDataType[]> {
           emailClient,
           passwordClient,
           logoClient,
-          date,
+          dateCreated,
+          dateUpdated,
           statusClient,
         } = doc.data();
         clientData.push({
@@ -606,11 +614,12 @@ export async function requestTogetAllClientData(): Promise<ClientDataType[]> {
           emailClient,
           passwordClient,
           logoClient,
-          date,
+          dateCreated,
+          dateUpdated,
           statusClient,
         });
       });
-      console.log({ drdr_drdr: clientData[0].id });
+
       return clientData;
     }
 
@@ -620,5 +629,88 @@ export async function requestTogetAllClientData(): Promise<ClientDataType[]> {
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );
+  }
+}
+
+export async function requestToUpdateClientData({
+  nomClient,
+  emailClient,
+  passwordClient,
+  logoClient,
+  id,
+}: ClientDataType) {
+  try {
+    const NotifRef = collection(db, "ClientData");
+
+    const dateUpdated = format(
+      faker.date.between({ from: "2023-01-01", to: Date.now() }),
+      "'il ya' dd 'jours à' kk:mm"
+    );
+    await updateDoc(doc(NotifRef, id), {
+      nomClient,
+      emailClient,
+      passwordClient,
+      logoClient,
+      dateUpdated,
+    });
+    return { message: "Le groupe a été créer avec success", success: true };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestToGetClientDataWithId(
+  clientId: string
+): Promise<ClientDataType> {
+  try {
+    const docRef = doc(db, "ClientData", clientId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const {
+        id,
+        nomClient,
+        emailClient,
+        passwordClient,
+        logoClient,
+        dateCreated,
+        dateUpdated,
+        statusClient,
+      } = docSnap.data();
+      return {
+        id,
+        nomClient,
+        emailClient,
+        passwordClient,
+        logoClient,
+        dateCreated,
+        dateUpdated,
+        statusClient,
+      };
+    } else {
+      throw new Error("Le document n'existe pas");
+    }
+  } catch (error) {
+    console.log({ error: error });
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestTodeleteClientDataWithId(dataId: string) {
+  const docRef = doc(db, "ClientData", dataId);
+  try {
+    await deleteDoc(docRef);
+    return {
+      message: "le document à été supprimer avec success",
+      success: true,
+    };
+  } catch (error) {
+    return {
+      message: "Un problème est survenu pendant la suppression",
+      success: false,
+    };
   }
 }

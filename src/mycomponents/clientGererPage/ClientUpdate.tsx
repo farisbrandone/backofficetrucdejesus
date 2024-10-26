@@ -12,10 +12,14 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import ButtonUploadFile from "../ui/ButtonUploadFile";
 import { Button } from "@/components/ui/button";
-import { NavLink } from "react-router-dom";
-import { ChangeEvent, useState } from "react";
+import { NavLink, useParams } from "react-router-dom";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { ClientDataType, requestToSetClientData } from "@/fakeData";
+import {
+  ClientDataType,
+  requestToGetClientDataWithId,
+  requestToUpdateClientData,
+} from "@/fakeData";
 import { gererClientIcon } from "./ClientGerer";
 
 export const cardenaIcon = (width: string, heigth: string) => {
@@ -37,7 +41,7 @@ export const cardenaIcon = (width: string, heigth: string) => {
   );
 };
 
-function ClientCreer() {
+function ClientUpdate() {
   const [nomClient, setNomClient] = useState("");
   const [emailClient, setEmailClient] = useState("");
   const [passwordClient, setPasswordClient] = useState("");
@@ -50,8 +54,10 @@ function ClientCreer() {
   const [classPassword, setClassPassword] = useState(false);
   const [classConfirmPassword, setClassConfirmPassword] = useState(false);
   const [startSending, setStartSending] = useState(false);
+  const [loadingFail, setLoadingFail] = useState(false);
   const [statusClient, setStatusClient] = useState("activate");
   const { toast } = useToast();
+  const { clientId } = useParams<string>();
 
   const handleNomClient = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -88,7 +94,7 @@ function ClientCreer() {
     setLogoCllient(() => e.target.value);
   };
 
-  const CreateNewClient = async () => {
+  const updateClient = async () => {
     console.log("banga");
     setStartSending(() => true);
     if (
@@ -119,6 +125,9 @@ function ClientCreer() {
       return;
     }
     try {
+      if (!clientId) {
+        return;
+      }
       var data: ClientDataType = {
         nomClient: nomClient,
         emailClient: emailClient,
@@ -127,10 +136,10 @@ function ClientCreer() {
         statusClient: statusClient,
         dateCreated: "",
         dateUpdated: "",
-        id: "",
+        id: clientId,
       };
       console.log(data);
-      const result = await requestToSetClientData(data);
+      const result = await requestToUpdateClientData(data);
       console.log(result);
 
       if (result.success) {
@@ -160,6 +169,42 @@ function ClientCreer() {
       console.error("");
     }
   };
+
+  useEffect(() => {
+    async function getClientData() {
+      try {
+        const data = await requestToGetClientDataWithId(clientId as string);
+        setNomClient(data.nomClient);
+        setEmailClient(data.emailClient);
+        setPasswordClient(data.passwordClient);
+        setLogoCllient(data.logoClient);
+        setStatusClient(data.statusClient);
+      } catch (error) {
+        setLoadingFail(true);
+      }
+    }
+    getClientData();
+  }, []);
+
+  if (!clientId) {
+    return <div className="w-full text-center pt-4">Aucune donnée trouvée</div>;
+  }
+
+  if (!nomClient || !passwordClient || !emailClient) {
+    return (
+      <div className="w-full text-center pt-4">
+        Le document est en cours de chargement ...
+      </div>
+    );
+  }
+
+  if (loadingFail) {
+    return (
+      <div className="w-full text-center pt-4">
+        Une erreur est survenue pendant le chargement ou problème de connexion
+      </div>
+    );
+  }
 
   return (
     <Fragment>
@@ -330,7 +375,7 @@ function ClientCreer() {
         <CardFooter className="flex items-center gap-3">
           <Button
             disabled={stateDownload || startSending}
-            onClick={CreateNewClient}
+            onClick={updateClient}
           >
             Enregistrer
           </Button>
@@ -351,4 +396,4 @@ function ClientCreer() {
   );
 }
 
-export default ClientCreer;
+export default ClientUpdate;

@@ -1,12 +1,12 @@
 import { faker } from "@faker-js/faker";
-import { DropdownMenuBackoffice } from "../ui/DropdownMenuBackoffice";
 import SearbarBackOffice from "../ui/SearbarBackOffice";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import ButtonForCopy from "../ui/ButtonForCopy";
 import { CopyIcon } from "lucide-react";
 import { format } from "date-fns";
-import UserDataComponent from "../ui/UserDataComponent";
 import { NavLink } from "react-router-dom";
+import { ClientDataType, requestTogetAllClientData } from "@/fakeData";
+import ClientDataComponent from "./ClientDataComponent";
 
 const userData = [
   {
@@ -139,6 +139,9 @@ export const PlusIcon = (width: string, heigth: string) => {
 
 function ClientGerer() {
   const [copied, setCopied] = useState(false);
+  const [clientData, setClientData] = useState<ClientDataType[]>();
+
+  const [loadingFail, setLoadingFail] = useState(false);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(
@@ -146,6 +149,35 @@ function ClientGerer() {
     );
     setCopied(true);
   };
+
+  useEffect(() => {
+    const getAllClientData = async () => {
+      try {
+        const data = await requestTogetAllClientData();
+        setClientData([...data]);
+      } catch (error) {
+        setLoadingFail(true);
+      }
+    };
+    getAllClientData();
+  }, []);
+
+  if (!clientData && !loadingFail) {
+    return (
+      <div className="w-full text-center pt-4">
+        Le document est en cours de chargement ...
+      </div>
+    );
+  }
+
+  if (loadingFail) {
+    return (
+      <div className="w-full text-center pt-4">
+        Une erreur est survenue pendant le chargement ou problème de connexion
+        ou pas de client disponible
+      </div>
+    );
+  }
 
   return (
     <Fragment>
@@ -219,11 +251,12 @@ function ClientGerer() {
             <p className="text-center ">ACTION</p>
           </div>
 
-          {userData.map((value, index) => (
-            <Fragment key={index}>
-              <UserDataComponent value={value} index={index} />
-            </Fragment>
-          ))}
+          {clientData &&
+            clientData.map((value, index) => (
+              <Fragment key={index}>
+                <ClientDataComponent value={value} index={index} />
+              </Fragment>
+            ))}
         </div>
       </div>
       {/* <FooterBackoffice /> */}

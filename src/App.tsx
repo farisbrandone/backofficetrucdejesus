@@ -31,6 +31,7 @@ import NewEvenementPage from "./mycomponents/evenementPage/NewEvenementPage";
 import UpdateEvenement from "./mycomponents/evenementPage/UpdateEvenement";
 import { ClientMain } from "./mycomponents/clientGererPage/ClientMain";
 import ClientCreer from "./mycomponents/clientGererPage/ClientCreer";
+import ClientUpdate from "./mycomponents/clientGererPage/ClientUpdate";
 /**we configure the loder create in root sidebar component to load data */
 
 const router = createBrowserRouter([
@@ -110,6 +111,10 @@ const router = createBrowserRouter([
           {
             path: "/GERER LES CLIENS/ajouter-des-clients",
             element: <ClientCreer />,
+          },
+          {
+            path: "/GERER LES CLIENS/update-client-page",
+            element: <ClientUpdate />,
           },
         ],
       },
