@@ -6,6 +6,7 @@ import {
   getDoc,
   setDoc,
   deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { communityDataType } from "./mycomponents/communautePage/UpdateCommunaute";
@@ -30,6 +31,16 @@ export interface GroupeDataType {
   banniereUrlGroupe: string;
   logoUrlGroupe: string;
   status: string;
+}
+
+export interface ClientDataType {
+  nomClient: string;
+  emailClient: string;
+  passwordClient: string;
+  logoClient: string;
+  date: string;
+  statusClient: string;
+  id: string;
 }
 
 /* export function createRandomUser(): User {
@@ -110,6 +121,7 @@ export async function requestToSetGroupeData({
   logoUrlGroupe,
   banniereUrlGroupe,
   typeAccess,
+  status,
 }: GroupeDataType) {
   try {
     const NotifRef = collection(db, "GroupeData");
@@ -124,6 +136,7 @@ export async function requestToSetGroupeData({
       banniereUrlGroupe,
       typeAccess,
       date,
+      status,
     });
     return { message: "Le groupe a été créer avec success", success: true };
   } catch (error) {
@@ -149,14 +162,16 @@ export async function requestToUpdateGroupeData(
       id,
       banniereUrlGroupe,
       logoUrlGroupe,
+      status,
     } = singleGroupeData;
-    await setDoc(doc(GroupeDataRef, id), {
+    await updateDoc(doc(GroupeDataRef, id), {
       titleGroupe,
       descriptionGroupe,
       typeAccess,
       date,
       banniereUrlGroupe,
       logoUrlGroupe,
+      status,
     });
     return { message: "La donnée a été envoyé avec success", success: true };
   } catch (error) {
@@ -167,14 +182,19 @@ export async function requestToUpdateGroupeData(
   }
 }
 
-export async function requestToChangeStatus(id: string, status: string) {
-  const GroupeDataRef = collection(db, "GroupeData");
+export async function requestToChangeStatus(
+  id: string,
+  status: string,
+  database: string
+) {
+  console.log({ status });
+  const GroupeDataRef = collection(db, database);
   const date = format(
     faker.date.between({ from: "2023-01-01", to: Date.now() }),
     "'il ya' dd 'jours à' kk:mm"
   );
   try {
-    await setDoc(doc(GroupeDataRef, id), {
+    await updateDoc(doc(GroupeDataRef, id), {
       status,
       date,
     });
@@ -327,7 +347,7 @@ export interface EventDataType {
   imageUrlEvent: string;
   typeAccess: string;
   status: string;
-  dateOfEvent: Date;
+  dateOfEvent: string;
   typeEvent: string;
   urlOfEvent: string;
   textCTAEvent: string;
@@ -382,8 +402,10 @@ export async function requestToGetEventDataWithId(
   groupeId: string
 ): Promise<EventDataType> {
   try {
+    console.log({ groupeId });
     const docRef = doc(db, "EventData", groupeId);
     const docSnap = await getDoc(docRef);
+    console.log("bounga1");
     if (docSnap.exists()) {
       console.log("Document data:", docSnap.data());
       const {
@@ -508,6 +530,88 @@ export async function requestTogetAllEventData(): Promise<EventDataType[]> {
       });
       console.log({ drdr_drdr: groupeData[0].id });
       return groupeData;
+    }
+
+    return [];
+  } catch (error) {
+    console.log({ error: error });
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestToDeleteEventWithId(dataId: string) {
+  const docRef = doc(db, "EventData", dataId);
+  try {
+    await deleteDoc(docRef);
+    return {
+      message: "le document à été supprimer avec success",
+      success: true,
+    };
+  } catch (error) {
+    return {
+      message: "Un problème est survenu pendant la suppression",
+      success: false,
+    };
+  }
+}
+
+export async function requestToSetClientData({
+  nomClient,
+  emailClient,
+  passwordClient,
+  logoClient,
+}: ClientDataType) {
+  try {
+    const NotifRef = collection(db, "ClientData");
+    const date = format(
+      faker.date.between({ from: "2023-01-01", to: Date.now() }),
+      "'il ya' dd 'jours à' kk:mm"
+    );
+    await setDoc(doc(NotifRef), {
+      nomClient,
+      emailClient,
+      passwordClient,
+      logoClient,
+      date,
+    });
+    return { message: "Le groupe a été créer avec success", success: true };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestTogetAllClientData(): Promise<ClientDataType[]> {
+  let clientData: ClientDataType[] = [];
+  try {
+    const querySnapshot = await getDocs(collection(db, "EventData"));
+    console.log({ length: querySnapshot.docs.length });
+    if (querySnapshot.docs.length !== 0) {
+      querySnapshot.forEach((doc) => {
+        const id = doc.id;
+        const {
+          nomClient,
+          emailClient,
+          passwordClient,
+          logoClient,
+          date,
+          statusClient,
+        } = doc.data();
+        clientData.push({
+          id,
+          nomClient,
+          emailClient,
+          passwordClient,
+          logoClient,
+          date,
+          statusClient,
+        });
+      });
+      console.log({ drdr_drdr: clientData[0].id });
+      return clientData;
     }
 
     return [];

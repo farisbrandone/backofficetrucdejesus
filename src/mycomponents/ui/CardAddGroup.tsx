@@ -1,6 +1,7 @@
 export interface CardAddGroupType {
   icon: JSX.Element;
   text: string;
+  database: string;
 }
 function CardAddGroup({ icon, text }: CardAddGroupType) {
   return (

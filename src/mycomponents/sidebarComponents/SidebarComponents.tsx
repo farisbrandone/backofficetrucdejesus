@@ -1,3 +1,4 @@
+import { Fragment } from "react/jsx-runtime";
 import { ButtonSideBar } from "./ui/ButtonSideBar";
 import { Outlet, useLoaderData, useNavigation } from "react-router-dom";
 
@@ -59,8 +60,10 @@ function SidebarComponents() {
           </p>
         </div>
         <div className="w-full flex flex-col items-center gap-2 pt-2">
-          {textButton.map((value) => (
-            <ButtonSideBar text={value} />
+          {textButton.map((value, index) => (
+            <Fragment key={index}>
+              <ButtonSideBar text={value} />
+            </Fragment>
           ))}
         </div>
       </div>

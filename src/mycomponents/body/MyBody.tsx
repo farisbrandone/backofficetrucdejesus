@@ -190,9 +190,12 @@ export function MyBody() {
                   disabled={stateDownload || startSending}
                 />
                 <ButtonUploadFile
+                  name="bodyfile2"
+                  valueForHtml="bodyfile2"
+                  key="bodyfile2"
                   setImageUrl={setImageUrl}
-                  setStateDownload={setStateDownload}
-                  stateDownload={stateDownload}
+                  setStateDownloadProps={setStateDownload}
+                  stateDownloadProps={stateDownload}
                 />
               </div>
             </div>

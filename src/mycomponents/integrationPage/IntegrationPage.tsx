@@ -124,7 +124,7 @@ function IntegrationPage() {
         </div>
       </div>
 
-      <div className="flex gap-3 mt-3">
+      <div className="flex gap-3 mt-3 flex-wrap">
         {typePayment.map((value, index) => (
           <Fragment key={index}>
             <PaymentComponent type={value.typePayment} image={value.imgage} />

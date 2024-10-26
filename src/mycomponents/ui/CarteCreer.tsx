@@ -5,12 +5,21 @@ import {
   DropdownMenuBackoffice,
   DropdownMenuForGroupe,
 } from "./DropdownMenuBackoffice";
-import { useState } from "react";
-import { requestToChangeStatus } from "@/fakeData";
+import { useEffect, useState } from "react";
+import {
+  EventDataType,
+  requestToChangeStatus,
+  requestTogetAllEventData,
+} from "@/fakeData";
 import { toast } from "@/hooks/use-toast";
 import LoadingTotal from "./LoadingTotal";
 import { stateGroupeEvent } from "../evenementPage/hook/UseselectGroupeInEvent";
 import { format } from "date-fns";
+
+export interface timestamp {
+  seconds: number;
+  nanoseconds: number;
+}
 
 export interface CarteCreerType {
   title: string;
@@ -72,9 +81,9 @@ export interface CarteCreerForGroupType {
   titleGroupe: string;
   descriptionGroupe: string;
   typeAccess: string;
-  dateGroupe: string;
+  date: string;
   logoUrlGroupe: string;
-  banniereGroupe: string;
+  banniereUrlGroupe: string;
   groupeId: string;
   status: string;
 }
@@ -83,12 +92,13 @@ export function CarteCreerForGroup({
   titleGroupe,
   descriptionGroupe,
   /*  typeAccess, */
-  dateGroupe,
-  /*  logoUrlGroupe, */
-  banniereGroupe,
+  date,
+  /* logoUrlGroupe, */
+  banniereUrlGroupe,
   groupeId,
   status,
 }: CarteCreerForGroupType) {
+  console.log({ titleGroupe, status });
   const [switchState, setSwitchState] = useState(status);
   const [loadingStatus, setLoadingStatus] = useState(false);
   const handleSwitch = async () => {
@@ -98,9 +108,13 @@ export function CarteCreerForGroup({
       if (switchState === "activate") {
         status = "desactivate";
       } else {
-        status = "desactivate";
+        status = "activate";
       }
-      const result = await requestToChangeStatus(groupeId, status);
+      const result = await requestToChangeStatus(
+        groupeId,
+        status,
+        "GroupeData"
+      );
       if (result.success) {
         setSwitchState(status);
         toast({
@@ -121,14 +135,14 @@ export function CarteCreerForGroup({
   return (
     <div className={`flex flex-col w-[300px] h-[300px] items-center`}>
       <div className="w-full h-[150px] flex items-center justify-center px-2 ">
-        {banniereGroupe.includes(".mp4") ? (
+        {banniereUrlGroupe && banniereUrlGroupe.includes(".mp4") ? (
           <video autoPlay={true} muted={true}>
-            <source src={banniereGroupe} type="video/mp4" />
+            <source src={banniereUrlGroupe} type="video/mp4" />
             Votre navigateur ne supporte pas la balise vidéo.
           </video>
         ) : (
           <img
-            src={banniereGroupe}
+            src={banniereUrlGroupe}
             alt="Image bannière"
             className="object-cover w-full h-[150px] "
           />
@@ -150,7 +164,7 @@ export function CarteCreerForGroup({
           </div>
         </div>
         <div className="text-[12px] mt-2 ">
-          <p>{dateGroupe}</p>
+          <p>{date}</p>
           <p>{descriptionGroupe}</p>
         </div>
       </div>
@@ -163,7 +177,11 @@ export function CarteCreerForGroup({
           ))}
         </div>
         <div>
-          <DropdownMenuForGroupe title="Action" groupeId={groupeId} />
+          <DropdownMenuForGroupe
+            title="Action"
+            groupeId={groupeId}
+            baseUrl="GROUPES/update-groupe-page"
+          />
         </div>
       </div>
     </div>
@@ -176,7 +194,7 @@ export interface CarteCreerForEventType {
   imageUrlEvent: string;
   typeAccess: string;
   status: string;
-  dateOfEvent: Date;
+  dateOfEvent: string;
   typeEvent: string;
   urlOfEvent: string;
   textCTAEvent: string;
@@ -184,6 +202,11 @@ export interface CarteCreerForEventType {
   groupeForEventSelect: stateGroupeEvent[];
   date: string;
   eventId: string;
+  eventData: EventDataType[];
+  setEventData: React.Dispatch<
+    React.SetStateAction<EventDataType[] | undefined>
+  >;
+  setLoadingFail: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export function CarteCreerForEvent({
@@ -199,25 +222,49 @@ export function CarteCreerForEvent({
   /*  locationOfEvent , */
   groupeForEventSelect,
   eventId,
+
+  setEventData,
+  setLoadingFail,
 }: CarteCreerForEventType) {
+  console.log({
+    titleEvent,
+    descriptionEvent,
+    imageUrlEvent,
+    /*  typeAccess , */
+    status,
+    dateOfEvent,
+    /*  typeEvent ,
+                 urlOfEvent ,
+                 textCTAEvent , */
+    /*  locationOfEvent , */
+    groupeForEventSelect,
+    eventId,
+  });
   const [switchState, setSwitchState] = useState(status);
   const [loadingStatus, setLoadingStatus] = useState(false);
+  console.log({ switchState, status });
   const handleSwitch = async () => {
     try {
       setLoadingStatus(true);
-      let status;
-      if (switchState === "activate") {
-        status = "desactivate";
+      let statuss;
+      console.log({ firstTry: { switchState, status } });
+      if (status === "activate") {
+        console.log("hoube houba");
+        statuss = "desactivate";
       } else {
-        status = "desactivate";
+        statuss = "activate";
       }
-      const result = await requestToChangeStatus(eventId, status);
+      console.log({ secondTry: { switchState, status, statuss } });
+      const result = await requestToChangeStatus(eventId, statuss, "EventData");
+      console.log(statuss);
       if (result.success) {
-        setSwitchState(status);
+        console.log("inside");
+        setSwitchState(() => statuss);
         toast({
           title: "Success",
           description: result.message,
         });
+        console.log({ ternary: { switchState, status, statuss } });
       } else {
         toast({
           variant: "destructive",
@@ -229,10 +276,21 @@ export function CarteCreerForEvent({
       setLoadingStatus(false);
     } catch (error) {}
   };
+  useEffect(() => {
+    const getAllEventData = async () => {
+      try {
+        const data = await requestTogetAllEventData();
+        setEventData([...data]);
+      } catch (error) {
+        setLoadingFail(true);
+      }
+    };
+    getAllEventData();
+  }, [switchState]);
   return (
     <div className={`flex flex-col w-[300px] h-[300px] items-center`}>
       <div className="w-full h-[150px] flex items-center justify-center px-2 ">
-        {imageUrlEvent.includes(".mp4") ? (
+        {imageUrlEvent && imageUrlEvent.includes(".mp4") ? (
           <video autoPlay={true} muted={true}>
             <source src={imageUrlEvent} type="video/mp4" />
             Votre navigateur ne supporte pas la balise vidéo.
@@ -247,7 +305,9 @@ export function CarteCreerForEvent({
       </div>
       <div className="w-full mt-5">
         <div className="flex justify-between items-center w-full">
-          <p>{titleEvent}</p>
+          <p>
+            {titleEvent} {switchState} {status}
+          </p>
           <div className="flex items-center space-x-2">
             {loadingStatus ? (
               <LoadingTotal />
@@ -263,7 +323,8 @@ export function CarteCreerForEvent({
         <div className="text-[12px] mt-2 ">
           <p>
             l'événement aura lieu{" "}
-            {format(dateOfEvent, "' le' dd/mm/yyyy 'à' kk:mm")}
+            {dateOfEvent &&
+              format(new Date(dateOfEvent), "' le' dd/MM/yyyy 'à' hh/mm ")}
           </p>
           <p>
             Nombre de groupes associés à cet événement:{" "}
@@ -281,7 +342,11 @@ export function CarteCreerForEvent({
           ))}
         </div>
         <div>
-          <DropdownMenuForGroupe title="Action" groupeId={eventId} />
+          <DropdownMenuForGroupe
+            title="Action"
+            groupeId={eventId}
+            baseUrl="EVENEMENTS/update-event-page"
+          />
         </div>
       </div>
     </div>

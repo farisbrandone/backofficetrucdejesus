@@ -44,15 +44,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
-import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import {
   EventDataType,
@@ -63,6 +54,14 @@ import UseselectGroupeInEvent from "./hook/UseselectGroupeInEvent";
 import { Checkbox } from "@/components/ui/checkbox";
 import LoadingTotal from "../ui/LoadingTotal";
 import { useParams } from "react-router-dom";
+import DateTimePicker from "react-datetime-picker";
+import "react-datetime-picker/dist/DateTimePicker.css";
+import "react-calendar/dist/Calendar.css";
+import "react-clock/dist/Clock.css";
+
+type ValuePiece = Date | null;
+
+type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 function UpdateEvenement() {
   const [titleEvent, setTitleEvent] = useState("");
@@ -71,7 +70,7 @@ function UpdateEvenement() {
   const [textCTAEvent, setTextCTAEvent] = useState("");
   const [urlOfEvent, setUrlOfEvent] = useState("");
   const [typeEvent, setTypeEvent] = useState("googleMeet");
-  const [dateOfEvent, setDateOfEvent] = useState<Date>();
+  const [dateOfEvent, setDateOfEvent] = useState<Value>(new Date());
   const [status, setStatus] = useState("activate");
   const [imageUrlEvent, setImageUrlEvent] = useState("");
   const [stateDownload, setStateDownload] = useState(false);
@@ -83,13 +82,14 @@ function UpdateEvenement() {
   const { toast } = useToast();
   const {
     groupeForEventSelect,
+    setGroupeForEventSelect,
     loadinggroupeForEvent,
     totalgroupeForEvent,
     handleSelectGroupeEvent,
   } = UseselectGroupeInEvent();
 
-  const { groupeId } = useParams<string>();
-
+  const { eventId } = useParams<string>();
+  console.log({ eventId });
   const handleTitleEvent = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setTitleEvent(() => e.target.value);
@@ -142,6 +142,7 @@ function UpdateEvenement() {
 
   const updateEventWithId = async () => {
     console.log("banga");
+    const dateString = dateOfEvent?.toString() as string;
     setStartSending(() => true);
     if (!titleEvent || !descriptionEvent) {
       if (!titleEvent) {
@@ -160,7 +161,7 @@ function UpdateEvenement() {
     }
     try {
       console.log("inside try");
-      if (!groupeId) {
+      if (!eventId) {
         return;
       }
       var data: EventDataType = {
@@ -169,14 +170,14 @@ function UpdateEvenement() {
         imageUrlEvent: imageUrlEvent,
         typeAccess: typeAccess,
         status: status,
-        dateOfEvent: dateOfEvent ? dateOfEvent : new Date(),
+        dateOfEvent: dateString,
         typeEvent: typeEvent,
         urlOfEvent: urlOfEvent,
         textCTAEvent: textCTAEvent,
         locationOfEvent: locationOfEvent,
         groupeForEventSelect: groupeForEventSelect,
         date: "",
-        id: groupeId,
+        id: eventId,
       };
       const result = await requestToSetEventDataWithId(data);
       console.log(result);
@@ -213,17 +214,18 @@ function UpdateEvenement() {
   useEffect(() => {
     async function getEventDataForUpdateWithId() {
       try {
-        const data = await requestToGetEventDataWithId(groupeId as string);
+        const data = await requestToGetEventDataWithId(eventId as string);
         setTitleEvent(data.titleEvent);
         setDescriptionEvent(data.descriptionEvent);
         setLocationOfEvent(data.locationOfEvent);
         setTextCTAEvent(data.textCTAEvent);
         setUrlOfEvent(data.urlOfEvent);
         setTypeEvent(data.typeEvent);
-        setDateOfEvent(data.dateOfEvent);
+        setDateOfEvent(new Date(data.dateOfEvent));
         setStatus(data.status);
         setImageUrlEvent(data.imageUrlEvent);
         setTypeAccess(data.typeAccess);
+        setGroupeForEventSelect(data.groupeForEventSelect);
       } catch (error) {
         setLoadingFail(true);
       }
@@ -240,6 +242,7 @@ function UpdateEvenement() {
   }
 
   if (loadingFail) {
+    console.log("drumadère");
     return (
       <div className="w-full text-center pt-4">
         Une erreur est survenue pendant le chargement ou problème de connexion
@@ -286,30 +289,40 @@ function UpdateEvenement() {
           {loadinggroupeForEvent ? (
             <LoadingTotal />
           ) : (
-            <div className="space-y-1 w-[350px] h-[250px] rounded-xl shadow-2xl bg-[#e91e63] text-white overflow-y-scroll ">
+            <div
+              className="space-y-1 w-[350px] h-[250px] rounded-xl shadow-2xl bg-[#e91e63] text-white overflow-y-scroll flex flex-col items-center gap-3
+"
+            >
               <p className="text-[18px] text-center">
                 Selectionner les groupes associés à cet événement
               </p>
-              {totalgroupeForEvent.length &&
-                totalgroupeForEvent?.map((value, index) => (
-                  <div className="flex items-center space-x-2" key={index}>
-                    <Checkbox
-                      id="terms"
-                      onCheckedChange={() =>
-                        handleSelectGroupeEvent(
-                          value.groupeId,
-                          value.titleGroupe
-                        )
-                      }
-                    />
-                    <label
-                      htmlFor="terms"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      {value.titleGroupe}
-                    </label>
-                  </div>
-                ))}
+              <div className="flex flex-col items-center gap-2">
+                {totalgroupeForEvent.length &&
+                  totalgroupeForEvent?.map((value, index) => (
+                    <div className="flex items-center space-x-2" key={index}>
+                      <Checkbox
+                        id="terms"
+                        onCheckedChange={() =>
+                          handleSelectGroupeEvent(
+                            value.groupeId,
+                            value.titleGroupe
+                          )
+                        }
+                        checked={
+                          !!groupeForEventSelect.find(
+                            (val) => val.groupeId === value.groupeId
+                          )
+                        }
+                      />
+                      <label
+                        htmlFor="terms"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        {value.titleGroupe}
+                      </label>
+                    </div>
+                  ))}
+              </div>
             </div>
           )}
 
@@ -409,39 +422,10 @@ function UpdateEvenement() {
             />
           </div>
 
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={"outline"}
-                className={cn(
-                  "w-[240px] justify-start text-left font-normal",
-                  !dateOfEvent && "text-muted-foreground"
-                )}
-              >
-                <CalendarIcon />
-                {dateOfEvent ? (
-                  format(dateOfEvent, "PPP")
-                ) : (
-                  <span>Pick a date</span>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <DayPicker
-                mode="single"
-                selected={dateOfEvent}
-                onSelect={setDateOfEvent}
-                className="rounded-md border"
-                autoFocus
-              />
-              {/*  <Calendar
-          mode="single"
-          selected={dateOfEvent}
-          onSelect={setDateOfEvent}
-          initialFocus
-        /> */}
-            </PopoverContent>
-          </Popover>
+          <div>
+            <p className="mb-2">Entrer l'heure et la date de l'événement</p>
+            <DateTimePicker onChange={setDateOfEvent} value={dateOfEvent} />
+          </div>
 
           <div className="flex flex-col gap-2">
             <p className="text-[16px] font-semibold ">Type d'access</p>
@@ -525,17 +509,17 @@ function UpdateEvenement() {
             disabled={stateDownload || startSending}
             onClick={updateEventWithId}
           >
-            Creer le groupe
+            Mettre à jour l'événement
           </Button>
           <Button
             disabled={stateDownload || startSending}
             className="p-0 flex items-center justify-center bg-[#e91e63] hover:bg-[#e91e62e0]"
           >
             <NavLink
-              to="/COMMUNAUTES"
+              to="/EVENEMENTS"
               className="w-full h-full flex items-center justify-center p-2"
             >
-              Retour à la page communauté
+              Retour à la page événement
             </NavLink>
           </Button>
         </CardFooter>

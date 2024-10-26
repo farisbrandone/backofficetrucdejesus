@@ -42,7 +42,11 @@ function CommunautePage() {
         </div>
       </div>
       <div className="flex flex-wrap gap-3 mt-6 px-5">
-        <CardAddGroup icon={icon} text="CREER UNE NOUVELLE COMMUNAUTE" />
+        <CardAddGroup
+          icon={icon}
+          text="CREER UNE NOUVELLE COMMUNAUTE"
+          database="CommunityData"
+        />
         <CarteCreer
           value={0}
           title="Réseau 100% JÉSUS"

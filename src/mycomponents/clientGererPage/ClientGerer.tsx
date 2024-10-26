@@ -1,14 +1,12 @@
 import { faker } from "@faker-js/faker";
 import { DropdownMenuBackoffice } from "../ui/DropdownMenuBackoffice";
-import HeaderForAllBackOffice from "../ui/HeaderForAllBackOffice";
 import SearbarBackOffice from "../ui/SearbarBackOffice";
 import { Fragment, useState } from "react";
 import ButtonForCopy from "../ui/ButtonForCopy";
 import { CopyIcon } from "lucide-react";
 import { format } from "date-fns";
-
 import UserDataComponent from "../ui/UserDataComponent";
-import { FooterBackoffice } from "../acceuilPage/FooterBackoffice";
+import { NavLink } from "react-router-dom";
 
 const userData = [
   {
@@ -123,6 +121,22 @@ export const eyeCloseIcon = (width: string, heigth: string) => {
   );
 };
 
+export const PlusIcon = (width: string, heigth: string) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={width}
+      height={heigth}
+      viewBox="0 0 1408 1408"
+    >
+      <path
+        fill="currentColor"
+        d="M1408 608v192q0 40-28 68t-68 28H896v416q0 40-28 68t-68 28H608q-40 0-68-28t-28-68V896H96q-40 0-68-28T0 800V608q0-40 28-68t68-28h416V96q0-40 28-68t68-28h192q40 0 68 28t28 68v416h416q40 0 68 28t28 68"
+      />
+    </svg>
+  );
+};
+
 function ClientGerer() {
   const [copied, setCopied] = useState(false);
 
@@ -134,8 +148,8 @@ function ClientGerer() {
   };
 
   return (
-    <div className="w-full flex flex-col pl-3">
-      <HeaderForAllBackOffice />
+    <Fragment>
+      {/*  <HeaderForAllBackOffice /> */}
       <div className="w-full flex flex-col gap-4 max-[840px]:w-full min-[840px]:flex-row min-[840px]:items-center min-[840px]:justify-between mt-10">
         <div className="flex gap-3 ">
           <div className="titleAcceuil flex-shrink-0">
@@ -152,7 +166,19 @@ function ClientGerer() {
         </div>
         <div className="flex gap-3">
           <div className="flex items-center justify-center">
-            <DropdownMenuBackoffice title="➕ AJOUTER DES CLIENTS" />
+            <button
+              type="button"
+              title="Ajouter des clients"
+              className="flex items-center"
+            >
+              <NavLink
+                to="/GERER LES CLIENS/ajouter-des-clients"
+                className="px-2 py-2 bg-[#e91e63] text-white font-bold rounded-md "
+              >
+                <span className="inline-block">{PlusIcon("15", "15")}</span>{" "}
+                Ajouter des clients
+              </NavLink>
+            </button>
           </div>
           <SearbarBackOffice placeholder="Recherche par Nom et Email..." />
         </div>
@@ -200,8 +226,8 @@ function ClientGerer() {
           ))}
         </div>
       </div>
-      <FooterBackoffice />
-    </div>
+      {/* <FooterBackoffice /> */}
+    </Fragment>
   );
 }
 

@@ -86,7 +86,8 @@ function EvenementPage() {
         <NavLink to="/EVENEMENTS/create-new-event">
           <CardAddGroup
             icon={eventIcon("130", "130")}
-            text="CREER UNE NOUVELLE COMMUNAUTE"
+            text="CREER UN NOUVEL ÉVÉNEMENT"
+            database="EventData"
           />
         </NavLink>
         {eventData?.map((value, index) => (
@@ -105,6 +106,9 @@ function EvenementPage() {
               groupeForEventSelect={value.groupeForEventSelect}
               eventId={value.id}
               date={value.date}
+              eventData={eventData}
+              setEventData={setEventData}
+              setLoadingFail={setLoadingFail}
             />
           </div>
         ))}

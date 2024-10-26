@@ -7,7 +7,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { requestToDeleteGroupeWithId } from "@/fakeData";
+import {
+  requestToDeleteEventWithId,
+  requestToDeleteGroupeWithId,
+} from "@/fakeData";
 import { useToast } from "@/hooks/use-toast";
 import { useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
@@ -61,9 +64,11 @@ export function DropdownMenuBackoffice({ title }: { title: string }) {
 export function DropdownMenuForGroupe({
   title,
   groupeId,
+  baseUrl,
 }: {
   title: string;
   groupeId: string;
+  baseUrl: string;
 }) {
   const [rotation, setRotation] = useState(0);
   const [pageForDeletion, setPageForDeletion] = useState(false);
@@ -75,8 +80,15 @@ export function DropdownMenuForGroupe({
   };
   const deleteGroupe = async () => {
     setStateSuppression(() => true);
-    const result = await requestToDeleteGroupeWithId(groupeId);
-    if (!result.success) {
+    let result;
+    if (baseUrl === "GROUPES/update-groupe-page") {
+      result = await requestToDeleteGroupeWithId(groupeId);
+    }
+    if (baseUrl === "EVENEMENTS/update-event-page") {
+      result = await requestToDeleteEventWithId(groupeId);
+    }
+
+    if (result && !result.success) {
       toast({
         variant: "destructive",
         title: result.message,
@@ -89,8 +101,8 @@ export function DropdownMenuForGroupe({
 
     toast({
       variant: "default",
-      title: result.message,
-      description: result.message,
+      title: result && result.message,
+      description: result && result.message,
     });
     setStateSuppression(() => false);
     setPageForDeletion(false);
@@ -103,7 +115,11 @@ export function DropdownMenuForGroupe({
           <div className="relative w-[330px] h-[330px] flex flex-col items-center justify-center bg-[#344767] rounded-2xl drop-shadow-xl  ">
             <p className="text-[#fff] w-full text-center font-bold text-[18px] p-2 ">
               {" "}
-              Voulez-vous vraiment supprimer le groupe ?
+              Voulez-vous vraiment supprimer le{" "}
+              {baseUrl === "EVENEMENTS/update-event-page"
+                ? " l'événement"
+                : " groupe"}{" "}
+              ?
             </p>
             {stateSuppression && (
               <div className="absolute bottom-8 text-center w-full">
@@ -159,9 +175,7 @@ export function DropdownMenuForGroupe({
           <DropdownMenuSeparator />
           <DropdownMenuItem>
             {" "}
-            <NavLink to={`/GROUPES/update-groupe-page/${groupeId}`}>
-              Mettre à jour
-            </NavLink>
+            <NavLink to={`/${baseUrl}/${groupeId}`}>Mettre à jour</NavLink>
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => setPageForDeletion(true)}

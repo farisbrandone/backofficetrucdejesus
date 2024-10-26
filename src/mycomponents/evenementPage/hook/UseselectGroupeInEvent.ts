@@ -17,14 +17,17 @@ function UseselectGroupeInEvent() {
   >([]);
 
   const handleSelectGroupeEvent = (groupeId: string, titleGroupe: string) => {
+    console.log({ groupeId, titleGroupe });
     const result = groupeForEventSelect.find((value) => {
       return value.groupeId === groupeId;
     });
+    console.log({ result });
     if (result) {
       const newResult = groupeForEventSelect.filter(
         (value) => value.groupeId !== groupeId
       );
-      setGroupeForEventSelect({ ...newResult });
+      setGroupeForEventSelect([...newResult]);
+      return;
     }
     setGroupeForEventSelect((prev) => [
       ...prev,
@@ -37,7 +40,7 @@ function UseselectGroupeInEvent() {
       try {
         setLoadingGroupeForEvent(true);
         const result = await requestTogetAllGroupeData();
-
+        console.log({ monrésultat: result });
         const resultClean = result.map((value) => {
           return {
             groupeId: value.id,
@@ -45,8 +48,8 @@ function UseselectGroupeInEvent() {
             checked: false,
           };
         });
-
-        setTotalGroupeForEvent({ ...resultClean });
+        console.log({ resultClean });
+        setTotalGroupeForEvent([...resultClean]);
         setLoadingGroupeForEvent(false);
       } catch (error) {
         setLoadingGroupeForEvent(false);

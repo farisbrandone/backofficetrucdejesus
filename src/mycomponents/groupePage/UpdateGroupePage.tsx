@@ -349,10 +349,10 @@ function UpdateGroupePage() {
             className="p-0 flex items-center justify-center bg-[#e91e63] hover:bg-[#e91e62e0]"
           >
             <NavLink
-              to="/COMMUNAUTES"
+              to="/GROUPES"
               className="w-full h-full flex items-center justify-center p-2"
             >
-              Retour à la page communauté
+              Retour à la page groupe
             </NavLink>
           </Button>
         </CardFooter>

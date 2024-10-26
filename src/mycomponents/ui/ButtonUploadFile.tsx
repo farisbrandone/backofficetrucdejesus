@@ -38,8 +38,8 @@ function ButtonUploadFile({
     console.log(e.target.name);
     console.log(valueForHtml);
     if (!e?.target.files) return;
-    if (e.target.name === "file1") return;
-    if (e.target.name === "file2") return;
+    /*  if (e.target.name === "file1") return;
+    if (e.target.name === "file2") return; */
     const file = e.target.files[0];
 
     const storageRef = ref(storage, `images/${file.name}`);
