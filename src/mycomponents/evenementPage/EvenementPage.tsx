@@ -1,10 +1,10 @@
 import { NavLink } from "react-router-dom";
 import CardAddGroup from "../ui/CardAddGroup";
 import { CarteCreerForEvent } from "../ui/CarteCreer";
-import SearbarBackOffice from "../ui/SearbarBackOffice";
 import { faker } from "@faker-js/faker";
 import { EventDataType, requestTogetAllEventData } from "@/fakeData";
 import { useEffect, useState } from "react";
+import SearchBarForEvenement from "../ui/searchBarUi/SearchBarForEvenement";
 
 export const eventIcon = (width: string, heigth: string) => (
   <svg
@@ -79,7 +79,10 @@ function EvenementPage() {
           >
             <option selected>{faker.word.words(2)}</option>
           </select>
-          <SearbarBackOffice placeholder="Recherche par nom d'évènement" />
+          <SearchBarForEvenement
+            placeholder="Recherche par nom d'évènement"
+            setEventData={setEventData}
+          />
         </div>
       </div>
       <div className="flex flex-wrap gap-3 mt-6 px-5">

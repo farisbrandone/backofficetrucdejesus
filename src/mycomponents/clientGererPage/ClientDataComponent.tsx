@@ -175,7 +175,11 @@ function ClientDataComponent({
         </div>
       </div>
       <div className="place-content-center mx-auto">
-        <img src={value.logoClient} alt="" className="object-cover " />
+        <img
+          src={value.logoClient}
+          alt=""
+          className="object-cover w-[30px] h-[30px] rounded-full "
+        />
       </div>
       <div className="place-content-center mx-auto ">
         <input
@@ -216,7 +220,7 @@ function ClientDataComponent({
           <DropdownMenuContent className="w-56 bg-[#191919] text-white">
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <NavLink to="GERER LES CLIENS/update-client-page">
+                <NavLink to="/GERER LES CLIENS/update-client-page">
                   Mettre à jour
                 </NavLink>
               </DropdownMenuItem>

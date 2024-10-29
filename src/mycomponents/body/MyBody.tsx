@@ -74,7 +74,7 @@ export function MyBody() {
       };
       const result = await axios.post(
         "https://serverbackofficetrucdejesus.onrender.com/api/firebase/send-multiple-notification",
-        /*"http://localhost:4000/api/firebase/send-multiple-notification",*/
+        /*  "http://localhost:4000/api/firebase/send-multiple-notification", */
         data
       );
       console.log(result);
@@ -217,7 +217,10 @@ export function MyBody() {
             <div>Patienter l'action est en cours d'éxécution...</div>
           )}
           <CardFooter>
-            <Button disabled={stateDownload} onClick={sendNotification}>
+            <Button
+              disabled={stateDownload || startSending}
+              onClick={sendNotification}
+            >
               Envoyer la notification
             </Button>
           </CardFooter>

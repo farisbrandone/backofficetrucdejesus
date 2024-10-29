@@ -38,6 +38,7 @@ export interface communityDataType {
   description: string;
   logoUrl: string;
   banniereUrl: string;
+  id: string;
 }
 
 function UpdateCommunaute() {

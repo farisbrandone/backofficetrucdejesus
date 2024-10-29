@@ -1,15 +1,23 @@
-import { seedData, User } from "@/fakeData";
+import {
+  fetchNextPage,
+  fetchPage,
+  /* fetchPaginationPage, */ fetchPreviousPage,
+  requestToGetTotalCountOfNotificationData,
+  seedData,
+  User,
+} from "@/fakeData";
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
+  /* getPaginationRowModel, */
   useReactTable,
 } from "@tanstack/react-table";
 import React, { useEffect, useState } from "react";
 import DebouncedInput from "./ui/DebouncedInput";
 import { Search } from "lucide-react";
+import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 
 interface typeDataTable {
   myid: string;
@@ -43,45 +51,87 @@ function DataTable({ myid, setMyid, setTabPage }: typeDataTable) {
       cell: (info) => <span> {info.getValue()} </span>,
       header: "Dernière modification",
     }),
-    /*  columnHelper.accessor("age", {
-      cell: (info) => <span> {info.getValue()} </span>,
-      header: "Age",
-    }),
-    columnHelper.accessor("visits", {
-      cell: (info) => <span> {info.getValue()} </span>,
-      header: "Visits",
-    }),
-    columnHelper.accessor("progress", {
-      cell: (info) => <span> {info.getValue()} </span>,
-      header: "Progress",
-    }), */
   ];
 
   const [data, setData] = useState<User[]>([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [errorData, setErrorData] = useState("");
-
+  const [totalNotificationData, setTotalNotificationData] = useState(0);
+  const [indexPage, setIndexPage] = useState(0);
+  const [limitPage, setLimitPage] = useState(10);
+  const [firstVisible, setFirstVisible] =
+    useState<QueryDocumentSnapshot<DocumentData, DocumentData>>();
+  const [lastVisible, setLastVisible] =
+    useState<QueryDocumentSnapshot<DocumentData, DocumentData>>();
   const table = useReactTable({
     data,
     columns,
     state: {
       globalFilter,
     },
+    //manualFiltering: true,
     getFilteredRowModel: getFilteredRowModel(),
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    //getPaginationRowModel: getPaginationRowModel(),
+    manualPagination: true, //turn off client-side pagination
+    rowCount: totalNotificationData,
   });
+
+  const handlePreviousPage = async () => {
+    if (
+      indexPage >= limitPage &&
+      indexPage < totalNotificationData - limitPage &&
+      firstVisible &&
+      totalNotificationData > limitPage
+    ) {
+      setIndexPage((prev) => prev - limitPage);
+      const result = await fetchPreviousPage(firstVisible, limitPage);
+      setData({ ...result.clientData });
+      setFirstVisible(result.firstVisible);
+      setLastVisible(result.lastVisible);
+    }
+  };
+
+  const handleNextPage = async () => {
+    if (
+      indexPage >= 0 &&
+      indexPage < totalNotificationData - limitPage &&
+      lastVisible &&
+      totalNotificationData > limitPage
+    ) {
+      setIndexPage((prev) => prev + limitPage);
+      const result = await fetchNextPage(lastVisible, limitPage);
+      setData({ ...result.clientData });
+      setFirstVisible(result.firstVisible);
+      setLastVisible(result.lastVisible);
+    }
+  };
+
+  const handleChangePage = async (page: number) => {
+    const positionPage = page * limitPage - limitPage;
+    if (page > 0 && positionPage < totalNotificationData) {
+      setIndexPage(positionPage);
+      const result = await fetchPage(positionPage + 1, limitPage);
+      setData({ ...result.clientData });
+      setFirstVisible(result.firstVisible);
+      setLastVisible(result.lastVisible);
+    }
+  };
 
   useEffect(() => {
     const functionSeed = async () => {
       try {
-        const myData = await seedData();
-        console.log(myData[0]);
+        const data = await fetchPage(indexPage + 1, limitPage);
+        const total = await requestToGetTotalCountOfNotificationData();
+        //const myData = await seedData();
+        console.log(data);
         if (!myid) {
-          setMyid(myData[0].id);
+          setMyid(data.clientData[0].id);
         }
 
-        setData(() => [...myData]);
+        setTotalNotificationData(total);
+
+        setData(() => [...data.clientData]);
       } catch (error) {
         console.log(error);
         setErrorData(
@@ -91,7 +141,7 @@ function DataTable({ myid, setMyid, setTabPage }: typeDataTable) {
     };
 
     functionSeed();
-  }, []);
+  }, [limitPage]);
   if (errorData) {
     return (
       <div className="text-center pt-4">
@@ -100,6 +150,7 @@ function DataTable({ myid, setMyid, setTabPage }: typeDataTable) {
     );
   }
   if (!data.length && !errorData) {
+    console.log(data.length);
     return (
       <div className="text-center pt-4">Données en cours de chargement...</div>
     );
@@ -178,19 +229,28 @@ function DataTable({ myid, setMyid, setTabPage }: typeDataTable) {
         {/* pagination */}
         <div className="flex items-center justify-end mt-2 gap-2  ">
           <button
+            type="button"
             onClick={() => {
-              table.previousPage();
+              handlePreviousPage();
             }}
-            disabled={!table.getCanPreviousPage()}
+            disabled={
+              !(indexPage >= 0 && totalNotificationData - limitPage > 0)
+            }
             className="p-1 border-gray-300 px-2 disabled:opacity-30"
           >
             {"<"}
           </button>
           <button
+            type="button"
             onClick={() => {
-              table.nextPage();
+              handleNextPage();
             }}
-            disabled={!table.getCanNextPage()}
+            disabled={
+              !(
+                indexPage <= totalNotificationData - limitPage &&
+                totalNotificationData - limitPage > 0
+              )
+            }
             className="p-1 border-gray-300 px-2 disabled:opacity-30"
           >
             {">"}
@@ -198,8 +258,8 @@ function DataTable({ myid, setMyid, setTabPage }: typeDataTable) {
           <span className="flex items-center gap-1 ">
             <div>Page</div>
             <strong>
-              {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
+              {indexPage / limitPage + 1} of{" "}
+              {Math.ceil(totalNotificationData / limitPage)}
             </strong>
           </span>
           <span className="flex items-center gap-1">
@@ -207,10 +267,10 @@ function DataTable({ myid, setMyid, setTabPage }: typeDataTable) {
             <input
               title="entrer la page"
               type="number"
-              defaultValue={table.getState().pagination.pageIndex + 1}
+              defaultValue={indexPage / limitPage + 1}
               onChange={(e) => {
-                const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                table.setPageIndex(page);
+                const page = e.target.value ? Number(e.target.value) : 0;
+                handleChangePage(page);
               }}
               className="border p-1 rounded w-16 bg-transparent"
             />
@@ -220,9 +280,9 @@ function DataTable({ myid, setMyid, setTabPage }: typeDataTable) {
             title="selectionner la taille de pagination"
             name=""
             id=""
-            value={table.getState().pagination.pageSize}
+            value={limitPage}
             onChange={(e) => {
-              table.setPageSize(Number(e.target.value));
+              setLimitPage(Number(e.target.value));
             }}
             className="p-2 bg-transparent"
           >

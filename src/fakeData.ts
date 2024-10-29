@@ -7,12 +7,23 @@ import {
   setDoc,
   deleteDoc,
   updateDoc,
+  getCountFromServer,
+  orderBy,
+  query,
+  limit,
+  QueryDocumentSnapshot,
+  DocumentData,
+  startAfter,
+  endBefore,
+  startAt,
+  /* where, */
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { communityDataType } from "./mycomponents/communautePage/UpdateCommunaute";
 import { faker } from "@faker-js/faker";
 import { format } from "date-fns";
 import { stateGroupeEvent } from "./mycomponents/evenementPage/hook/UseselectGroupeInEvent";
+import { MemberDataType } from "./mycomponents/membreGererPage/MemberDataComponent";
 export interface User {
   iconUrl: string;
   title: string;
@@ -287,9 +298,10 @@ export async function seedCommunityDataWithId(): Promise<communityDataType> {
     const docRef = doc(db, "CommunityData", "RH7E1UQKdNJ42iBtAOku");
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
+      const id = docSnap.id;
       console.log("Document data:", docSnap.data());
       const { title, description, logoUrl, banniereUrl } = docSnap.data();
-      return { title, description, logoUrl, banniereUrl };
+      return { id, title, description, logoUrl, banniereUrl };
     } else {
       throw new Error("Le document n'existe pas");
     }
@@ -714,3 +726,381 @@ export async function requestTodeleteClientDataWithId(dataId: string) {
     };
   }
 }
+
+export async function requestToGetTotalCountOfNotificationData() {
+  const notificationDataRef = collection(db, "Notifications");
+  const snapshot = await getCountFromServer(notificationDataRef);
+  return snapshot.data().count;
+}
+
+export const fetchPaginationPage = async (limitValue: number) => {
+  let clientData: User[] = [];
+  const collectionRef = collection(db, "Notifications");
+  const q = query(collectionRef, orderBy("timestamp"), limit(limitValue));
+  const querySnapshot = await getDocs(q);
+
+  // const documents = querySnapshot.docs.map(doc => doc.data());
+  const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1]; // Get the last document
+  const firstVisible = querySnapshot.docs[0];
+  querySnapshot.forEach((doc) => {
+    const id = doc.id;
+    const { iconUrl, title, body, date, actionUrl } = doc.data();
+    clientData.push({
+      id,
+      iconUrl,
+      title,
+      body,
+      date,
+      actionUrl,
+    });
+  });
+  return { clientData, firstVisible, lastVisible };
+};
+
+export const fetchNextPage = async (
+  mylastVisible: QueryDocumentSnapshot<DocumentData, DocumentData>,
+  limitofPage: number
+) => {
+  let clientData: User[] = [];
+  const collectionRef = collection(db, "Notifications");
+  const q = query(
+    collectionRef,
+    orderBy("timestamp"),
+    startAfter(mylastVisible),
+    limit(limitofPage)
+  );
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    const id = doc.id;
+    const { iconUrl, title, body, date, actionUrl } = doc.data();
+    clientData.push({
+      id,
+      iconUrl,
+      title,
+      body,
+      date,
+      actionUrl,
+    });
+  });
+  //const documents = querySnapshot.docs.map(doc => doc.data());
+  const firstVisible = querySnapshot.docs[0];
+  const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+
+  return { clientData, firstVisible, lastVisible };
+};
+
+export const fetchPreviousPage = async (
+  myFirstVisible: QueryDocumentSnapshot<DocumentData, DocumentData>,
+  limitofPage: number
+) => {
+  let clientData: User[] = [];
+  const collectionRef = collection(db, "Notifications");
+  const q = query(
+    collectionRef,
+    orderBy("timestamp"),
+    endBefore(myFirstVisible),
+    limit(limitofPage)
+  );
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    const id = doc.id;
+    const { iconUrl, title, body, date, actionUrl } = doc.data();
+    clientData.push({
+      id,
+      iconUrl,
+      title,
+      body,
+      date,
+      actionUrl,
+    });
+  });
+  //const documents = querySnapshot.docs.map(doc => doc.data());
+  const firstVisible = querySnapshot.docs[0];
+  const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+
+  return { clientData, firstVisible, lastVisible };
+};
+
+export const fetchPage = async (indexStart: number, limitofPage: number) => {
+  let clientData: User[] = [];
+  try {
+    const collectionRef = collection(db, "Notifications");
+    const q = query(
+      collectionRef,
+      orderBy("date"),
+      startAt(indexStart),
+      limit(limitofPage)
+    );
+    console.log({ q });
+    const querySnapshot = await getDocs(q);
+    console.log({ querySnapshot });
+    querySnapshot.forEach((doc) => {
+      const id = doc.id;
+      const { iconUrl, title, body, date, actionUrl } = doc.data();
+      clientData.push({
+        id,
+        iconUrl,
+        title,
+        body,
+        date,
+        actionUrl,
+      });
+    });
+    //const documents = querySnapshot.docs.map(doc => doc.data());
+    const firstVisible = querySnapshot.docs[0];
+    const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+
+    return { clientData, firstVisible, lastVisible };
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const requestToGetClientDataBySearchValue = async (
+  searchValue: string
+) => {
+  let clientData: ClientDataType[] = [];
+  console.log("tete");
+  try {
+    const clientRef = collection(db, "ClientData");
+    /*   const q = query(
+      clientRef,
+      where("nomClient", "<=", searchValue),
+      where("nomClient", ">=", searchValue),
+      orderBy("dateUpdated")
+    ); */
+    const querySnapshot = await getDocs(clientRef);
+    console.log({ querySnapshot: querySnapshot.docs });
+    querySnapshot.forEach((doc) => {
+      const id = doc.id;
+      const {
+        nomClient,
+        emailClient,
+        passwordClient,
+        logoClient,
+        dateCreated,
+        dateUpdated,
+        statusClient,
+      } = doc.data();
+      clientData.push({
+        id,
+        nomClient,
+        emailClient,
+        passwordClient,
+        logoClient,
+        dateCreated,
+        dateUpdated,
+        statusClient,
+      });
+    });
+    const filteredDocuments = clientData.filter(
+      (doc) =>
+        doc.nomClient.toLowerCase().includes(searchValue.toLowerCase()) ||
+        doc.emailClient.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    return filteredDocuments;
+    //return clientData;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const requestToGetMembreDataBySearchValue = async (
+  searchValue: string
+) => {
+  let memberData: MemberDataType[] = [];
+
+  try {
+    const clientRef = collection(db, "MemberData");
+    /*  const q = query(
+      clientRef,
+      orderBy("dateMiseAJour"),
+      where("name", "<=", searchValue),
+      where("name", ">=", searchValue),
+      where("email", "<=", searchValue),
+      where("email", ">=", searchValue)
+    ); */
+    const querySnapshot = await getDocs(clientRef);
+    console.log({ querySnapshot });
+    querySnapshot.forEach((doc) => {
+      const id = doc.id;
+      const {
+        name,
+        email,
+        motsDepasse,
+        sexe,
+        birthDay,
+        phone,
+        dateCreation,
+        dateMiseAJour,
+        status,
+        image,
+      } = doc.data();
+      memberData.push({
+        id,
+        name,
+        email,
+        motsDepasse,
+        sexe,
+        birthDay,
+        phone,
+        dateCreation,
+        dateMiseAJour,
+        status,
+        image,
+      });
+    });
+    const filteredDocuments = memberData.filter(
+      (doc) =>
+        doc.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+        doc.email.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    return filteredDocuments;
+    //return memberData;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const requestToGetEventDataBySearchValue = async (
+  searchValue: string
+) => {
+  let eventData: EventDataType[] = [];
+
+  try {
+    const clientRef = collection(db, "EventData");
+    /*  const q = query(
+      clientRef,
+      orderBy("date"),
+      where("titleEvent", "<=", searchValue),
+      where("titleEvent", ">=", searchValue)
+    ); */
+    const querySnapshot = await getDocs(clientRef);
+    console.log({ querySnapshot });
+    querySnapshot.forEach((doc) => {
+      const id = doc.id;
+      const {
+        titleEvent,
+        descriptionEvent,
+        imageUrlEvent,
+        typeAccess,
+        status,
+        dateOfEvent,
+        typeEvent,
+        urlOfEvent,
+        textCTAEvent,
+        locationOfEvent,
+        groupeForEventSelect,
+        date,
+      } = doc.data();
+      eventData.push({
+        id,
+        titleEvent,
+        descriptionEvent,
+        imageUrlEvent,
+        typeAccess,
+        status,
+        dateOfEvent,
+        typeEvent,
+        urlOfEvent,
+        textCTAEvent,
+        locationOfEvent,
+        groupeForEventSelect,
+        date,
+      });
+    });
+    const filteredDocuments = eventData.filter((doc) =>
+      doc.titleEvent.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    return filteredDocuments;
+    //return eventData;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const requestToGetGroupeDataBySearchValue = async (
+  searchValue: string
+) => {
+  let groupeData: GroupeDataType[] = [];
+
+  try {
+    const clientRef = collection(db, "GroupeData");
+    /*  const q = query(
+      clientRef,
+      orderBy("date"),
+      where("titleGroupe", "<=", searchValue),
+      where("titleGroupe", ">=", searchValue)
+    ); */
+    const querySnapshot = await getDocs(clientRef);
+    console.log({ querySnapshot });
+    querySnapshot.forEach((doc) => {
+      const id = doc.id;
+      const {
+        titleGroupe,
+        descriptionGroupe,
+        typeAccess,
+        banniereUrlGroupe,
+        logoUrlGroupe,
+        date,
+        status,
+      } = doc.data();
+      groupeData.push({
+        id,
+        titleGroupe,
+        descriptionGroupe,
+        typeAccess,
+        banniereUrlGroupe,
+        logoUrlGroupe,
+        date,
+        status,
+      });
+    });
+
+    const filteredDocuments = groupeData.filter((doc) =>
+      doc.titleGroupe.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    return filteredDocuments;
+
+    //return groupeData;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const requestToGetCommunityDataBySearchValue = async (
+  searchValue: string
+) => {
+  let communityData: communityDataType[] = [];
+
+  try {
+    const clientRef = collection(db, "CommunityData");
+    /*  const q = query(
+      clientRef,
+      orderBy("date"),
+      where("title", "<=", searchValue),
+      where("title", ">=", searchValue)
+    ); */
+    const querySnapshot = await getDocs(clientRef);
+    console.log({ querySnapshot });
+    querySnapshot.forEach((doc) => {
+      const id = doc.id;
+      const { title, description, logoUrl, banniereUrl } = doc.data();
+      communityData.push({
+        id,
+        title,
+        description,
+        logoUrl,
+        banniereUrl,
+      });
+    });
+    const filteredDocuments = communityData.filter((doc) =>
+      doc.title.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    return filteredDocuments;
+    //return communityData;
+  } catch (error) {
+    throw error;
+  }
+};

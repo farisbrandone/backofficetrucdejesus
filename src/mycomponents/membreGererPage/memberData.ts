@@ -19,6 +19,7 @@ export const membreData = [
     ),
     status: faker.datatype.boolean(),
     image: faker.image.url({ width: 35, height: 35 }),
+    id: "",
   },
   {
     name: faker.person.fullName(),
@@ -37,6 +38,7 @@ export const membreData = [
     ),
     status: faker.datatype.boolean(),
     image: faker.image.url({ width: 35, height: 35 }),
+    id: "",
   },
   {
     name: faker.person.fullName(),
@@ -55,6 +57,7 @@ export const membreData = [
     ),
     status: faker.datatype.boolean(),
     image: faker.image.url({ width: 35, height: 35 }),
+    id: "",
   },
   {
     name: faker.person.fullName(),
@@ -73,6 +76,7 @@ export const membreData = [
     ),
     status: faker.datatype.boolean(),
     image: faker.image.url({ width: 35, height: 35 }),
+    id: "",
   },
   {
     name: faker.person.fullName(),
@@ -91,6 +95,7 @@ export const membreData = [
     ),
     status: faker.datatype.boolean(),
     image: faker.image.url({ width: 35, height: 35 }),
+    id: "",
   },
   {
     name: faker.person.fullName(),
@@ -109,6 +114,7 @@ export const membreData = [
     ),
     status: faker.datatype.boolean(),
     image: faker.image.url({ width: 35, height: 35 }),
+    id: "",
   },
   {
     name: faker.person.fullName(),
@@ -127,6 +133,7 @@ export const membreData = [
     ),
     status: faker.datatype.boolean(),
     image: faker.image.url({ width: 35, height: 35 }),
+    id: "",
   },
   {
     name: faker.person.fullName(),
@@ -145,6 +152,7 @@ export const membreData = [
     ),
     status: faker.datatype.boolean(),
     image: faker.image.url({ width: 35, height: 35 }),
+    id: "",
   },
   {
     name: faker.person.fullName(),
@@ -163,6 +171,7 @@ export const membreData = [
     ),
     status: faker.datatype.boolean(),
     image: faker.image.url({ width: 35, height: 35 }),
+    id: "",
   },
   {
     name: faker.person.fullName(),
@@ -181,5 +190,6 @@ export const membreData = [
     ),
     status: faker.datatype.boolean(),
     image: faker.image.url({ width: 35, height: 35 }),
+    id: "",
   },
 ];

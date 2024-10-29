@@ -1,6 +1,10 @@
-function SearbarBackOffice({ placeholder }: { placeholder: string }) {
+export interface SearchBackofficeType {
+  placeholder: string;
+}
+
+function SearbarBackOffice({ placeholder }: SearchBackofficeType) {
   return (
-    <div className="searchBar lg:w-[450px] mr-3">
+    <form className="searchBar lg:w-[450px] mr-3">
       <label
         htmlFor="default-search"
         className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
@@ -39,7 +43,7 @@ function SearbarBackOffice({ placeholder }: { placeholder: string }) {
           Search
         </button>
       </div>
-    </div>
+    </form>
   );
 }
 

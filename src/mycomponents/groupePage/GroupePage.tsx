@@ -2,7 +2,6 @@ import { faker } from "@faker-js/faker";
 import CardAddGroup from "../ui/CardAddGroup";
 import { CarteCreerForGroup } from "../ui/CarteCreer";
 
-import SearbarBackOffice from "../ui/SearbarBackOffice";
 import { format } from "date-fns";
 import { DropdownMenuBackoffice } from "../ui/DropdownMenuBackoffice";
 
@@ -10,6 +9,7 @@ import { Fragment } from "react/jsx-runtime";
 import { NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { GroupeDataType, requestTogetAllGroupeData } from "@/fakeData";
+import SearchBarForGroupe from "../ui/searchBarUi/SearchBarForGroupe";
 
 export const groupeIcon = (
   <svg
@@ -100,7 +100,10 @@ function GroupePage() {
           >
             <option selected>{faker.word.words(2)}</option>
           </select>
-          <SearbarBackOffice placeholder="Recherche par nom de groupe..." />
+          <SearchBarForGroupe
+            placeholder="Recherche par nom de groupe..."
+            setGroupeData={setGroupeData}
+          />
         </div>
       </div>
 

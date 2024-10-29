@@ -23,6 +23,7 @@ export interface MemberDataType {
   dateMiseAJour: string;
   status: boolean;
   image: string;
+  id: string;
 }
 
 export interface MemberDataComponentType {

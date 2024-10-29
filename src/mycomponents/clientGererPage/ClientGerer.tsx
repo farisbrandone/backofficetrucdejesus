@@ -1,5 +1,4 @@
 import { faker } from "@faker-js/faker";
-import SearbarBackOffice from "../ui/SearbarBackOffice";
 import { Fragment, useEffect, useState } from "react";
 import ButtonForCopy from "../ui/ButtonForCopy";
 import { CopyIcon } from "lucide-react";
@@ -7,6 +6,7 @@ import { format } from "date-fns";
 import { NavLink } from "react-router-dom";
 import { ClientDataType, requestTogetAllClientData } from "@/fakeData";
 import ClientDataComponent from "./ClientDataComponent";
+import SearchBarForClient from "../ui/searchBarUi/SearchBarForClient";
 
 const userData = [
   {
@@ -140,7 +140,6 @@ export const PlusIcon = (width: string, heigth: string) => {
 function ClientGerer() {
   const [copied, setCopied] = useState(false);
   const [clientData, setClientData] = useState<ClientDataType[]>();
-
   const [loadingFail, setLoadingFail] = useState(false);
 
   const handleCopy = () => {
@@ -212,7 +211,10 @@ function ClientGerer() {
               </NavLink>
             </button>
           </div>
-          <SearbarBackOffice placeholder="Recherche par Nom et Email..." />
+          <SearchBarForClient
+            placeholder="Recherche par Nom et Email..."
+            setClientData={setClientData}
+          />
         </div>
       </div>
       <div className="flex flex-col gap-3 py-4  w-full border-[2px] shadow-xl rounded-xl mt-5 px-3 ">
