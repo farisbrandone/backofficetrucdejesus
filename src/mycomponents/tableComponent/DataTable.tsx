@@ -3,7 +3,7 @@ import {
   fetchPage,
   /* fetchPaginationPage, */ fetchPreviousPage,
   requestToGetTotalCountOfNotificationData,
-  seedData,
+  /* seedData, */
   User,
 } from "@/fakeData";
 import {
