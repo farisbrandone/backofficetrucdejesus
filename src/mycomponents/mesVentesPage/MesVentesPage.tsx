@@ -1,6 +1,5 @@
 import HeaderForAllBackOffice from "../ui/HeaderForAllBackOffice";
 import { FooterBackoffice } from "../acceuilPage/FooterBackoffice";
-import { faker } from "@faker-js/faker";
 import SearbarBackOffice from "../ui/SearbarBackOffice";
 import { mySaleIcon } from "../acceuilPage/Icon";
 import { dollarIcon } from "../integrationPage/IntegrationPage";
@@ -44,11 +43,11 @@ function MesVentesPage() {
             id="countries"
             className=" w-[200px] bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500   p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           >
-            <option selected>{faker.word.words(2)}</option>
-            <option value="US">{faker.word.words(1)}</option>
+            <option selected>Un Truc de Jesus!</option>
+            {/*  <option value="US">{faker.word.words(1)}</option>
             <option value="CA">{faker.word.words(1)}</option>
             <option value="FR">{faker.word.words(1)}</option>
-            <option value="DE">{faker.word.words(1)}</option>
+            <option value="DE">{faker.word.words(1)}</option> */}
           </select>
           <SearbarBackOffice placeholder="Recherche par nom de groupe..." />
         </div>

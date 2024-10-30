@@ -170,7 +170,7 @@ function NewEvenementPage() {
         console.log("shunga");
         toast({
           title: "Success",
-          description: "La Notification a été envoyé avec success",
+          description: "L'événement à été crée avec success",
         });
         setStartSending(() => false);
         window.location.replace("/EVENEMENTS");
@@ -188,7 +188,7 @@ function NewEvenementPage() {
         variant: "destructive",
         title: "Erreur",
         description:
-          "Une erreur est survenue pendant l'envoie de la notification, vérifier votre connexion",
+          "Une erreur est survenue pendant la creation de l'événement, vérifier votre connexion",
       });
       setStartSending(() => false);
       console.error("");

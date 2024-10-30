@@ -1,17 +1,50 @@
-import HeaderForAllBackOffice from "../ui/HeaderForAllBackOffice";
 import { FooterBackoffice } from "../acceuilPage/FooterBackoffice";
-import { DropdownMenuBackoffice } from "../ui/DropdownMenuBackoffice";
+/* import { DropdownMenuBackoffice } from "../ui/DropdownMenuBackoffice";
 import { faker } from "@faker-js/faker";
-import SearbarBackOffice from "../ui/SearbarBackOffice";
+import SearbarBackOffice from "../ui/SearbarBackOffice"; */
 import { membreIcon } from "../acceuilPage/Icon";
 import { Fragment } from "react/jsx-runtime";
-import { membreData } from "./memberData";
-import MemberDataComponent from "./MemberDataComponent";
+import MemberDataComponent, { MemberDataType } from "./MemberDataComponent";
+import { useEffect, useState } from "react";
+import { requestTogetAllMembreData } from "@/fakeData";
+import { NavLink } from "react-router-dom";
+import { PlusIcon } from "../clientGererPage/ClientGerer";
+import SearchBarForMembre from "../ui/searchBarUi/SearchBarForMembre";
 
 function MembreGererPage() {
+  const [membreData, setMembreData] = useState<MemberDataType[]>();
+  const [loadingFail, setLoadingFail] = useState(false);
+  useEffect(() => {
+    const getAllMembreData = async () => {
+      try {
+        const data = await requestTogetAllMembreData();
+        setMembreData([...data]);
+      } catch (error) {
+        setLoadingFail(true);
+      }
+    };
+    getAllMembreData();
+  }, []);
+
+  if (!membreData && !loadingFail) {
+    return (
+      <div className="w-full text-center pt-4">
+        Le document est en cours de chargement ...
+      </div>
+    );
+  }
+
+  if (loadingFail) {
+    return (
+      <div className="w-full text-center pt-4">
+        Une erreur est survenue pendant le chargement ou problème de connexion
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col w-full px-3">
-      <HeaderForAllBackOffice />
+    <Fragment>
+      {/*  <HeaderForAllBackOffice /> */}
       <div></div>
       <FooterBackoffice />
       <div className="w-full flex flex-col gap-4 max-[840px]:w-full min-[840px]:flex-row min-[840px]:items-center min-[840px]:justify-between mt-10">
@@ -25,12 +58,24 @@ function MembreGererPage() {
             </div>
           </div>
           <p className="bg-[#e91e63] px-2 py-1 align-middle self-center rounded-lg text-white ">
-            Total: 6
+            Total: {membreData?.length}
           </p>
         </div>
         <div className="flex gap-3">
           <div className="flex items-center justify-center">
-            <DropdownMenuBackoffice title="➕ Ajouter de nouveau membre" />
+            <button
+              type="button"
+              title="Ajouter des clients"
+              className="flex items-center"
+            >
+              <NavLink
+                to="/GERER LES MEMBRES/ajouter-des-membres"
+                className="px-2 py-2 bg-[#e91e63] text-white font-bold rounded-md "
+              >
+                <span className="inline-block">{PlusIcon("15", "15")}</span>{" "}
+                Ajouter des membres
+              </NavLink>
+            </button>
           </div>
 
           <p className="align-middle self-center">Communauté</p>
@@ -39,13 +84,12 @@ function MembreGererPage() {
             id="countries"
             className=" w-[200px] bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500   p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           >
-            <option selected>{faker.word.words(2)}</option>
-            <option value="US">{faker.word.words(1)}</option>
-            <option value="CA">{faker.word.words(1)}</option>
-            <option value="FR">{faker.word.words(1)}</option>
-            <option value="DE">{faker.word.words(1)}</option>
+            <option selected>Un Truc de Jesus!</option>
           </select>
-          <SearbarBackOffice placeholder="Recherche par nom de groupe..." />
+          <SearchBarForMembre
+            placeholder="Recherche par nom de membre..."
+            setMemberData={setMembreData}
+          />
         </div>
       </div>
 
@@ -67,14 +111,19 @@ function MembreGererPage() {
             <p className="text-center ">ACTION</p>
           </div>
 
-          {membreData.map((value, index) => (
+          {membreData?.map((value, index) => (
             <Fragment key={index}>
-              <MemberDataComponent value={value} index={index} />
+              <MemberDataComponent
+                value={value}
+                index={index}
+                setMembreData={setMembreData}
+                setLoadingFail={setLoadingFail}
+              />
             </Fragment>
           ))}
         </div>
       </div>
-    </div>
+    </Fragment>
   );
 }
 

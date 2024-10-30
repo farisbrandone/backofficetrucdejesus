@@ -110,7 +110,7 @@ function UpdateCommunaute() {
         console.log("shunga");
         toast({
           title: "Success",
-          description: "La Notification a été envoyé avec success",
+          description: "La communauté a été mis à jour avec success",
         });
         setStartSending(() => false);
         return;
@@ -127,7 +127,7 @@ function UpdateCommunaute() {
         variant: "destructive",
         title: "Erreur",
         description:
-          "Une erreur est survenue pendant l'envoie de la notification, vérifier votre connexion",
+          "Une erreur est survenue pendant la mise à jour de la communauté, vérifier votre connexion",
       });
       setStartSending(() => false);
       console.error("");

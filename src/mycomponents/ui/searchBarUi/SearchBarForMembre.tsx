@@ -8,8 +8,6 @@ export interface SearchBackofficeType {
   setMemberData: React.Dispatch<
     React.SetStateAction<MemberDataType[] | undefined>
   >;
-  setLoadingForSearchBar: React.Dispatch<React.SetStateAction<boolean>>;
-  setSuccess: React.Dispatch<React.SetStateAction<string>>;
 }
 
 function SearchBarForMembre({

@@ -104,7 +104,7 @@ function NewGroupePageCreate() {
         console.log("shunga");
         toast({
           title: "Success",
-          description: "La Notification a été envoyé avec success",
+          description: "Le groupe à été crée avec success",
         });
         setStartSending(() => false);
         window.location.replace("/GROUPES");
@@ -122,7 +122,7 @@ function NewGroupePageCreate() {
         variant: "destructive",
         title: "Erreur",
         description:
-          "Une erreur est survenue pendant l'envoie de la notification, vérifier votre connexion",
+          "Une erreur est survenue pendant la création du groupe, vérifier votre connexion",
       });
       setStartSending(() => false);
       console.error("");

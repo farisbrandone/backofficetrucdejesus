@@ -1,7 +1,6 @@
 import { NavLink } from "react-router-dom";
 import CardAddGroup from "../ui/CardAddGroup";
 import { CarteCreerForEvent } from "../ui/CarteCreer";
-import { faker } from "@faker-js/faker";
 import { EventDataType, requestTogetAllEventData } from "@/fakeData";
 import { useEffect, useState } from "react";
 import SearchBarForEvenement from "../ui/searchBarUi/SearchBarForEvenement";
@@ -67,7 +66,7 @@ function EvenementPage() {
             </div>
           </div>
           <p className="bg-[#e91e63] px-2 py-1 align-middle self-center rounded-lg text-white ">
-            Total: 6
+            Total: {eventData?.length}
           </p>
         </div>
         <div className="flex gap-3">
@@ -77,7 +76,7 @@ function EvenementPage() {
             id="countries"
             className=" w-[200px] bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500   p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           >
-            <option selected>{faker.word.words(2)}</option>
+            <option selected>Un Truc de Jesus!</option>
           </select>
           <SearchBarForEvenement
             placeholder="Recherche par nom d'évènement"

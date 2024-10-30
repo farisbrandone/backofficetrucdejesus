@@ -136,7 +136,7 @@ function ClientCreer() {
       if (result.success) {
         toast({
           title: "Success",
-          description: "La Notification a été envoyé avec success",
+          description: "Le client a été crée avec success",
         });
         setStartSending(() => false);
         window.location.replace("/GERER LES CLIENS");
@@ -154,7 +154,7 @@ function ClientCreer() {
         variant: "destructive",
         title: "Erreur",
         description:
-          "Une erreur est survenue pendant l'envoie de la notification, vérifier votre connexion",
+          "Une erreur est survenue pendant la creation du client, vérifier votre connexion",
       });
       setStartSending(() => false);
       console.error("");

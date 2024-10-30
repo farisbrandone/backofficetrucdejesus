@@ -32,6 +32,9 @@ import UpdateEvenement from "./mycomponents/evenementPage/UpdateEvenement";
 import { ClientMain } from "./mycomponents/clientGererPage/ClientMain";
 import ClientCreer from "./mycomponents/clientGererPage/ClientCreer";
 import ClientUpdate from "./mycomponents/clientGererPage/ClientUpdate";
+import MembreMain from "./mycomponents/membreGererPage/MembreMain";
+import MembreCreer from "./mycomponents/membreGererPage/MembreCreer";
+import MembreUpdate from "./mycomponents/membreGererPage/MembreUpdate";
 /**we configure the loder create in root sidebar component to load data */
 
 const router = createBrowserRouter([
@@ -113,7 +116,7 @@ const router = createBrowserRouter([
             element: <ClientCreer />,
           },
           {
-            path: "/GERER LES CLIENS/update-client-page",
+            path: "/GERER LES CLIENS/update-client-page/:clientId",
             element: <ClientUpdate />,
           },
         ],
@@ -128,7 +131,21 @@ const router = createBrowserRouter([
       },
       {
         path: "/GERER LES MEMBRES",
-        element: <MembreGererPage />,
+        element: <MembreMain />,
+        children: [
+          {
+            path: "/GERER LES MEMBRES",
+            element: <MembreGererPage />,
+          },
+          {
+            path: "/GERER LES MEMBRES/ajouter-des-membres",
+            element: <MembreCreer />,
+          },
+          {
+            path: "/GERER LES MEMBRES/update-membre-page/:membreId",
+            element: <MembreUpdate />,
+          },
+        ],
       },
     ],
   },

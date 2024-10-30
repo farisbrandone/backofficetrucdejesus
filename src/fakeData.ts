@@ -20,7 +20,6 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { communityDataType } from "./mycomponents/communautePage/UpdateCommunaute";
-import { faker } from "@faker-js/faker";
 import { format } from "date-fns";
 import { stateGroupeEvent } from "./mycomponents/evenementPage/hook/UseselectGroupeInEvent";
 import { MemberDataType } from "./mycomponents/membreGererPage/MemberDataComponent";
@@ -137,10 +136,7 @@ export async function requestToSetGroupeData({
 }: GroupeDataType) {
   try {
     const NotifRef = collection(db, "GroupeData");
-    const date = format(
-      faker.date.between({ from: "2023-01-01", to: Date.now() }),
-      "'il ya' dd 'jours à' kk:mm"
-    );
+    const date = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
     await setDoc(doc(NotifRef), {
       titleGroupe,
       descriptionGroupe,
@@ -162,10 +158,7 @@ export async function requestToUpdateGroupeData(
   singleGroupeData: GroupeDataType
 ) {
   const GroupeDataRef = collection(db, "GroupeData");
-  const date = format(
-    faker.date.between({ from: "2023-01-01", to: Date.now() }),
-    "'il ya' dd 'jours à' kk:mm"
-  );
+  const date = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
   try {
     const {
       titleGroupe,
@@ -201,10 +194,7 @@ export async function requestToChangeStatus(
 ) {
   console.log({ status });
   const GroupeDataRef = collection(db, database);
-  const date = format(
-    faker.date.between({ from: "2023-01-01", to: Date.now() }),
-    "'il ya' dd 'jours à' kk:mm"
-  );
+  const date = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
   try {
     await updateDoc(doc(GroupeDataRef, id), {
       status,
@@ -385,10 +375,7 @@ export async function requestToSetEventData({
 }: EventDataType) {
   try {
     const NotifRef = collection(db, "EventData");
-    const date = format(
-      faker.date.between({ from: "2023-01-01", to: Date.now() }),
-      "'il ya' dd 'jours à' kk:mm"
-    );
+    const date = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
     await setDoc(doc(NotifRef), {
       titleEvent,
       descriptionEvent,
@@ -477,10 +464,7 @@ export async function requestToSetEventDataWithId({
 }: EventDataType) {
   try {
     const NotifRef = collection(db, "EventData");
-    const date = format(
-      faker.date.between({ from: "2023-01-01", to: Date.now() }),
-      "'il ya' dd 'jours à' kk:mm"
-    );
+    const date = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
     await setDoc(doc(NotifRef, id), {
       titleEvent,
       descriptionEvent,
@@ -578,15 +562,9 @@ export async function requestToSetClientData({
 }: ClientDataType) {
   try {
     const NotifRef = collection(db, "ClientData");
-    const dateCreated = format(
-      faker.date.between({ from: "2023-01-01", to: Date.now() }),
-      "'il ya' dd 'jours à' kk:mm"
-    );
+    const dateCreated = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
 
-    const dateUpdated = format(
-      faker.date.between({ from: "2023-01-01", to: Date.now() }),
-      "'il ya' dd 'jours à' kk:mm"
-    );
+    const dateUpdated = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
     await setDoc(doc(NotifRef), {
       nomClient,
       emailClient,
@@ -654,10 +632,7 @@ export async function requestToUpdateClientData({
   try {
     const NotifRef = collection(db, "ClientData");
 
-    const dateUpdated = format(
-      faker.date.between({ from: "2023-01-01", to: Date.now() }),
-      "'il ya' dd 'jours à' kk:mm"
-    );
+    const dateUpdated = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
     await updateDoc(doc(NotifRef, id), {
       nomClient,
       emailClient,
@@ -1104,3 +1079,190 @@ export const requestToGetCommunityDataBySearchValue = async (
     throw error;
   }
 };
+
+export async function requestToSetMembreData({
+  name,
+  email,
+  motsDepasse,
+  image,
+  sexe,
+  birthDay,
+  phone,
+  status,
+}: MemberDataType) {
+  try {
+    const NotifRef = collection(db, "MembreData");
+    const dateCreation = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
+
+    const dateMiseAJour = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
+    await setDoc(doc(NotifRef), {
+      name,
+      email,
+      motsDepasse,
+      image,
+      sexe,
+      birthDay,
+      phone,
+      status,
+      dateCreation,
+      dateMiseAJour,
+    });
+    return { message: "Le groupe a été créer avec success", success: true };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestToUpdateMembreData({
+  id,
+  name,
+  email,
+  motsDepasse,
+  image,
+  sexe,
+  birthDay,
+  phone,
+  status,
+}: MemberDataType) {
+  try {
+    const docRef = doc(db, "MembreData", id);
+    console.log({
+      name,
+      email,
+      motsDepasse,
+      image,
+      sexe,
+      birthDay,
+      phone,
+      status,
+    });
+    const dateMiseAJour = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
+    await updateDoc(docRef, {
+      name,
+      email,
+      motsDepasse,
+      image,
+      sexe,
+      birthDay,
+      phone,
+      status,
+      dateMiseAJour,
+    });
+    console.log("counde2");
+    return { message: "Le groupe a été créer avec success", success: true };
+  } catch (error) {
+    console.log("counde3");
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestToGetMemberDataWithId(
+  membreId: string
+): Promise<MemberDataType> {
+  try {
+    const docRef = doc(db, "MembreData", membreId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const {
+        id,
+        name,
+        email,
+        motsDepasse,
+        image,
+        sexe,
+        birthDay,
+        phone,
+        status,
+        dateCreation,
+        dateMiseAJour,
+      } = docSnap.data();
+      return {
+        id,
+        name,
+        email,
+        motsDepasse,
+        image,
+        sexe,
+        birthDay,
+        phone,
+        status,
+        dateCreation,
+        dateMiseAJour,
+      };
+    } else {
+      throw new Error("Le document n'existe pas");
+    }
+  } catch (error) {
+    console.log({ error: error });
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestTogetAllMembreData(): Promise<MemberDataType[]> {
+  let membreData: MemberDataType[] = [];
+  try {
+    const querySnapshot = await getDocs(collection(db, "MembreData"));
+    console.log({ length: querySnapshot.docs.length });
+    if (querySnapshot.docs.length !== 0) {
+      querySnapshot.forEach((doc) => {
+        const id = doc.id;
+        const {
+          name,
+          email,
+          motsDepasse,
+          image,
+          sexe,
+          birthDay,
+          phone,
+          status,
+          dateCreation,
+          dateMiseAJour,
+        } = doc.data();
+        membreData.push({
+          id,
+          name,
+          email,
+          motsDepasse,
+          image,
+          sexe,
+          birthDay,
+          phone,
+          status,
+          dateCreation,
+          dateMiseAJour,
+        });
+      });
+
+      return membreData;
+    }
+
+    return [];
+  } catch (error) {
+    console.log({ error: error });
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestToDeleteMembreWithId(dataId: string) {
+  const docRef = doc(db, "MembreData", dataId);
+  try {
+    await deleteDoc(docRef);
+    return {
+      message: "le document à été supprimer avec success",
+      success: true,
+    };
+  } catch (error) {
+    return {
+      message: "Un problème est survenu pendant la suppression",
+      success: false,
+    };
+  }
+}

@@ -23,7 +23,7 @@ export const ordiIcon = (width: string, heigth: string) => (
 
 function NotificationPage() {
   return (
-    <div className="w-full flex flex-col pl-3">
+    <div className="w-full flex flex-col pl-3 -mt-6">
       {/*  <div className="flex gap-0 w-[100vw] "> */}
       {/*  <div className="sidebar ">
         <SidebarComponents />

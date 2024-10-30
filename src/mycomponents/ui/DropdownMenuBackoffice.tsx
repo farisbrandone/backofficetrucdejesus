@@ -10,6 +10,7 @@ import {
 import {
   requestToDeleteEventWithId,
   requestToDeleteGroupeWithId,
+  requestToDeleteMembreWithId,
 } from "@/fakeData";
 import { useToast } from "@/hooks/use-toast";
 import { useMemo, useState } from "react";
@@ -70,6 +71,7 @@ export function DropdownMenuForGroupe({
   groupeId: string;
   baseUrl: string;
 }) {
+  console.log(baseUrl);
   const [rotation, setRotation] = useState(0);
   const [pageForDeletion, setPageForDeletion] = useState(false);
   const [stateSuppression, setStateSuppression] = useState(false);
@@ -86,6 +88,10 @@ export function DropdownMenuForGroupe({
     }
     if (baseUrl === "EVENEMENTS/update-event-page") {
       result = await requestToDeleteEventWithId(groupeId);
+    }
+
+    if (baseUrl === "GERER LES MEMBRES/update-membre-page") {
+      result = await requestToDeleteMembreWithId(groupeId);
     }
 
     if (result && !result.success) {
@@ -118,6 +124,8 @@ export function DropdownMenuForGroupe({
               Voulez-vous vraiment supprimer le{" "}
               {baseUrl === "EVENEMENTS/update-event-page"
                 ? " l'événement"
+                : baseUrl === "GERER LES MEMBRES/update-membre-page"
+                ? "Membre"
                 : " groupe"}{" "}
               ?
             </p>

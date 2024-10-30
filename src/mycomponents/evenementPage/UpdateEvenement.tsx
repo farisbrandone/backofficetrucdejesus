@@ -186,7 +186,7 @@ function UpdateEvenement() {
         console.log("shunga");
         toast({
           title: "Success",
-          description: "La Notification a été envoyé avec success",
+          description: "L'événement a été mis à jour avec success",
         });
         setStartSending(() => false);
         window.location.replace("/EVENEMENTS");
@@ -204,7 +204,7 @@ function UpdateEvenement() {
         variant: "destructive",
         title: "Erreur",
         description:
-          "Une erreur est survenue pendant l'envoie de la notification, vérifier votre connexion",
+          "Une erreur est survenue pendant la mise à jour de l'événement, vérifier votre connexion",
       });
       setStartSending(() => false);
       console.error("");

@@ -1,14 +1,14 @@
-import { faker } from "@faker-js/faker";
+/* import { faker } from "@faker-js/faker"; */
 import { Fragment, useEffect, useState } from "react";
 import ButtonForCopy from "../ui/ButtonForCopy";
 import { CopyIcon } from "lucide-react";
-import { format } from "date-fns";
+/* import { format } from "date-fns"; */
 import { NavLink } from "react-router-dom";
 import { ClientDataType, requestTogetAllClientData } from "@/fakeData";
 import ClientDataComponent from "./ClientDataComponent";
 import SearchBarForClient from "../ui/searchBarUi/SearchBarForClient";
 
-const userData = [
+/* const userData = [
   {
     name: faker.person.fullName(),
     email: faker.internet.email(),
@@ -69,7 +69,7 @@ const userData = [
     status: faker.datatype.boolean(),
     image: faker.image.url({ width: 35, height: 35 }),
   },
-];
+]; */
 
 export const gererClientIcon = (width: string, heigth: string) => {
   return (
@@ -192,7 +192,7 @@ function ClientGerer() {
             </div>
           </div>
           <p className="bg-[#e91e63] px-2 py-1 align-middle self-center rounded-lg text-white flex-shrink-0 ">
-            Total:{userData.length}
+            Total:{clientData?.length}
           </p>
         </div>
         <div className="flex gap-3">

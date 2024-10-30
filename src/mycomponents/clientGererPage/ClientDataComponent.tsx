@@ -220,7 +220,9 @@ function ClientDataComponent({
           <DropdownMenuContent className="w-56 bg-[#191919] text-white">
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <NavLink to="/GERER LES CLIENS/update-client-page">
+                <NavLink
+                  to={`/GERER LES CLIENS/update-client-page/${value.id}`}
+                >
                   Mettre à jour
                 </NavLink>
               </DropdownMenuItem>

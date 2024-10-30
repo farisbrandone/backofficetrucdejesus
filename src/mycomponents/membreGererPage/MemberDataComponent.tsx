@@ -1,16 +1,20 @@
-import { Avatar } from "@/components/ui/avatar";
-import { useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useEffect, useState } from "react";
 import { eyeCloseIcon, eyeOpenIcon } from "../clientGererPage/ClientGerer";
 import { Switch } from "@/components/ui/switch";
-import {
+/* import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { faker } from "@faker-js/faker";
+import { Button } from "@/components/ui/button"; */
+import { requestToChangeStatus, requestTogetAllMembreData } from "@/fakeData";
+import { toast } from "@/hooks/use-toast";
+import LoadingTotal from "../ui/LoadingTotal";
+import { DropdownMenuForGroupe } from "../ui/DropdownMenuBackoffice";
+import { format } from "date-fns";
 
 export interface MemberDataType {
   name: string;
@@ -21,7 +25,7 @@ export interface MemberDataType {
   phone: string;
   dateCreation: string;
   dateMiseAJour: string;
-  status: boolean;
+  status: string;
   image: string;
   id: string;
 }
@@ -29,6 +33,10 @@ export interface MemberDataType {
 export interface MemberDataComponentType {
   value: MemberDataType;
   index: number;
+  setMembreData: React.Dispatch<
+    React.SetStateAction<MemberDataType[] | undefined>
+  >;
+  setLoadingFail: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const phoneIcon = (width: string, heigth: string) => {
@@ -47,25 +55,72 @@ export const phoneIcon = (width: string, heigth: string) => {
   );
 };
 
-function MemberDataComponent({ value, index }: MemberDataComponentType) {
+function MemberDataComponent({
+  value,
+  /*  index, */
+  setMembreData,
+  setLoadingFail,
+}: MemberDataComponentType) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
+  const [switchState, setSwitchState] = useState(value.status);
+  const [loadingStatus, setLoadingStatus] = useState(false);
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
+  console.log({ value });
+
+  const handleSwitch = async () => {
+    try {
+      setLoadingStatus(true);
+      let status;
+      if (switchState === "activate") {
+        status = "desactivate";
+      } else {
+        status = "activate";
+      }
+      const result = await requestToChangeStatus(
+        value.id,
+        status,
+        "MembreData"
+      );
+      if (result.success) {
+        setSwitchState(status);
+        toast({
+          title: "Success",
+          description: result.message,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: result.message,
+        });
+      }
+
+      setLoadingStatus(false);
+    } catch (error) {}
+  };
+  useEffect(() => {
+    const getAllMembreData = async () => {
+      try {
+        const data = await requestTogetAllMembreData();
+        setMembreData([...data]);
+      } catch (error) {
+        setLoadingFail(true);
+      }
+    };
+    getAllMembreData();
+  }, [switchState]);
 
   return (
     <div className="w-full grid grid-cols-10  mb-2">
       <div className="avatarNameEmail flex items-center ml-3 ">
         <div>
-          <Avatar
-            className={` ${
-              (index + 1) % 2 === 0
-                ? "bg-[#191919] text-white "
-                : "bg-[#e91e63] text-white"
-            } text-[20px] flex items-center justify-center `}
-          >
-            {value.name.charAt(0).toUpperCase()}
+          <Avatar className={`text-[20px] flex items-center justify-center `}>
+            <AvatarImage src={value.image} alt="img" />
+            <AvatarFallback>
+              {value.name.charAt(0).toUpperCase()}
+            </AvatarFallback>
           </Avatar>
         </div>
         <div className="flex flex-col px-2">
@@ -74,7 +129,11 @@ function MemberDataComponent({ value, index }: MemberDataComponentType) {
         </div>
       </div>
       <div className="place-content-center mx-auto">
-        <img src={value.image} alt="" className="object-cover " />
+        <img
+          src={value.image}
+          alt=""
+          className="object-cover w-[30px] h-[30px] rounded-full "
+        />
       </div>
       <div className="place-content-center mx-auto ">
         <input
@@ -90,18 +149,36 @@ function MemberDataComponent({ value, index }: MemberDataComponentType) {
         </button>
       </div>
       <div className=" place-content-center mx-auto">{value.sexe}</div>
-      <div className=" place-content-center mx-auto flex">
+      <div className=" place-content-center mx-auto flex items-center overflow-auto">
         {" "}
         <span className="mr-1 pt-[6px] "> {phoneIcon("15", "15")} </span>{" "}
         {value.phone}
       </div>
-      <div className=" place-content-center mx-auto">{value.birthDay}</div>
-      <div className=" place-content-center mx-auto">{value.dateCreation}</div>
-      <div className="place-content-center mx-auto ">{value.dateMiseAJour}</div>
-      <div className="place-content-center mx-auto">
-        <Switch id="airplane-mode" />
+      <div className=" place-content-center mx-auto overflow-hidden">
+        {format(new Date(value.birthDay), "dd/MM/yyyy")}
       </div>
-      <div className=" place-content-center mx-auto ">
+      <div className=" place-content-center mx-auto overflow-hidden text-center">
+        {value.dateCreation}
+      </div>
+      <div className="place-content-center mx-auto overflow-hidden text-center">
+        {value.dateMiseAJour}
+      </div>
+      <div className="place-content-center mx-auto">
+        {loadingStatus ? (
+          <LoadingTotal />
+        ) : (
+          <Switch
+            id="airplane-mode"
+            checked={switchState === "activate"}
+            onCheckedChange={handleSwitch}
+          />
+        )}
+      </div>
+
+      {/* <div className="place-content-center mx-auto">
+        <Switch id="airplane-mode" />
+      </div> */}
+      {/*  <div className=" place-content-center mx-auto ">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -113,13 +190,19 @@ function MemberDataComponent({ value, index }: MemberDataComponentType) {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56 bg-[#191919] text-white">
             <DropdownMenuGroup>
-              <DropdownMenuItem>{faker.word.words(2)}</DropdownMenuItem>
-              <DropdownMenuItem>{faker.word.words(2)}</DropdownMenuItem>
-              <DropdownMenuItem>{faker.word.words(2)}</DropdownMenuItem>
-              <DropdownMenuItem>{faker.word.words(2)}</DropdownMenuItem>
+              <DropdownMenuItem>update</DropdownMenuItem>
+              <DropdownMenuItem>delete</DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
+      </div> */}
+
+      <div className=" place-content-center mx-auto ">
+        <DropdownMenuForGroupe
+          title="..."
+          groupeId={value.id}
+          baseUrl="GERER LES MEMBRES/update-membre-page"
+        />
       </div>
     </div>
   );
