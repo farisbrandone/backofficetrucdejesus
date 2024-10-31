@@ -3,7 +3,7 @@ import CardAddGroup from "../ui/CardAddGroup";
 import { CarteCreerForGroup } from "../ui/CarteCreer";
 
 import { format } from "date-fns";
-import { DropdownMenuBackoffice } from "../ui/DropdownMenuBackoffice";
+/* import { DropdownMenuBackoffice } from "../ui/DropdownMenuBackoffice"; */
 
 import { Fragment } from "react/jsx-runtime";
 import { NavLink } from "react-router-dom";
@@ -88,9 +88,9 @@ function GroupePage() {
           </p>
         </div>
         <div className="flex gap-3">
-          <div className="flex items-center justify-center">
+          {/* <div className="flex items-center justify-center">
             <DropdownMenuBackoffice title="Setting" />
-          </div>
+          </div> */}
 
           <p className="align-middle self-center">Communauté</p>
           <select
