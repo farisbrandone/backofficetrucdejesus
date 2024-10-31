@@ -107,7 +107,7 @@ function GroupePage() {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-around gap-6 mt-16">
+      <div className="flex flex-wrap items-center gap-6 mt-16">
         <NavLink to="/GROUPES/create-new-groupe">
           <CardAddGroup
             icon={groupeIcon}
