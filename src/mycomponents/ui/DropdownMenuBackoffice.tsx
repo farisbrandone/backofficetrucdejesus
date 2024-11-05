@@ -181,6 +181,14 @@ export function DropdownMenuForGroupe({
         <DropdownMenuContent className="w-56">
           <DropdownMenuLabel>Action</DropdownMenuLabel>
           <DropdownMenuSeparator />
+          {baseUrl === "GROUPES/update-groupe-page" && (
+            <DropdownMenuItem>
+              {" "}
+              <NavLink to={`/GERER LES CHAINES/${groupeId}`}>
+                Créer une chaine
+              </NavLink>
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem>
             {" "}
             <NavLink to={`/${baseUrl}/${groupeId}`}>Mettre à jour</NavLink>

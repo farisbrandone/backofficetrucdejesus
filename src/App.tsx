@@ -35,6 +35,10 @@ import ClientUpdate from "./mycomponents/clientGererPage/ClientUpdate";
 import MembreMain from "./mycomponents/membreGererPage/MembreMain";
 import MembreCreer from "./mycomponents/membreGererPage/MembreCreer";
 import MembreUpdate from "./mycomponents/membreGererPage/MembreUpdate";
+import { ChannelPageMain } from "./mycomponents/channelPage/ChannelPageMain";
+import ChannelPage from "./mycomponents/channelPage/ChannelPage";
+import ChannelPageCreer from "./mycomponents/channelPage/ChannelPageCreer";
+import ChannelPageUpdate from "./mycomponents/channelPage/ChannelPageUpdate";
 /**we configure the loder create in root sidebar component to load data */
 
 const router = createBrowserRouter([
@@ -147,9 +151,27 @@ const router = createBrowserRouter([
           },
         ],
       },
+      {
+        path: "/GERER LES CHAINES",
+        element: <ChannelPageMain />,
+        children: [
+          {
+            path: "/GERER LES CHAINES/:groupeId",
+            element: <ChannelPage />,
+          },
+          {
+            path: "/GERER LES CHAINES/ajouter-des-chaines/:groupeId",
+            element: <ChannelPageCreer />,
+          },
+          {
+            path: "/GERER LES CHAINES/update-channel-page/:channelId",
+            element: <ChannelPageUpdate />,
+          },
+        ],
+      },
     ],
   },
-  /*updateCommunaute  MembreGererPage  ANALYTICS MES VENTES GERER LES CLIENS INTEGRATIONS EVENEMENTS GroupePage COMMUNAUTES{
+  /* GERER LES CHAINES  updateCommunaute  MembreGererPage  ANALYTICS MES VENTES GERER LES CLIENS INTEGRATIONS EVENEMENTS GroupePage COMMUNAUTES{
     path: "/notification",
     element: <NotificationPage />,
     errorElement: <ErrorPage />,
