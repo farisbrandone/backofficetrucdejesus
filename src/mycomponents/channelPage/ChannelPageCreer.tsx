@@ -13,9 +13,14 @@ import { Input } from "@/components/ui/input";
 import ButtonUploadFile from "../ui/ButtonUploadFile";
 import { Button } from "@/components/ui/button";
 import { NavLink, useParams } from "react-router-dom";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { ChannelPageDataType, requestToSetChannelData } from "@/fakeData";
+import {
+  ChannelPageDataType,
+  requestTogetAllRessourcesData,
+  requestToSetChannelData,
+  RessourcesDataType,
+} from "@/fakeData";
 import { channelIcon } from "./ChannelPage";
 import {
   Select,
@@ -27,6 +32,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import LoadingTotal from "../ui/LoadingTotal";
 
 export const cardenaIcon = (width: string, heigth: string) => {
   return (
@@ -59,7 +66,13 @@ function ChannelPageCreer() {
   const [classNomChannel, setClassNomChannel] = useState(false);
   const [classDescriptionChannel, setClassDescriptionChannel] = useState(false);
   const [startSending, setStartSending] = useState(false);
-
+  const [channelRessources, setChannelRessources] = useState<
+    RessourcesDataType[]
+  >([]);
+  const [totalRessources, setTotalRessources] = useState<RessourcesDataType[]>(
+    []
+  );
+  const [loadingTotalRessources, setLoadingTotalRessources] = useState(true);
   const { toast } = useToast();
   const { groupeId } = useParams<string>();
 
@@ -99,6 +112,10 @@ function ChannelPageCreer() {
 
   const handleTypeChannel = (value: string) => {
     setTypeChannel(() => value);
+  };
+
+  const handleAddRessources = (value: RessourcesDataType) => {
+    setChannelRessources((prev) => [...prev, value]);
   };
 
   const createChannel = async () => {
@@ -142,6 +159,7 @@ function ChannelPageCreer() {
         dateCreatedChannel: "",
         dateUpdatedChannel: "",
         id: "",
+        channelRessources: channelRessources,
       };
       console.log(data);
       const result = await requestToSetChannelData(data);
@@ -174,6 +192,26 @@ function ChannelPageCreer() {
       console.error("");
     }
   };
+
+  useEffect(() => {
+    const getRessourcesData = async () => {
+      try {
+        setLoadingTotalRessources(true);
+        const result = await requestTogetAllRessourcesData();
+        setTotalRessources([...result]);
+        setLoadingTotalRessources(false);
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description:
+            "Les ressources n'ont pas pu etre télécharger, vérifier votre connexion",
+        });
+        setStartSending(() => false);
+      }
+    };
+    getRessourcesData();
+  }, []);
 
   return (
     <Fragment>
@@ -211,6 +249,33 @@ function ChannelPageCreer() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-2 text-[16px] sm:text-[18px]">
+          {loadingTotalRessources ? (
+            <LoadingTotal />
+          ) : (
+            <div className="space-y-1 w-[350px] h-[250px] rounded-xl shadow-2xl bg-[#eeeded] text-[#191919] overflow-y-scroll flex flex-col items-center gap-3 ">
+              <p className="text-[18px] pl-3">
+                Selectionner les ressources à associer à cet chaine
+              </p>
+              <div className=" flex flex-col items-center gap-2 overflow-y-auto">
+                {totalRessources.length &&
+                  totalRessources?.map((value, index) => (
+                    <div className="flex items-center space-x-2" key={index}>
+                      <Checkbox
+                        id="terms"
+                        onCheckedChange={() => handleAddRessources(value)}
+                      />
+                      <label
+                        htmlFor="terms"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        {value.titleRessource}
+                      </label>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
+
           <div className="space-y-1">
             <Label htmlFor="nomChannel">
               Nom de la chaine <span className="text-[#e91e63] ">*</span>{" "}

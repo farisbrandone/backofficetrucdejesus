@@ -146,7 +146,7 @@ export function ChartAcceuil({
           (index + 1) % 2 === 0 ? "bg-[#e91e63] " : "bg-[#191919]"
         }`}
       />
-      <div className="flex flex-col gap-3 text-[#191919] text-[14px]  pr-3 mt-3 pb-5 mt-5">
+      <div className="flex flex-col gap-3 text-[#191919] text-[14px]  pr-3  pb-5 mt-5">
         <div className=" flex items-center font-bold gap-3">
           {" "}
           <div className=" mr-2"> {icon} </div> <p>{title}</p>

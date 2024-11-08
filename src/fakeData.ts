@@ -64,6 +64,7 @@ export interface ChannelPageDataType {
   dateUpdatedChannel: string;
   dateCreatedChannel: string;
   statusChannel: string;
+  channelRessources: RessourcesDataType[];
   id: string;
 }
 
@@ -728,6 +729,7 @@ export async function requestTogetAllChannelData(): Promise<
           statusChannel,
           typeAccessChannel,
           amountChannel,
+          channelRessources,
         } = doc.data();
         channelData.push({
           id,
@@ -741,6 +743,7 @@ export async function requestTogetAllChannelData(): Promise<
           statusChannel,
           typeAccessChannel,
           amountChannel,
+          channelRessources,
         });
       });
 
@@ -871,6 +874,7 @@ export async function requestToGetChannelDataWithId(
         dateUpdatedChannel,
         dateCreatedChannel,
         statusChannel,
+        channelRessources,
       } = docSnap.data();
       return {
         id,
@@ -884,6 +888,7 @@ export async function requestToGetChannelDataWithId(
         dateUpdatedChannel,
         dateCreatedChannel,
         statusChannel,
+        channelRessources,
       };
     } else {
       throw new Error("Le document n'existe pas");
@@ -1139,6 +1144,7 @@ export const requestToGetMembreDataBySearchValue = async (
         nombrePartage,
         nombreLikes,
         nombreCommentaire,
+        nombreDeMerciBenis,
       } = doc.data();
       memberData.push({
         id,
@@ -1155,6 +1161,7 @@ export const requestToGetMembreDataBySearchValue = async (
         nombrePartage,
         nombreLikes,
         nombreCommentaire,
+        nombreDeMerciBenis,
       });
     });
     const filteredDocuments = memberData.filter(
@@ -1254,6 +1261,7 @@ export const requestToGetChannelDataBySearchValue = async (
         statusChannel,
         typeAccessChannel,
         amountChannel,
+        channelRessources,
       } = doc.data();
       channelData.push({
         id,
@@ -1267,6 +1275,7 @@ export const requestToGetChannelDataBySearchValue = async (
         statusChannel,
         typeAccessChannel,
         amountChannel,
+        channelRessources,
       });
     });
     const filteredDocuments = channelData.filter((doc) =>
@@ -1472,6 +1481,7 @@ export async function requestToGetMemberDataWithId(
         nombrePartage,
         nombreLikes,
         nombreCommentaire,
+        nombreDeMerciBenis,
       } = docSnap.data();
       return {
         id,
@@ -1488,6 +1498,7 @@ export async function requestToGetMemberDataWithId(
         nombrePartage,
         nombreLikes,
         nombreCommentaire,
+        nombreDeMerciBenis,
       };
     } else {
       throw new Error("Le document n'existe pas");
@@ -1522,6 +1533,7 @@ export async function requestTogetAllMembreData(): Promise<MemberDataType[]> {
           nombrePartage,
           nombreLikes,
           nombreCommentaire,
+          nombreDeMerciBenis,
         } = doc.data();
         membreData.push({
           id,
@@ -1538,6 +1550,7 @@ export async function requestTogetAllMembreData(): Promise<MemberDataType[]> {
           nombrePartage,
           nombreLikes,
           nombreCommentaire,
+          nombreDeMerciBenis,
         });
       });
 

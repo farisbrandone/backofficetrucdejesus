@@ -31,6 +31,7 @@ export interface MemberDataType {
   nombrePartage: number;
   nombreLikes: number;
   nombreCommentaire: number;
+  nombreDeMerciBenis: number;
 }
 
 export interface MemberDataComponentType {
