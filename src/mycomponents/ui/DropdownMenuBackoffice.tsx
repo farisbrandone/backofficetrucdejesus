@@ -11,6 +11,7 @@ import {
   requestToDeleteEventWithId,
   requestToDeleteGroupeWithId,
   requestToDeleteMembreWithId,
+  requestToDeleteRessourcesWithId,
 } from "@/fakeData";
 import { useToast } from "@/hooks/use-toast";
 import { useMemo, useState } from "react";
@@ -92,6 +93,9 @@ export function DropdownMenuForGroupe({
 
     if (baseUrl === "GERER LES MEMBRES/update-membre-page") {
       result = await requestToDeleteMembreWithId(groupeId);
+    }
+    if (baseUrl === "GERER LES RESSOURCES/update-ressources-page") {
+      result = await requestToDeleteRessourcesWithId(groupeId);
     }
 
     if (result && !result.success) {

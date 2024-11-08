@@ -28,6 +28,9 @@ export interface MemberDataType {
   status: string;
   image: string;
   id: string;
+  nombrePartage: number;
+  nombreLikes: number;
+  nombreCommentaire: number;
 }
 
 export interface MemberDataComponentType {
@@ -158,10 +161,10 @@ function MemberDataComponent({
         {format(new Date(value.birthDay), "dd/MM/yyyy")}
       </div>
       <div className=" place-content-center mx-auto overflow-hidden text-center">
-        {value.dateCreation}
+        {format(new Date(value.dateCreation), "'le' dd MMM yyyy")}
       </div>
       <div className="place-content-center mx-auto overflow-hidden text-center">
-        {value.dateMiseAJour}
+        {format(new Date(value.dateMiseAJour), "'le' dd MMM yyyy")}
       </div>
       <div className="place-content-center mx-auto">
         {loadingStatus ? (

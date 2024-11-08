@@ -1,8 +1,8 @@
-import { faker } from "@faker-js/faker";
+/* import { faker } from "@faker-js/faker"; */
 import CardAddGroup from "../ui/CardAddGroup";
 import { CarteCreerForGroup } from "../ui/CarteCreer";
 
-import { format } from "date-fns";
+/* import { format } from "date-fns"; */
 /* import { DropdownMenuBackoffice } from "../ui/DropdownMenuBackoffice"; */
 
 import { Fragment } from "react/jsx-runtime";
@@ -25,7 +25,7 @@ export const groupeIcon = (
   </svg>
 );
 
-export const dataForGroup = [
+/* export const dataForGroup = [
   {
     title: faker.word.words(3),
     date: format(
@@ -34,7 +34,7 @@ export const dataForGroup = [
     ),
     subtitle: faker.word.words(6),
   },
-];
+]; */
 
 function GroupePage() {
   const [groupeData, setGroupeData] = useState<GroupeDataType[]>();

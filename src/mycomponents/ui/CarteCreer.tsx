@@ -59,7 +59,7 @@ export default function CarteCreer({
           </div>
         </div>
         <div className="text-[12px] mt-2 ">
-          <p>{date}</p>
+          <p>{format(new Date(date), "dd MMM yyyy")}</p>
           <p>{subTitle}</p>
         </div>
       </div>
@@ -186,7 +186,7 @@ export function CarteCreerForGroup({
           </div>
         </div>
         <div className="text-[12px] mt-2 ">
-          <p>{date}</p>
+          <p>{format(new Date(date), "dd MMM yyyy")}</p>
           <p>{descriptionGroupe}</p>
         </div>
       </div>
@@ -346,7 +346,7 @@ export function CarteCreerForEvent({
           <p>
             l'événement aura lieu{" "}
             {dateOfEvent &&
-              format(new Date(dateOfEvent), "' le' dd/MM/yyyy 'à' hh/mm ")}
+              format(new Date(dateOfEvent), "' le' dd MMM yyyy 'à' hh/mm ")}
           </p>
           <p>
             Nombre de groupes associés à cet événement:{" "}

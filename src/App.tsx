@@ -39,6 +39,10 @@ import { ChannelPageMain } from "./mycomponents/channelPage/ChannelPageMain";
 import ChannelPage from "./mycomponents/channelPage/ChannelPage";
 import ChannelPageCreer from "./mycomponents/channelPage/ChannelPageCreer";
 import ChannelPageUpdate from "./mycomponents/channelPage/ChannelPageUpdate";
+import MainRessourcesPage from "./mycomponents/ressourcesPage/MainRessourcesPage";
+import RessourcesPage from "./mycomponents/ressourcesPage/RessourcesPage";
+import CreerRessourcesPage from "./mycomponents/ressourcesPage/CreerRessourcesPage";
+import UpdateRessourcesPage from "./mycomponents/ressourcesPage/UpdateRessourcesPage";
 /**we configure the loder create in root sidebar component to load data */
 
 const router = createBrowserRouter([
@@ -166,6 +170,24 @@ const router = createBrowserRouter([
           {
             path: "/GERER LES CHAINES/update-channel-page/:channelId",
             element: <ChannelPageUpdate />,
+          },
+        ],
+      },
+      {
+        path: "/GERER LES RESSOURCES",
+        element: <MainRessourcesPage />,
+        children: [
+          {
+            path: "/GERER LES RESSOURCES",
+            element: <RessourcesPage />,
+          },
+          {
+            path: "/GERER LES RESSOURCES/ajouter-des-ressources",
+            element: <CreerRessourcesPage />,
+          },
+          {
+            path: "/GERER LES RESSOURCES/update-ressources-page/:ressourceId",
+            element: <UpdateRessourcesPage />,
           },
         ],
       },

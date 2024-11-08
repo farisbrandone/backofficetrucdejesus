@@ -182,6 +182,9 @@ function MembreCreer() {
         dateCreation: "",
         dateMiseAJour: "",
         id: "",
+        nombrePartage: 0,
+        nombreLikes: 0,
+        nombreCommentaire: 0,
       };
       console.log(data);
       const result = await requestToSetMembreData(data);
@@ -193,7 +196,7 @@ function MembreCreer() {
           description: "Le membre a été crée avec success",
         });
         setStartSending(() => false);
-        window.location.replace("/GERER LES CLIENS");
+        window.location.replace("/GERER LES MEMBRES");
         return;
       } else {
         toast({

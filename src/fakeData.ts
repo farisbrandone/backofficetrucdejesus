@@ -20,7 +20,6 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { communityDataType } from "./mycomponents/communautePage/UpdateCommunaute";
-import { format } from "date-fns";
 import { stateGroupeEvent } from "./mycomponents/evenementPage/hook/UseselectGroupeInEvent";
 import { MemberDataType } from "./mycomponents/membreGererPage/MemberDataComponent";
 export interface User {
@@ -65,6 +64,17 @@ export interface ChannelPageDataType {
   dateUpdatedChannel: string;
   dateCreatedChannel: string;
   statusChannel: string;
+  id: string;
+}
+
+export interface RessourcesDataType {
+  titleRessource: string;
+  descriptionRessource: string;
+  imageRessource: string;
+  textButtonRessource: string;
+  typeRessources: string;
+  urlRessources: string;
+  date: string;
   id: string;
 }
 
@@ -150,7 +160,7 @@ export async function requestToSetGroupeData({
 }: GroupeDataType) {
   try {
     const NotifRef = collection(db, "GroupeData");
-    const date = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
+    const date = new Date().toUTCString();
     await setDoc(doc(NotifRef), {
       titleGroupe,
       descriptionGroupe,
@@ -172,7 +182,7 @@ export async function requestToUpdateGroupeData(
   singleGroupeData: GroupeDataType
 ) {
   const GroupeDataRef = collection(db, "GroupeData");
-  const date = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
+  const date = new Date().toUTCString();
   try {
     const {
       titleGroupe,
@@ -208,7 +218,7 @@ export async function requestToChangeStatus(
 ) {
   console.log({ status });
   const GroupeDataRef = collection(db, database);
-  const date = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
+  const date = new Date().toUTCString();
   try {
     await updateDoc(doc(GroupeDataRef, id), {
       status,
@@ -233,7 +243,7 @@ export async function requestToChangeStatusChannel(
 ) {
   console.log({ status });
   const GroupeDataRef = collection(db, database);
-  const dateUpdatedChannel = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
+  const dateUpdatedChannel = new Date().toUTCString();
   try {
     await updateDoc(doc(GroupeDataRef, id), {
       statusChannel: status,
@@ -414,7 +424,7 @@ export async function requestToSetEventData({
 }: EventDataType) {
   try {
     const NotifRef = collection(db, "EventData");
-    const date = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
+    const date = new Date().toUTCString();
     await setDoc(doc(NotifRef), {
       titleEvent,
       descriptionEvent,
@@ -503,7 +513,7 @@ export async function requestToSetEventDataWithId({
 }: EventDataType) {
   try {
     const NotifRef = collection(db, "EventData");
-    const date = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
+    const date = new Date().toUTCString();
     await setDoc(doc(NotifRef, id), {
       titleEvent,
       descriptionEvent,
@@ -601,9 +611,9 @@ export async function requestToSetClientData({
 }: ClientDataType) {
   try {
     const NotifRef = collection(db, "ClientData");
-    const dateCreated = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
+    const dateCreated = new Date().toUTCString();
 
-    const dateUpdated = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
+    const dateUpdated = new Date().toUTCString();
     await setDoc(doc(NotifRef), {
       nomClient,
       emailClient,
@@ -632,15 +642,9 @@ export async function requestToSetChannelData({
 }: ChannelPageDataType) {
   try {
     const NotifRef = collection(db, "ChannelData");
-    const dateCreatedChannel = format(
-      Date.now(),
-      "'le ' dd/MM/yyyy' à ' kk:mm"
-    );
+    const dateCreatedChannel = new Date().toUTCString();
 
-    const dateUpdatedChannel = format(
-      Date.now(),
-      "'le ' dd/MM/yyyy' à ' kk:mm"
-    );
+    const dateUpdatedChannel = new Date().toUTCString();
     await setDoc(doc(NotifRef), {
       nomChannel,
       descriptionChannel,
@@ -762,7 +766,7 @@ export async function requestToUpdateClientData({
   try {
     const NotifRef = collection(db, "ClientData");
 
-    const dateUpdated = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
+    const dateUpdated = new Date().toUTCString();
     await updateDoc(doc(NotifRef, id), {
       nomClient,
       emailClient,
@@ -791,10 +795,7 @@ export async function requestToUpdateChannelData({
   try {
     const NotifRef = collection(db, "ChannelData");
 
-    const dateUpdatedChannel = format(
-      Date.now(),
-      "'le ' dd/MM/yyyy' à ' kk:mm"
-    );
+    const dateUpdatedChannel = new Date().toUTCString();
     await updateDoc(doc(NotifRef, id), {
       nomChannel,
       descriptionChannel,
@@ -1135,6 +1136,9 @@ export const requestToGetMembreDataBySearchValue = async (
         dateMiseAJour,
         status,
         image,
+        nombrePartage,
+        nombreLikes,
+        nombreCommentaire,
       } = doc.data();
       memberData.push({
         id,
@@ -1148,6 +1152,9 @@ export const requestToGetMembreDataBySearchValue = async (
         dateMiseAJour,
         status,
         image,
+        nombrePartage,
+        nombreLikes,
+        nombreCommentaire,
       });
     });
     const filteredDocuments = memberData.filter(
@@ -1366,12 +1373,15 @@ export async function requestToSetMembreData({
   birthDay,
   phone,
   status,
+  nombrePartage,
+  nombreLikes,
+  nombreCommentaire,
 }: MemberDataType) {
   try {
     const NotifRef = collection(db, "MembreData");
-    const dateCreation = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
+    const dateCreation = new Date().toUTCString();
 
-    const dateMiseAJour = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
+    const dateMiseAJour = new Date().toUTCString();
     await setDoc(doc(NotifRef), {
       name,
       email,
@@ -1383,6 +1393,9 @@ export async function requestToSetMembreData({
       status,
       dateCreation,
       dateMiseAJour,
+      nombrePartage,
+      nombreLikes,
+      nombreCommentaire,
     });
     return { message: "Le groupe a été créer avec success", success: true };
   } catch (error) {
@@ -1415,7 +1428,7 @@ export async function requestToUpdateMembreData({
       phone,
       status,
     });
-    const dateMiseAJour = format(Date.now(), "'le ' dd/MM/yyyy' à ' kk:mm");
+    const dateMiseAJour = new Date().toUTCString();
     await updateDoc(docRef, {
       name,
       email,
@@ -1456,6 +1469,9 @@ export async function requestToGetMemberDataWithId(
         status,
         dateCreation,
         dateMiseAJour,
+        nombrePartage,
+        nombreLikes,
+        nombreCommentaire,
       } = docSnap.data();
       return {
         id,
@@ -1469,6 +1485,9 @@ export async function requestToGetMemberDataWithId(
         status,
         dateCreation,
         dateMiseAJour,
+        nombrePartage,
+        nombreLikes,
+        nombreCommentaire,
       };
     } else {
       throw new Error("Le document n'existe pas");
@@ -1500,6 +1519,9 @@ export async function requestTogetAllMembreData(): Promise<MemberDataType[]> {
           status,
           dateCreation,
           dateMiseAJour,
+          nombrePartage,
+          nombreLikes,
+          nombreCommentaire,
         } = doc.data();
         membreData.push({
           id,
@@ -1513,6 +1535,9 @@ export async function requestTogetAllMembreData(): Promise<MemberDataType[]> {
           status,
           dateCreation,
           dateMiseAJour,
+          nombrePartage,
+          nombreLikes,
+          nombreCommentaire,
         });
       });
 
@@ -1543,3 +1568,209 @@ export async function requestToDeleteMembreWithId(dataId: string) {
     };
   }
 }
+
+export async function requestToSetRessourcesData({
+  titleRessource,
+  descriptionRessource,
+  imageRessource,
+  textButtonRessource,
+  typeRessources,
+  urlRessources,
+}: RessourcesDataType) {
+  try {
+    const NotifRef = collection(db, "RessourcesData");
+    const date = new Date().toUTCString();
+    await setDoc(doc(NotifRef), {
+      titleRessource,
+      descriptionRessource,
+      imageRessource,
+      textButtonRessource,
+      typeRessources,
+      urlRessources,
+      date,
+    });
+    return { message: "Le groupe a été créer avec success", success: true };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestTogetAllRessourcesData(): Promise<
+  RessourcesDataType[]
+> {
+  let ressourcesData: RessourcesDataType[] = [];
+  try {
+    const querySnapshot = await getDocs(collection(db, "RessourcesData"));
+    console.log({ length: querySnapshot.docs.length });
+    if (querySnapshot.docs.length !== 0) {
+      querySnapshot.forEach((doc) => {
+        const id = doc.id;
+        const {
+          titleRessource,
+          descriptionRessource,
+          imageRessource,
+          textButtonRessource,
+          typeRessources,
+          urlRessources,
+          date,
+        } = doc.data();
+        ressourcesData.push({
+          id,
+          titleRessource,
+          descriptionRessource,
+          imageRessource,
+          textButtonRessource,
+          typeRessources,
+          urlRessources,
+          date,
+        });
+      });
+
+      return ressourcesData;
+    }
+
+    return [];
+  } catch (error) {
+    console.log({ error: error });
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestToGetRessourcesDataWithId(
+  ressourceId: string
+): Promise<RessourcesDataType> {
+  try {
+    const docRef = doc(db, "RessourcesData", ressourceId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const {
+        id,
+        titleRessource,
+        descriptionRessource,
+        imageRessource,
+        textButtonRessource,
+        typeRessources,
+        urlRessources,
+        date,
+      } = docSnap.data();
+      return {
+        id,
+        titleRessource,
+        descriptionRessource,
+        imageRessource,
+        textButtonRessource,
+        typeRessources,
+        urlRessources,
+        date,
+      };
+    } else {
+      throw new Error("Le document n'existe pas");
+    }
+  } catch (error) {
+    console.log({ error: error });
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestToUpdateRessourcesData({
+  id,
+  titleRessource,
+  descriptionRessource,
+  imageRessource,
+  textButtonRessource,
+  typeRessources,
+  urlRessources,
+}: RessourcesDataType) {
+  try {
+    const docRef = doc(db, "RessourcesData", id);
+
+    const date = new Date().toUTCString();
+    await updateDoc(docRef, {
+      titleRessource,
+      descriptionRessource,
+      imageRessource,
+      textButtonRessource,
+      typeRessources,
+      urlRessources,
+      date,
+    });
+
+    return {
+      message: "La ressource a été mis à jour avec success",
+      success: true,
+    };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestToDeleteRessourcesWithId(dataId: string) {
+  const docRef = doc(db, "RessourcesData", dataId);
+  try {
+    await deleteDoc(docRef);
+    return {
+      message: "le document à été supprimer avec success",
+      success: true,
+    };
+  } catch (error) {
+    return {
+      message: "Un problème est survenu pendant la suppression",
+      success: false,
+    };
+  }
+}
+
+export const requestToGetRessourcesDataBySearchValue = async (
+  searchValue: string
+) => {
+  let ressourcesData: RessourcesDataType[] = [];
+
+  try {
+    const clientRef = collection(db, "EventData");
+    /*  const q = query(
+      clientRef,
+      orderBy("date"),
+      where("titleEvent", "<=", searchValue),
+      where("titleEvent", ">=", searchValue)
+    ); */
+    const querySnapshot = await getDocs(clientRef);
+    console.log({ querySnapshot });
+    querySnapshot.forEach((doc) => {
+      const id = doc.id;
+      const {
+        titleRessource,
+        descriptionRessource,
+        imageRessource,
+        textButtonRessource,
+        typeRessources,
+        urlRessources,
+        date,
+      } = doc.data();
+      ressourcesData.push({
+        id,
+        titleRessource,
+        descriptionRessource,
+        imageRessource,
+        textButtonRessource,
+        typeRessources,
+        urlRessources,
+        date,
+      });
+    });
+    const filteredDocuments = ressourcesData.filter((doc) =>
+      doc.titleRessource.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    return filteredDocuments;
+    //return eventData;
+  } catch (error) {
+    throw error;
+  }
+};

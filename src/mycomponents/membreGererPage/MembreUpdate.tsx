@@ -188,6 +188,9 @@ function MembreUpdate() {
         dateCreation: "",
         dateMiseAJour: "",
         id: membreId ? membreId : "",
+        nombrePartage: 0,
+        nombreLikes: 0,
+        nombreCommentaire: 0,
       };
       console.log(data);
       const result = await requestToUpdateMembreData(data);
