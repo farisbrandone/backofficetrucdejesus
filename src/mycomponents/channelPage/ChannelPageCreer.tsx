@@ -161,9 +161,8 @@ function ChannelPageCreer() {
         id: "",
         channelRessources: channelRessources,
       };
-      console.log(data);
-      const result = await requestToSetChannelData(data);
-      console.log(result);
+
+      const result = await requestToSetChannelData(data, groupeId);
 
       if (result.success) {
         toast({

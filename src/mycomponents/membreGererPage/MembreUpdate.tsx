@@ -192,6 +192,8 @@ function MembreUpdate() {
         nombreLikes: 0,
         nombreCommentaire: 0,
         nombreDeMerciBenis: 0,
+        nombreDactivite: 0,
+        nombreDeBadge: 0,
       };
       console.log(data);
       const result = await requestToUpdateMembreData(data);

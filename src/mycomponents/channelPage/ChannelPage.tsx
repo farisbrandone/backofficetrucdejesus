@@ -74,9 +74,10 @@ export const PlusIcon = (width: string, heigth: string) => {
 
 function ChannelPage() {
   /* const [copied, setCopied] = useState(false); */
-  const [channelData, setChannelData] = useState<ChannelPageDataType[]>();
+  const [channelData, setChannelData] = useState<ChannelPageDataType[]>([]);
   const [loadingFail, setLoadingFail] = useState(false);
-  const { groupeId } = useParams<string>();
+  const { groupeId } = useParams<{ groupeId: string }>();
+
   /*  const handleCopy = () => {
     navigator.clipboard.writeText(
       "https://untrucdejesus.gererlesclients.com/client"
@@ -87,12 +88,19 @@ function ChannelPage() {
   useEffect(() => {
     const getAllChannelData = async () => {
       try {
-        const data = await requestTogetAllChannelData();
-        setChannelData([...data]);
+        const data = await requestTogetAllChannelData(groupeId as string);
+        const result = [...data];
+
+        setChannelData(() => {
+          console.log("nono");
+          console.log(groupeId);
+          return [...result];
+        });
       } catch (error) {
         setLoadingFail(true);
       }
     };
+
     getAllChannelData();
   }, []);
 
@@ -196,8 +204,9 @@ function ChannelPage() {
                 <ChannelPageComponent
                   value={value}
                   index={index}
-                  setChannelData={setChannelData}
+                  /*  setChannelData={setChannelData} */
                   setLoadingFail={setLoadingFail}
+                  /*  groupeId={groupeId as string} */
                 />
               </Fragment>
             ))}

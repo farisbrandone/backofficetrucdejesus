@@ -203,6 +203,7 @@ export function CarteCreerForGroup({
             title="Action"
             groupeId={groupeId}
             baseUrl="GROUPES/update-groupe-page"
+            groupeForEventSelect={[]}
           />
         </div>
       </div>
@@ -368,6 +369,7 @@ export function CarteCreerForEvent({
             title="Action"
             groupeId={eventId}
             baseUrl="EVENEMENTS/update-event-page"
+            groupeForEventSelect={groupeForEventSelect}
           />
         </div>
       </div>

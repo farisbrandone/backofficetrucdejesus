@@ -186,10 +186,11 @@ function MembreCreer() {
         nombreLikes: 0,
         nombreCommentaire: 0,
         nombreDeMerciBenis: 0,
+        nombreDactivite: 0,
+        nombreDeBadge: 0,
       };
       console.log(data);
       const result = await requestToSetMembreData(data);
-      console.log(result);
 
       if (result.success) {
         toast({
@@ -455,7 +456,7 @@ function MembreCreer() {
             className="p-0 flex items-center justify-center bg-[#e91e63] hover:bg-[#e91e62e0]"
           >
             <NavLink
-              to="/GERER DES MEMBRES"
+              to="/GERER LES MEMBRES"
               className="w-full h-full flex items-center justify-center p-2"
             >
               Retour à la page Membre

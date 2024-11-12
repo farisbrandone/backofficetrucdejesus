@@ -32,6 +32,8 @@ export interface MemberDataType {
   nombreLikes: number;
   nombreCommentaire: number;
   nombreDeMerciBenis: number;
+  nombreDactivite: number;
+  nombreDeBadge: number;
 }
 
 export interface MemberDataComponentType {
@@ -206,6 +208,7 @@ function MemberDataComponent({
           title="..."
           groupeId={value.id}
           baseUrl="GERER LES MEMBRES/update-membre-page"
+          groupeForEventSelect={[]}
         />
       </div>
     </div>

@@ -16,6 +16,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
+import { stateGroupeEvent } from "../evenementPage/hook/UseselectGroupeInEvent";
 
 export function DropdownMenuBackoffice({ title }: { title: string }) {
   const [rotation, setRotation] = useState(0);
@@ -67,10 +68,12 @@ export function DropdownMenuForGroupe({
   title,
   groupeId,
   baseUrl,
+  groupeForEventSelect,
 }: {
   title: string;
   groupeId: string;
   baseUrl: string;
+  groupeForEventSelect: stateGroupeEvent[];
 }) {
   console.log(baseUrl);
   const [rotation, setRotation] = useState(0);
@@ -88,7 +91,7 @@ export function DropdownMenuForGroupe({
       result = await requestToDeleteGroupeWithId(groupeId);
     }
     if (baseUrl === "EVENEMENTS/update-event-page") {
-      result = await requestToDeleteEventWithId(groupeId);
+      result = await requestToDeleteEventWithId(groupeId, groupeForEventSelect);
     }
 
     if (baseUrl === "GERER LES MEMBRES/update-membre-page") {

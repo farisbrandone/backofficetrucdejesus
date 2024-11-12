@@ -13,7 +13,8 @@ import {
   ChannelPageDataType,
   requestToChangeStatusChannel,
   requestTodeletenChannelDataWithId,
-  requestTogetAllChannelData,
+  /*  requestTogetAllChannelData, */
+  requestToGetChannelDataWithId,
 } from "@/fakeData";
 import { NavLink } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -30,25 +31,28 @@ export interface UserDataType {
 }
 
 export interface ChannelPageComponentType {
+  /*  groupeId: string; */
   value: ChannelPageDataType;
   index: number;
-  setChannelData: React.Dispatch<
-    React.SetStateAction<ChannelPageDataType[] | undefined>
-  >;
+  /* setChannelData: React.Dispatch<
+    React.SetStateAction<ChannelPageDataType[]  | undefined >
+  >; */
   setLoadingFail: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function ChannelPageComponent({
   value,
   index,
-  setChannelData,
+  /*  setChannelData, */
   setLoadingFail,
-}: ChannelPageComponentType) {
+}: /*  groupeId, */
+ChannelPageComponentType) {
   const [pageForDeletion, setPageForDeletion] = useState(false);
   const [stateSuppression, setStateSuppression] = useState(false);
   const { toast } = useToast();
   const [switchState, setSwitchState] = useState(value.statusChannel);
   const [loadingStatus, setLoadingStatus] = useState(false);
+  const [channelOne, setChannelOne] = useState({ ...value });
 
   const handleSwitch = async () => {
     try {
@@ -84,7 +88,10 @@ function ChannelPageComponent({
 
   const deleteChannel = async () => {
     setStateSuppression(() => true);
-    const result = await requestTodeletenChannelDataWithId(value.id);
+    const result = await requestTodeletenChannelDataWithId(
+      value.id,
+      value.groupeIdChannel
+    );
     if (result && !result.success) {
       toast({
         variant: "destructive",
@@ -109,8 +116,8 @@ function ChannelPageComponent({
   useEffect(() => {
     const getAllClientData = async () => {
       try {
-        const data = await requestTogetAllChannelData();
-        setChannelData([...data]);
+        const data = await requestToGetChannelDataWithId(value.id);
+        setChannelOne({ ...data });
       } catch (error) {
         setLoadingFail(true);
       }
@@ -163,29 +170,33 @@ function ChannelPageComponent({
                 : "bg-[#e91e63] text-white"
             } text-[20px] flex items-center justify-center `}
           >
-            {value.nomChannel?.charAt(0).toUpperCase()}
+            {channelOne.nomChannel?.charAt(0).toUpperCase()}
           </Avatar>
         </div>{" "}
-        <p className="text-[14px] "> {value.nomChannel?.split(" ")[0]} </p>
+        <p className="text-[14px] "> {channelOne.nomChannel?.split(" ")[0]} </p>
       </div>
 
       <div className="place-content-center mx-auto">
         <img
-          src={value.imageChannel}
+          src={channelOne.imageChannel}
           alt=""
           className="object-cover w-full p-1 h-[40px]"
         />
       </div>
-      <div className=" place-content-center mx-auto">{value.typeChannel}</div>
       <div className=" place-content-center mx-auto">
-        {value.typeAccessChannel}
+        {channelOne.typeChannel}
       </div>
-      <div className=" place-content-center mx-auto">{value.amountChannel}</div>
       <div className=" place-content-center mx-auto">
-        {value.dateCreatedChannel}
+        {channelOne.typeAccessChannel}
+      </div>
+      <div className=" place-content-center mx-auto">
+        {channelOne.amountChannel}
+      </div>
+      <div className=" place-content-center mx-auto">
+        {channelOne.dateCreatedChannel}
       </div>
       <div className="place-content-center mx-auto ">
-        {value.dateUpdatedChannel}
+        {channelOne.dateUpdatedChannel}
       </div>
       <div className=" place-content-center mx-auto flex items-center space-x-2">
         {loadingStatus ? (
@@ -212,7 +223,7 @@ function ChannelPageComponent({
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <NavLink
-                  to={`/GERER LES CHAINES/update-channel-page/${value.id}`}
+                  to={`/GERER LES CHAINES/update-channel-page/${channelOne.id}`}
                 >
                   Mettre à jour
                 </NavLink>

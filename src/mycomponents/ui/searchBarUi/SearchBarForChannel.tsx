@@ -8,7 +8,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 interface SearchBackofficeType {
   placeholder: string;
   setChannelData: React.Dispatch<
-    React.SetStateAction<ChannelPageDataType[] | undefined>
+    React.SetStateAction<ChannelPageDataType[] /* | undefined */>
   >;
 }
 

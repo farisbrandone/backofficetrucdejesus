@@ -107,6 +107,10 @@ function UpdateGroupePage() {
         status: status,
         date: "",
         id: groupeId,
+        nombreDePartages: 0,
+        nombreDevenements: 0,
+        nombreDeChaines: 0,
+        nombreDePassionnner: 0,
       };
       const result = await requestToUpdateGroupeData(data);
       console.log(result);

@@ -16,6 +16,7 @@ import {
   startAfter,
   endBefore,
   startAt,
+  increment,
   /* where, */
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
@@ -40,6 +41,10 @@ export interface GroupeDataType {
   banniereUrlGroupe: string;
   logoUrlGroupe: string;
   status: string;
+  nombreDePartages: number;
+  nombreDevenements: number;
+  nombreDeChaines: number;
+  nombreDePassionnner: number;
 }
 
 export interface ClientDataType {
@@ -127,6 +132,10 @@ export async function requestTogetAllGroupeData(): Promise<GroupeDataType[]> {
           typeAccess,
           status,
           date,
+          nombreDePartages,
+          nombreDevenements,
+          nombreDeChaines,
+          nombreDePassionnner,
         } = doc.data();
         groupeData.push({
           id,
@@ -137,6 +146,10 @@ export async function requestTogetAllGroupeData(): Promise<GroupeDataType[]> {
           typeAccess,
           date,
           status,
+          nombreDePartages,
+          nombreDevenements,
+          nombreDeChaines,
+          nombreDePassionnner,
         });
       });
       console.log({ drdr_drdr: groupeData[0].id });
@@ -279,6 +292,10 @@ export async function requestToGetGroupDataWithId(
         logoUrlGroupe,
         date,
         status,
+        nombreDePartages,
+        nombreDevenements,
+        nombreDeChaines,
+        nombreDePassionnner,
       } = docSnap.data();
       return {
         id,
@@ -289,6 +306,10 @@ export async function requestToGetGroupDataWithId(
         logoUrlGroupe,
         date,
         status,
+        nombreDePartages,
+        nombreDevenements,
+        nombreDeChaines,
+        nombreDePassionnner,
       };
     } else {
       throw new Error("Le document n'existe pas");
@@ -426,7 +447,7 @@ export async function requestToSetEventData({
   try {
     const NotifRef = collection(db, "EventData");
     const date = new Date().toUTCString();
-    await setDoc(doc(NotifRef), {
+    const promise1 = setDoc(doc(NotifRef), {
       titleEvent,
       descriptionEvent,
       imageUrlEvent,
@@ -440,6 +461,19 @@ export async function requestToSetEventData({
       groupeForEventSelect,
       date,
     });
+    if (groupeForEventSelect.length !== 0) {
+      const newval = groupeForEventSelect.map((value) => {
+        const groupeDataRef = doc(db, "GroupeData", value.groupeId);
+        const promise2 = updateDoc(groupeDataRef, {
+          nombreDevenements: increment(1),
+        });
+        return promise2;
+      });
+      await Promise.all([promise1, ...newval]);
+      return { message: "Le groupe a été créer avec success", success: true };
+    }
+
+    await promise1;
     return { message: "Le groupe a été créer avec success", success: true };
   } catch (error) {
     throw new Error(
@@ -588,10 +622,29 @@ export async function requestTogetAllEventData(): Promise<EventDataType[]> {
   }
 }
 
-export async function requestToDeleteEventWithId(dataId: string) {
+export async function requestToDeleteEventWithId(
+  dataId: string,
+  groupeForEventSelect: stateGroupeEvent[]
+) {
   const docRef = doc(db, "EventData", dataId);
   try {
-    await deleteDoc(docRef);
+    const promise1 = deleteDoc(docRef);
+    if (groupeForEventSelect.length !== 0) {
+      const newval = groupeForEventSelect.map((value) => {
+        const groupeDataRef = doc(db, "GroupeData", value.groupeId);
+        const promise2 = updateDoc(groupeDataRef, {
+          nombreDevenements: increment(-1),
+        });
+        return promise2;
+      });
+      await Promise.all([promise1, ...newval]);
+      return {
+        message: "le document à été supprimer avec success",
+        success: true,
+      };
+    }
+
+    await promise1;
     return {
       message: "le document à été supprimer avec success",
       success: true,
@@ -631,22 +684,26 @@ export async function requestToSetClientData({
   }
 }
 
-export async function requestToSetChannelData({
-  nomChannel,
-  descriptionChannel,
-  typeChannel,
-  imageChannel,
-  groupeIdChannel,
-  statusChannel,
-  typeAccessChannel,
-  amountChannel,
-}: ChannelPageDataType) {
+export async function requestToSetChannelData(
+  {
+    nomChannel,
+    descriptionChannel,
+    typeChannel,
+    imageChannel,
+    groupeIdChannel,
+    statusChannel,
+    typeAccessChannel,
+    amountChannel,
+    channelRessources,
+  }: ChannelPageDataType,
+  groupeId: string
+) {
   try {
     const NotifRef = collection(db, "ChannelData");
     const dateCreatedChannel = new Date().toUTCString();
 
     const dateUpdatedChannel = new Date().toUTCString();
-    await setDoc(doc(NotifRef), {
+    const promise1 = setDoc(doc(NotifRef), {
       nomChannel,
       descriptionChannel,
       typeChannel,
@@ -657,9 +714,19 @@ export async function requestToSetChannelData({
       amountChannel,
       dateCreatedChannel,
       dateUpdatedChannel,
+      channelRessources,
     });
+
+    const groupeDataRef = doc(db, "GroupeData", groupeId);
+    const promise2 = updateDoc(groupeDataRef, {
+      nombreDeChaines: increment(1),
+    });
+
+    await Promise.all([promise1, promise2]);
+
     return { message: "La chaine a été créer avec success", success: true };
   } catch (error) {
+    console.log(error);
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );
@@ -707,12 +774,13 @@ export async function requestTogetAllClientData(): Promise<ClientDataType[]> {
   }
 }
 
-export async function requestTogetAllChannelData(): Promise<
-  ChannelPageDataType[]
-> {
+export async function requestTogetAllChannelData(
+  groupeId: string
+): Promise<ChannelPageDataType[]> {
   let channelData: ChannelPageDataType[] = [];
 
   try {
+    console.log({ groupeId });
     const querySnapshot = await getDocs(collection(db, "ChannelData"));
     console.log({ length: querySnapshot.docs.length });
     if (querySnapshot.docs.length !== 0) {
@@ -746,8 +814,11 @@ export async function requestTogetAllChannelData(): Promise<
           channelRessources,
         });
       });
-
-      return channelData;
+      const result = channelData.filter(
+        (channel) => channel.groupeIdChannel === groupeId
+      );
+      console.log(result);
+      return result;
     }
 
     return [];
@@ -856,10 +927,10 @@ export async function requestToGetClientDataWithId(
 }
 
 export async function requestToGetChannelDataWithId(
-  clientId: string
+  channelId: string
 ): Promise<ChannelPageDataType> {
   try {
-    const docRef = doc(db, "ChannelData", clientId);
+    const docRef = doc(db, "ChannelData", channelId);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       const {
@@ -916,10 +987,22 @@ export async function requestTodeleteClientDataWithId(dataId: string) {
     };
   }
 }
-export async function requestTodeletenChannelDataWithId(dataId: string) {
+export async function requestTodeletenChannelDataWithId(
+  dataId: string,
+  groupeId: string
+) {
   const docRef = doc(db, "ChannelData", dataId);
+
   try {
-    await deleteDoc(docRef);
+    const promise1 = deleteDoc(docRef);
+
+    const groupeDataRef = doc(db, "GroupeData", groupeId);
+    const promise2 = updateDoc(groupeDataRef, {
+      nombreDeChaines: increment(-1),
+    });
+
+    await Promise.all([promise1, promise2]);
+
     return {
       message: "le document à été supprimer avec success",
       success: true,
@@ -1145,6 +1228,8 @@ export const requestToGetMembreDataBySearchValue = async (
         nombreLikes,
         nombreCommentaire,
         nombreDeMerciBenis,
+        nombreDactivite,
+        nombreDeBadge,
       } = doc.data();
       memberData.push({
         id,
@@ -1162,6 +1247,8 @@ export const requestToGetMembreDataBySearchValue = async (
         nombreLikes,
         nombreCommentaire,
         nombreDeMerciBenis,
+        nombreDactivite,
+        nombreDeBadge,
       });
     });
     const filteredDocuments = memberData.filter(
@@ -1313,6 +1400,10 @@ export const requestToGetGroupeDataBySearchValue = async (
         logoUrlGroupe,
         date,
         status,
+        nombreDePartages,
+        nombreDevenements,
+        nombreDeChaines,
+        nombreDePassionnner,
       } = doc.data();
       groupeData.push({
         id,
@@ -1323,6 +1414,10 @@ export const requestToGetGroupeDataBySearchValue = async (
         logoUrlGroupe,
         date,
         status,
+        nombreDePartages,
+        nombreDevenements,
+        nombreDeChaines,
+        nombreDePassionnner,
       });
     });
 
@@ -1385,13 +1480,16 @@ export async function requestToSetMembreData({
   nombrePartage,
   nombreLikes,
   nombreCommentaire,
+  nombreDeMerciBenis,
+  nombreDactivite,
+  nombreDeBadge,
 }: MemberDataType) {
   try {
     const NotifRef = collection(db, "MembreData");
     const dateCreation = new Date().toUTCString();
 
     const dateMiseAJour = new Date().toUTCString();
-    await setDoc(doc(NotifRef), {
+    const promise1 = setDoc(doc(NotifRef), {
       name,
       email,
       motsDepasse,
@@ -1405,9 +1503,25 @@ export async function requestToSetMembreData({
       nombrePartage,
       nombreLikes,
       nombreCommentaire,
+      nombreDeMerciBenis,
+      nombreDactivite,
+      nombreDeBadge,
     });
+
+    const dataGroupe = await requestTogetAllGroupeData();
+    const newVal = dataGroupe.map((val) => {
+      const groupeDataRef = doc(db, "GroupeData", val.id);
+      const promisei = updateDoc(groupeDataRef, {
+        nombreDePassionnner: increment(1),
+      });
+      return promisei;
+    });
+
+    await Promise.all([promise1, ...newVal]);
+
     return { message: "Le groupe a été créer avec success", success: true };
   } catch (error) {
+    console.log(error);
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );
@@ -1482,6 +1596,8 @@ export async function requestToGetMemberDataWithId(
         nombreLikes,
         nombreCommentaire,
         nombreDeMerciBenis,
+        nombreDactivite,
+        nombreDeBadge,
       } = docSnap.data();
       return {
         id,
@@ -1499,6 +1615,8 @@ export async function requestToGetMemberDataWithId(
         nombreLikes,
         nombreCommentaire,
         nombreDeMerciBenis,
+        nombreDactivite,
+        nombreDeBadge,
       };
     } else {
       throw new Error("Le document n'existe pas");
@@ -1534,6 +1652,8 @@ export async function requestTogetAllMembreData(): Promise<MemberDataType[]> {
           nombreLikes,
           nombreCommentaire,
           nombreDeMerciBenis,
+          nombreDactivite,
+          nombreDeBadge,
         } = doc.data();
         membreData.push({
           id,
@@ -1551,6 +1671,8 @@ export async function requestTogetAllMembreData(): Promise<MemberDataType[]> {
           nombreLikes,
           nombreCommentaire,
           nombreDeMerciBenis,
+          nombreDactivite,
+          nombreDeBadge,
         });
       });
 
@@ -1569,7 +1691,17 @@ export async function requestTogetAllMembreData(): Promise<MemberDataType[]> {
 export async function requestToDeleteMembreWithId(dataId: string) {
   const docRef = doc(db, "MembreData", dataId);
   try {
-    await deleteDoc(docRef);
+    const promise1 = deleteDoc(docRef);
+    const dataGroupe = await requestTogetAllGroupeData();
+    const newVal = dataGroupe.map((val) => {
+      const groupeDataRef = doc(db, "GroupeData", val.id);
+      const promisei = updateDoc(groupeDataRef, {
+        nombreDePassionnner: increment(-1),
+      });
+      return promisei;
+    });
+
+    await Promise.all([promise1, ...newVal]);
     return {
       message: "le document à été supprimer avec success",
       success: true,

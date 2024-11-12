@@ -95,6 +95,10 @@ function NewGroupePageCreate() {
         status: status,
         date: "",
         id: "",
+        nombreDePartages: 0,
+        nombreDevenements: 0,
+        nombreDeChaines: 0,
+        nombreDePassionnner: 0,
       };
       console.log(data);
       const result = await requestToSetGroupeData(data);
