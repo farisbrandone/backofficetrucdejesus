@@ -132,6 +132,7 @@ function RessourceDataComponent({
           title="..."
           groupeId={value.id}
           baseUrl="GERER LES RESSOURCES/update-ressources-page"
+          groupeForEventSelect={[]}
         />
       </div>
     </div>
