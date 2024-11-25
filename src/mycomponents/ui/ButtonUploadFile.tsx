@@ -35,8 +35,7 @@ function ButtonUploadFile({
   const { toast } = useToast();
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    console.log(e.target.name);
-    console.log(valueForHtml);
+
     if (!e?.target.files) return;
     /*  if (e.target.name === "file1") return;
     if (e.target.name === "file2") return; */

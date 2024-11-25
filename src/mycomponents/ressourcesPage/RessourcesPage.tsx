@@ -14,6 +14,7 @@ import { ressourceIcon } from "./UpdateRessourcesPage";
 function RessourcesPage() {
   const [ressourcesData, setRessourcesData] = useState<RessourcesDataType[]>();
   const [loadingFail, setLoadingFail] = useState(false);
+
   useEffect(() => {
     const getAllRessourcesData = async () => {
       try {
@@ -65,7 +66,22 @@ function RessourcesPage() {
           <div className="flex items-center justify-center">
             <button
               type="button"
-              title="Ajouter des clients"
+              title="Retour à la page communauté"
+              className="flex items-center"
+            >
+              <NavLink
+                to="/COMMUNAUTES"
+                className="flex items-center px-2 py-2 bg-[#fff] text-[#191919] font-bold rounded-md border-solid border-[1px] border-[#191919]"
+              >
+                <span className="icon-[material-symbols--arrow-circle-left-rounded] text-xl  mr-1 "></span>{" "}
+                <span>Retour</span>
+              </NavLink>
+            </button>
+          </div>
+          <div className="flex items-center justify-center">
+            <button
+              type="button"
+              title="Ajouter des ressources"
               className="flex items-center"
             >
               <NavLink
@@ -100,12 +116,13 @@ function RessourcesPage() {
           </p>
         </div>
         <div className="w-full mt-5">
-          <div className="w-full grid grid-cols-6 mb-2">
+          <div className="w-full grid grid-cols-7 mb-2">
             <p className="text-center  ">Titre</p>
             <p className="text-center   ">Image</p>
             <p className="text-center  ">Type</p>
             <p className="text-center   ">Date</p>
             <p className="text-center   ">Text du button</p>
+            <p className="text-center   ">Status</p>
             <p className="text-center ">ACTION</p>
           </div>
 

@@ -80,22 +80,22 @@ export interface RessourcesDataType {
   textButtonRessource: string;
   typeRessources: string;
   urlRessources: string;
+  status: string;
   date: string;
   id: string;
 }
 
-/* export function createRandomUser(): User {
-  return {
-    profile: faker.image.avatar(),
-    firstName: faker.person.firstName(),
-    lastName: faker.person.lastName(),
-    age: faker.number.int(40),
-    visits: faker.number.int(1000),
-    progress: faker.number.int(100),
-  };
-} 
-  
-*/
+export interface LessonLibraryDataType {
+  titleLessonLibrary: string;
+  descriptionLessonLibrary: string;
+  imageLessonLibrary: string;
+  textButtonLessonLibrary: string;
+  typeLessonLibrary: string;
+  urlLessonLibrary: string;
+  status: string;
+  date: string;
+  id: string;
+}
 
 export async function seedData(): Promise<User[]> {
   let notifications: User[] = [];
@@ -1201,14 +1201,6 @@ export const requestToGetMembreDataBySearchValue = async (
 
   try {
     const clientRef = collection(db, "MemberData");
-    /*  const q = query(
-      clientRef,
-      orderBy("dateMiseAJour"),
-      where("name", "<=", searchValue),
-      where("name", ">=", searchValue),
-      where("email", "<=", searchValue),
-      where("email", ">=", searchValue)
-    ); */
     const querySnapshot = await getDocs(clientRef);
     console.log({ querySnapshot });
     querySnapshot.forEach((doc) => {
@@ -1263,6 +1255,41 @@ export const requestToGetMembreDataBySearchValue = async (
   }
 };
 
+export const requestToGetUniversalDataBySearchValue = async <T>(
+  searchValue: string,
+  searchKey: keyof T,
+  database: string
+) => {
+  let data: T[] = [];
+
+  try {
+    const clientRef = collection(db, database);
+
+    const querySnapshot = await getDocs(clientRef);
+    console.log({ querySnapshot });
+    querySnapshot.forEach((doc) => {
+      const id = doc.id;
+      const dataGet = doc.data();
+      const value = {
+        id,
+        ...dataGet,
+      } as T;
+      data.push(value);
+    });
+    const filteredDocuments = data.filter((doc) => {
+      if (typeof doc[searchKey] === "string") {
+        return doc[searchKey]
+          ?.toLowerCase()
+          .includes(searchValue.toLowerCase());
+      } else return false;
+    });
+    return filteredDocuments;
+    //return eventData;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const requestToGetEventDataBySearchValue = async (
   searchValue: string
 ) => {
@@ -1270,12 +1297,7 @@ export const requestToGetEventDataBySearchValue = async (
 
   try {
     const clientRef = collection(db, "EventData");
-    /*  const q = query(
-      clientRef,
-      orderBy("date"),
-      where("titleEvent", "<=", searchValue),
-      where("titleEvent", ">=", searchValue)
-    ); */
+
     const querySnapshot = await getDocs(clientRef);
     console.log({ querySnapshot });
     querySnapshot.forEach((doc) => {
@@ -1721,6 +1743,7 @@ export async function requestToSetRessourcesData({
   textButtonRessource,
   typeRessources,
   urlRessources,
+  status,
 }: RessourcesDataType) {
   try {
     const NotifRef = collection(db, "RessourcesData");
@@ -1733,6 +1756,7 @@ export async function requestToSetRessourcesData({
       typeRessources,
       urlRessources,
       date,
+      status,
     });
     return { message: "Le groupe a été créer avec success", success: true };
   } catch (error) {
@@ -1760,6 +1784,7 @@ export async function requestTogetAllRessourcesData(): Promise<
           typeRessources,
           urlRessources,
           date,
+          status,
         } = doc.data();
         ressourcesData.push({
           id,
@@ -1770,6 +1795,7 @@ export async function requestTogetAllRessourcesData(): Promise<
           typeRessources,
           urlRessources,
           date,
+          status,
         });
       });
 
@@ -1801,6 +1827,7 @@ export async function requestToGetRessourcesDataWithId(
         typeRessources,
         urlRessources,
         date,
+        status,
       } = docSnap.data();
       return {
         id,
@@ -1811,6 +1838,7 @@ export async function requestToGetRessourcesDataWithId(
         typeRessources,
         urlRessources,
         date,
+        status,
       };
     } else {
       throw new Error("Le document n'existe pas");
@@ -1831,6 +1859,7 @@ export async function requestToUpdateRessourcesData({
   textButtonRessource,
   typeRessources,
   urlRessources,
+  status,
 }: RessourcesDataType) {
   try {
     const docRef = doc(db, "RessourcesData", id);
@@ -1844,6 +1873,7 @@ export async function requestToUpdateRessourcesData({
       typeRessources,
       urlRessources,
       date,
+      status,
     });
 
     return {
@@ -1879,7 +1909,7 @@ export const requestToGetRessourcesDataBySearchValue = async (
   let ressourcesData: RessourcesDataType[] = [];
 
   try {
-    const clientRef = collection(db, "EventData");
+    const clientRef = collection(db, "RessourcesData");
     /*  const q = query(
       clientRef,
       orderBy("date"),
@@ -1898,6 +1928,7 @@ export const requestToGetRessourcesDataBySearchValue = async (
         typeRessources,
         urlRessources,
         date,
+        status,
       } = doc.data();
       ressourcesData.push({
         id,
@@ -1908,6 +1939,7 @@ export const requestToGetRessourcesDataBySearchValue = async (
         typeRessources,
         urlRessources,
         date,
+        status,
       });
     });
     const filteredDocuments = ressourcesData.filter((doc) =>
@@ -1919,3 +1951,1299 @@ export const requestToGetRessourcesDataBySearchValue = async (
     throw error;
   }
 };
+
+export interface LessonLibraryDataType {
+  titleLessonLibrary: string;
+  descriptionLessonLibrary: string;
+  shortDescriptionLessonLibrary: string;
+  imageLessonLibrary: string;
+  textButtonLessonLibrary: string;
+  typeLessonLibrary: string;
+  urlLessonLibrary: string;
+  status: string;
+  date: string;
+  id: string;
+}
+
+export async function requestToSetLessonLibraryData({
+  titleLessonLibrary,
+  descriptionLessonLibrary,
+  shortDescriptionLessonLibrary,
+  imageLessonLibrary,
+  textButtonLessonLibrary,
+  typeLessonLibrary,
+  urlLessonLibrary,
+  status,
+}: LessonLibraryDataType) {
+  try {
+    const NotifRef = collection(db, "LessonLibraryData");
+    const date = new Date().toUTCString();
+    await setDoc(doc(NotifRef), {
+      titleLessonLibrary,
+      descriptionLessonLibrary,
+      shortDescriptionLessonLibrary,
+      imageLessonLibrary,
+      textButtonLessonLibrary,
+      typeLessonLibrary,
+      urlLessonLibrary,
+      date,
+      status,
+    });
+    return { message: "Le groupe a été créer avec success", success: true };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestTogetAllLessonLibraryData(): Promise<
+  LessonLibraryDataType[]
+> {
+  let lessonLibraryData: LessonLibraryDataType[] = [];
+  try {
+    const querySnapshot = await getDocs(collection(db, "LessonLibraryData"));
+    console.log({ length: querySnapshot.docs.length });
+    if (querySnapshot.docs.length !== 0) {
+      querySnapshot.forEach((doc) => {
+        const id = doc.id;
+        const {
+          titleLessonLibrary,
+          descriptionLessonLibrary,
+          shortDescriptionLessonLibrary,
+          imageLessonLibrary,
+          textButtonLessonLibrary,
+          typeLessonLibrary,
+          urlLessonLibrary,
+          status,
+          date,
+        } = doc.data();
+        lessonLibraryData.push({
+          id,
+          titleLessonLibrary,
+          descriptionLessonLibrary,
+          shortDescriptionLessonLibrary,
+          imageLessonLibrary,
+          textButtonLessonLibrary,
+          typeLessonLibrary,
+          urlLessonLibrary,
+          status,
+          date,
+        });
+      });
+
+      return lessonLibraryData;
+    }
+
+    return [];
+  } catch (error) {
+    console.log({ error: error });
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export const requestToGetLessonLibraryDataBySearchValue = async (
+  searchValue: string
+) => {
+  let lessonLibraryData: LessonLibraryDataType[] = [];
+
+  try {
+    const clientRef = collection(db, "LessonLibraryData");
+
+    const querySnapshot = await getDocs(clientRef);
+    console.log({ querySnapshot });
+    querySnapshot.forEach((doc) => {
+      const id = doc.id;
+      const {
+        titleLessonLibrary,
+        descriptionLessonLibrary,
+        shortDescriptionLessonLibrary,
+        imageLessonLibrary,
+        textButtonLessonLibrary,
+        typeLessonLibrary,
+        urlLessonLibrary,
+        status,
+        date,
+      } = doc.data();
+      lessonLibraryData.push({
+        id,
+        titleLessonLibrary,
+        descriptionLessonLibrary,
+        shortDescriptionLessonLibrary,
+        imageLessonLibrary,
+        textButtonLessonLibrary,
+        typeLessonLibrary,
+        urlLessonLibrary,
+        status,
+        date,
+      });
+    });
+    const filteredDocuments = lessonLibraryData.filter((doc) =>
+      doc.titleLessonLibrary.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    return filteredDocuments;
+    //return eventData;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export async function requestToGetLessonLibraryDataWithId(
+  ressourceId: string
+): Promise<LessonLibraryDataType> {
+  try {
+    const docRef = doc(db, "LessonLibraryData", ressourceId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const {
+        id,
+        titleLessonLibrary,
+        descriptionLessonLibrary,
+        shortDescriptionLessonLibrary,
+        imageLessonLibrary,
+        textButtonLessonLibrary,
+        typeLessonLibrary,
+        urlLessonLibrary,
+        status,
+        date,
+      } = docSnap.data();
+      return {
+        id,
+        titleLessonLibrary,
+        descriptionLessonLibrary,
+        shortDescriptionLessonLibrary,
+        imageLessonLibrary,
+        textButtonLessonLibrary,
+        typeLessonLibrary,
+        urlLessonLibrary,
+        status,
+        date,
+      };
+    } else {
+      throw new Error("Le document n'existe pas");
+    }
+  } catch (error) {
+    console.log({ error: error });
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestToUpdateLessonLibraryData({
+  id,
+  titleLessonLibrary,
+  descriptionLessonLibrary,
+  shortDescriptionLessonLibrary,
+  imageLessonLibrary,
+  textButtonLessonLibrary,
+  typeLessonLibrary,
+  urlLessonLibrary,
+  status,
+}: LessonLibraryDataType) {
+  try {
+    const docRef = doc(db, "LessonLibraryData", id);
+
+    const date = new Date().toUTCString();
+    await updateDoc(docRef, {
+      titleLessonLibrary,
+      descriptionLessonLibrary,
+      shortDescriptionLessonLibrary,
+      imageLessonLibrary,
+      textButtonLessonLibrary,
+      typeLessonLibrary,
+      urlLessonLibrary,
+      status,
+      date,
+    });
+
+    return {
+      message: "La lecon a été mis à jour avec success",
+      success: true,
+    };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestToDeleteLessonLibraryWithId(dataId: string) {
+  const docRef = doc(db, "LessonLibraryData", dataId);
+  try {
+    await deleteDoc(docRef);
+    return {
+      message: "le document à été supprimer avec success",
+      success: true,
+    };
+  } catch (error) {
+    return {
+      message: "Un problème est survenu pendant la suppression",
+      success: false,
+    };
+  }
+}
+
+export interface AssetsDataType {
+  titleAssets: string;
+  shortDescriptionAssets: string;
+  imageAssets: string;
+  amountAssets: string;
+  valueAssets: string;
+  webhookUrlAssets: string;
+  status: string;
+  date: string;
+  id: string;
+}
+
+export async function requestToSetAssetsData({
+  titleAssets,
+  shortDescriptionAssets,
+  imageAssets,
+  amountAssets,
+  valueAssets,
+  webhookUrlAssets,
+  status,
+}: AssetsDataType) {
+  try {
+    const NotifRef = collection(db, "AssetsData");
+    const date = new Date().toUTCString();
+    await setDoc(doc(NotifRef), {
+      titleAssets,
+      shortDescriptionAssets,
+      imageAssets,
+      amountAssets,
+      valueAssets,
+      webhookUrlAssets,
+      status,
+      date,
+    });
+    return { message: "L'assets' a été créer avec success", success: true };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestTogetAllAssetsData(): Promise<AssetsDataType[]> {
+  let assetsData: AssetsDataType[] = [];
+  try {
+    const querySnapshot = await getDocs(collection(db, "AssetsData"));
+    console.log({ length: querySnapshot.docs.length });
+    if (querySnapshot.docs.length !== 0) {
+      querySnapshot.forEach((doc) => {
+        const id = doc.id;
+        const {
+          titleAssets,
+          shortDescriptionAssets,
+          imageAssets,
+          amountAssets,
+          valueAssets,
+          webhookUrlAssets,
+          status,
+          date,
+        } = doc.data();
+        assetsData.push({
+          id,
+          titleAssets,
+          shortDescriptionAssets,
+          imageAssets,
+          amountAssets,
+          valueAssets,
+          webhookUrlAssets,
+          status,
+          date,
+        });
+      });
+
+      return assetsData;
+    }
+
+    return [];
+  } catch (error) {
+    console.log({ error: error });
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export const requestToGetAssetsDataBySearchValue = async (
+  searchValue: string
+) => {
+  let assetsData: AssetsDataType[] = [];
+
+  try {
+    const clientRef = collection(db, "AssetsData");
+
+    const querySnapshot = await getDocs(clientRef);
+    console.log({ querySnapshot });
+    querySnapshot.forEach((doc) => {
+      const id = doc.id;
+      const {
+        titleAssets,
+        shortDescriptionAssets,
+        imageAssets,
+        amountAssets,
+        valueAssets,
+        webhookUrlAssets,
+        status,
+        date,
+      } = doc.data();
+      assetsData.push({
+        id,
+        titleAssets,
+        shortDescriptionAssets,
+        imageAssets,
+        amountAssets,
+        valueAssets,
+        webhookUrlAssets,
+        status,
+        date,
+      });
+    });
+    const filteredDocuments = assetsData.filter((doc) =>
+      doc.titleAssets.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    return filteredDocuments;
+    //return eventData;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export async function requestToGetAssetsDataWithId(
+  ressourceId: string
+): Promise<AssetsDataType> {
+  try {
+    const docRef = doc(db, "AssetsData", ressourceId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const {
+        id,
+        titleAssets,
+        shortDescriptionAssets,
+        imageAssets,
+        amountAssets,
+        valueAssets,
+        webhookUrlAssets,
+        status,
+        date,
+      } = docSnap.data();
+      return {
+        id,
+        titleAssets,
+        shortDescriptionAssets,
+        imageAssets,
+        amountAssets,
+        valueAssets,
+        webhookUrlAssets,
+        status,
+        date,
+      };
+    } else {
+      throw new Error("Le document n'existe pas");
+    }
+  } catch (error) {
+    console.log({ error: error });
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestToUpdateAssetsData({
+  id,
+  titleAssets,
+  shortDescriptionAssets,
+  imageAssets,
+  amountAssets,
+  valueAssets,
+  webhookUrlAssets,
+  status,
+}: AssetsDataType) {
+  try {
+    const docRef = doc(db, "AssetsData", id);
+
+    const date = new Date().toUTCString();
+    await updateDoc(docRef, {
+      titleAssets,
+      shortDescriptionAssets,
+      imageAssets,
+      amountAssets,
+      valueAssets,
+      webhookUrlAssets,
+      status,
+      date,
+    });
+
+    return {
+      message: "L'assets a été mis à jour avec success",
+      success: true,
+    };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestToDeleteAssetsWithId(dataId: string) {
+  const docRef = doc(db, "AssetsData", dataId);
+  try {
+    await deleteDoc(docRef);
+    return {
+      message: "le document à été supprimer avec success",
+      success: true,
+    };
+  } catch (error) {
+    return {
+      message: "Un problème est survenu pendant la suppression",
+      success: false,
+    };
+  }
+}
+
+export interface EmailNotificationDataType {
+  title: string;
+  emailAuthor: string;
+  subject: string;
+  messageOfEmail: string;
+  status: string;
+  date: string;
+  id: string;
+}
+
+export async function requestToSetEmailNotificationData({
+  title,
+  emailAuthor,
+  subject,
+  messageOfEmail,
+  status,
+}: EmailNotificationDataType) {
+  try {
+    const NotifRef = collection(db, "EmailNotificationData");
+    const date = new Date().toUTCString();
+    await setDoc(doc(NotifRef), {
+      title,
+      emailAuthor,
+      subject,
+      messageOfEmail,
+      status,
+      date,
+    });
+    return { message: " success", success: true };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestTogetAllEmailNotificationData(): Promise<
+  EmailNotificationDataType[]
+> {
+  let emailNotificationData: EmailNotificationDataType[] = [];
+  try {
+    const querySnapshot = await getDocs(
+      collection(db, "EmailNotificationData")
+    );
+    console.log({ length: querySnapshot.docs.length });
+    if (querySnapshot.docs.length !== 0) {
+      querySnapshot.forEach((doc) => {
+        const id = doc.id;
+        const { title, emailAuthor, subject, messageOfEmail, status, date } =
+          doc.data();
+        emailNotificationData.push({
+          id,
+          title,
+          emailAuthor,
+          subject,
+          messageOfEmail,
+          status,
+          date,
+        });
+      });
+
+      return emailNotificationData;
+    }
+
+    return [];
+  } catch (error) {
+    console.log({ error: error });
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestToUpdateEmailNotificationData({
+  id,
+  title,
+  emailAuthor,
+  subject,
+  messageOfEmail,
+  status,
+}: EmailNotificationDataType) {
+  try {
+    const docRef = doc(db, "EmailNotificationData", id);
+
+    const date = new Date().toUTCString();
+    await updateDoc(docRef, {
+      title,
+      emailAuthor,
+      subject,
+      messageOfEmail,
+      status,
+      date,
+    });
+
+    return {
+      message: " success",
+      success: true,
+    };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+/* ---------------------------------------------- */
+
+export interface AchatNotificationDataType {
+  titleAchat: string;
+  emailAuthorAchat: string;
+  subjectAchat: string;
+  messageOfEmailAchat: string;
+  statusAchat: string;
+  date: string;
+  id: string;
+}
+
+export async function requestToSetAchatNotificationData({
+  titleAchat,
+  emailAuthorAchat,
+  subjectAchat,
+  messageOfEmailAchat,
+  statusAchat,
+}: AchatNotificationDataType) {
+  try {
+    const NotifRef = collection(db, "AchatNotificationData");
+    const date = new Date().toUTCString();
+    await setDoc(doc(NotifRef), {
+      titleAchat,
+      emailAuthorAchat,
+      subjectAchat,
+      messageOfEmailAchat,
+      statusAchat,
+      date,
+    });
+    return { message: " success", success: true };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestTogetAllAchatNotificationData(): Promise<
+  AchatNotificationDataType[]
+> {
+  let AchatNotificationData: AchatNotificationDataType[] = [];
+  try {
+    const querySnapshot = await getDocs(
+      collection(db, "AchatNotificationData")
+    );
+    console.log({ length: querySnapshot.docs.length });
+    if (querySnapshot.docs.length !== 0) {
+      querySnapshot.forEach((doc) => {
+        const id = doc.id;
+        const {
+          titleAchat,
+          emailAuthorAchat,
+          subjectAchat,
+          messageOfEmailAchat,
+          statusAchat,
+          date,
+        } = doc.data();
+        AchatNotificationData.push({
+          id,
+          titleAchat,
+          emailAuthorAchat,
+          subjectAchat,
+          messageOfEmailAchat,
+          statusAchat,
+          date,
+        });
+      });
+
+      return AchatNotificationData;
+    }
+
+    return [];
+  } catch (error) {
+    console.log({ error: error });
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestToUpdateAchatNotificationData({
+  titleAchat,
+  emailAuthorAchat,
+  subjectAchat,
+  messageOfEmailAchat,
+  statusAchat,
+  id,
+}: AchatNotificationDataType) {
+  try {
+    const docRef = doc(db, "AchatNotificationData", id);
+
+    const date = new Date().toUTCString();
+    await updateDoc(docRef, {
+      titleAchat,
+      emailAuthorAchat,
+      subjectAchat,
+      messageOfEmailAchat,
+      statusAchat,
+      date,
+    });
+
+    return {
+      message: " success",
+      success: true,
+    };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+/* ------------------------------------------------------------ */
+
+export interface MembreNotificationDataType {
+  titleMembre: string;
+  emailAuthorMembre: string;
+  subjectMembre: string;
+  messageOfEmailMembre: string;
+  statusMembre: string;
+  date: string;
+  id: string;
+}
+
+export async function requestToSetMembreNotificationData({
+  titleMembre,
+  emailAuthorMembre,
+  subjectMembre,
+  messageOfEmailMembre,
+  statusMembre,
+}: MembreNotificationDataType) {
+  try {
+    const NotifRef = collection(db, "MembreNotificationData");
+    const date = new Date().toUTCString();
+    await setDoc(doc(NotifRef), {
+      titleMembre,
+      emailAuthorMembre,
+      subjectMembre,
+      messageOfEmailMembre,
+      statusMembre,
+      date,
+    });
+    return { message: " success", success: true };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestTogetAllMembreNotificationData(): Promise<
+  MembreNotificationDataType[]
+> {
+  let MembreNotificationData: MembreNotificationDataType[] = [];
+  try {
+    const querySnapshot = await getDocs(
+      collection(db, "MembreNotificationData")
+    );
+    console.log({ length: querySnapshot.docs.length });
+    if (querySnapshot.docs.length !== 0) {
+      querySnapshot.forEach((doc) => {
+        const id = doc.id;
+        const {
+          titleMembre,
+          emailAuthorMembre,
+          subjectMembre,
+          messageOfEmailMembre,
+          statusMembre,
+          date,
+        } = doc.data();
+        MembreNotificationData.push({
+          id,
+          titleMembre,
+          emailAuthorMembre,
+          subjectMembre,
+          messageOfEmailMembre,
+          statusMembre,
+          date,
+        });
+      });
+
+      return MembreNotificationData;
+    }
+
+    return [];
+  } catch (error) {
+    console.log({ error: error });
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestToUpdateMembreNotificationData({
+  titleMembre,
+  emailAuthorMembre,
+  subjectMembre,
+  messageOfEmailMembre,
+  statusMembre,
+  id,
+}: MembreNotificationDataType) {
+  try {
+    const docRef = doc(db, "MembreNotificationData", id);
+
+    const date = new Date().toUTCString();
+    await updateDoc(docRef, {
+      titleMembre,
+      emailAuthorMembre,
+      subjectMembre,
+      messageOfEmailMembre,
+      statusMembre,
+      date,
+    });
+
+    return {
+      message: " success",
+      success: true,
+    };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+/* --------------------------------------------------------------------- */
+
+export interface BulkNotificationDataType {
+  titleBulk: string;
+  emailAuthorBulk: string;
+  subjectBulk: string;
+  messageOfEmailBulk: string;
+  statusBulk: string;
+  date: string;
+  id: string;
+}
+
+export async function requestToSetBulkNotificationData({
+  titleBulk,
+  emailAuthorBulk,
+  subjectBulk,
+  messageOfEmailBulk,
+  statusBulk,
+}: BulkNotificationDataType) {
+  try {
+    const NotifRef = collection(db, "BulkNotificationData");
+    const date = new Date().toUTCString();
+    await setDoc(doc(NotifRef), {
+      titleBulk,
+      emailAuthorBulk,
+      subjectBulk,
+      messageOfEmailBulk,
+      statusBulk,
+      date,
+    });
+    return { message: " success", success: true };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestTogetAllBulkNotificationData(): Promise<
+  BulkNotificationDataType[]
+> {
+  let BulkNotificationData: BulkNotificationDataType[] = [];
+  try {
+    const querySnapshot = await getDocs(collection(db, "BulkNotificationData"));
+    console.log({ length: querySnapshot.docs.length });
+    if (querySnapshot.docs.length !== 0) {
+      querySnapshot.forEach((doc) => {
+        const id = doc.id;
+        const {
+          titleBulk,
+          emailAuthorBulk,
+          subjectBulk,
+          messageOfEmailBulk,
+          statusBulk,
+          date,
+        } = doc.data();
+        BulkNotificationData.push({
+          id,
+          titleBulk,
+          emailAuthorBulk,
+          subjectBulk,
+          messageOfEmailBulk,
+          statusBulk,
+          date,
+        });
+      });
+
+      return BulkNotificationData;
+    }
+
+    return [];
+  } catch (error) {
+    console.log({ error: error });
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestToUpdateBulkNotificationData({
+  titleBulk,
+  emailAuthorBulk,
+  subjectBulk,
+  messageOfEmailBulk,
+  statusBulk,
+  id,
+}: BulkNotificationDataType) {
+  try {
+    const docRef = doc(db, "BulkNotificationData", id);
+
+    const date = new Date().toUTCString();
+    await updateDoc(docRef, {
+      titleBulk,
+      emailAuthorBulk,
+      subjectBulk,
+      messageOfEmailBulk,
+      statusBulk,
+      date,
+    });
+
+    return {
+      message: " success",
+      success: true,
+    };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+requestToSetAutoresponderData;
+
+export interface AutoresponderDataType {
+  webinarValue: string;
+  autoresponderValue: string;
+  firstNameValue: string;
+  emailValue: string;
+  phoneValue: string;
+  supportHTTPSValue: boolean;
+  date: string;
+  id: string;
+}
+export async function requestToSetAutoresponderData({
+  webinarValue,
+  autoresponderValue,
+  firstNameValue,
+  emailValue,
+  phoneValue,
+  supportHTTPSValue,
+}: AutoresponderDataType) {
+  try {
+    const NotifRef = collection(db, "AutoresponderData");
+    const date = new Date().toUTCString();
+    await setDoc(doc(NotifRef), {
+      webinarValue,
+      autoresponderValue,
+      firstNameValue,
+      emailValue,
+      phoneValue,
+      supportHTTPSValue,
+      date,
+    });
+    return { message: " success", success: true };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export interface FacebookShareData {
+  facebookPostTitle: string;
+  facebookPostDescription: string;
+  facebookPostImage: string;
+  date: string;
+  id: string;
+}
+
+export async function requestToSetFacebookShareData({
+  facebookPostTitle,
+  facebookPostDescription,
+  facebookPostImage,
+}: FacebookShareData) {
+  try {
+    const NotifRef = collection(db, "FacebookShareData");
+    const date = new Date().toUTCString();
+    await setDoc(doc(NotifRef), {
+      facebookPostTitle,
+      facebookPostDescription,
+      facebookPostImage,
+      date,
+    });
+    return { message: " success", success: true };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export interface CustumScriptData {
+  fBRetargetingPixel: string;
+  perfectAudiencePixel: string;
+  codeSnippet: string;
+  date: string;
+  id: string;
+}
+
+export async function requestToSetCustumScriptData({
+  fBRetargetingPixel,
+  perfectAudiencePixel,
+  codeSnippet,
+}: CustumScriptData) {
+  try {
+    const NotifRef = collection(db, "CustumScriptData ");
+    const date = new Date().toUTCString();
+    await setDoc(doc(NotifRef), {
+      fBRetargetingPixel,
+      perfectAudiencePixel,
+      codeSnippet,
+      date,
+    });
+    return { message: " success", success: true };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export interface CNAMEData {
+  CNAMEURL: string;
+
+  date: string;
+  id: string;
+}
+
+export async function requestToSetCNAMEData({ CNAMEURL }: CNAMEData) {
+  try {
+    const NotifRef = collection(db, "CNAMEData ");
+    const date = new Date().toUTCString();
+    await setDoc(doc(NotifRef), {
+      CNAMEURL,
+      date,
+    });
+    return { message: " success", success: true };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export interface WebhookUrlData {
+  webhookUrl: string;
+
+  date: string;
+  id: string;
+}
+
+export async function requestToSetWebhookUrlData({
+  webhookUrl,
+}: WebhookUrlData) {
+  try {
+    const NotifRef = collection(db, "WebhookUrlData ");
+    const date = new Date().toUTCString();
+    await setDoc(doc(NotifRef), {
+      webhookUrl,
+      date,
+    });
+    return { message: " success", success: true };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export interface PopupBannersDataType {
+  title: string;
+  targetUrl: string;
+  image: string;
+  types: string;
+  status: string;
+  statusCommunityPage: string;
+  statusGroupePage: string;
+  groupePageAssociate: GroupeDataType[];
+  id?: string;
+  dateOfCreation: string;
+  dateOfUpdate: string;
+}
+
+export interface BannersAdsDataType {
+  title: string;
+  targetUrl: string;
+  image: string;
+  status: string;
+  statusCommunityPage: string;
+  statusGroupePage: string;
+  groupePageAssociate: GroupeDataType[];
+  id?: string;
+  dateOfCreation: string;
+  dateOfUpdate: string;
+}
+
+export async function requestTogetAllPopupBannersData(): Promise<
+  PopupBannersDataType[]
+> {
+  let PopupBannersData: PopupBannersDataType[] = [];
+  try {
+    const querySnapshot = await getDocs(collection(db, "BulkNotificationData"));
+    console.log({ length: querySnapshot.docs.length });
+    if (querySnapshot.docs.length !== 0) {
+      querySnapshot.forEach((doc) => {
+        const id = doc.id;
+        const {
+          title,
+          targetUrl,
+          image,
+          types,
+          status,
+          statusCommunityPage,
+          statusGroupePage,
+          groupePageAssociate,
+          dateOfCreation,
+          dateOfUpdate,
+        } = doc.data();
+        PopupBannersData.push({
+          id,
+          title,
+          targetUrl,
+          image,
+          types,
+          status,
+          statusCommunityPage,
+          statusGroupePage,
+          groupePageAssociate,
+          dateOfCreation,
+          dateOfUpdate,
+        });
+      });
+
+      return PopupBannersData;
+    }
+
+    return [];
+  } catch (error) {
+    console.log({ error: error });
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestTogetAllUniversalData<T>(
+  databaseName: string
+): Promise<T[]> {
+  let data: T[] = [];
+  try {
+    const querySnapshot = await getDocs(collection(db, databaseName));
+    console.log({ length: querySnapshot.docs.length });
+    if (querySnapshot.docs.length !== 0) {
+      querySnapshot.forEach((doc) => {
+        const id = doc.id;
+        console.log(id);
+        const partialdata = doc.data();
+        data.push({
+          id,
+          ...partialdata,
+        } as T);
+      });
+
+      return data;
+    }
+
+    return [];
+  } catch (error) {
+    console.log({ error: error });
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestToSetUniversalData<T>(
+  databaseName: string,
+  dataToSend: T
+) {
+  try {
+    const NotifRef = collection(db, databaseName);
+    const dateOfCreation = new Date().toUTCString();
+    const dateOfUpdate = new Date().toUTCString();
+    await setDoc(doc(NotifRef), {
+      ...dataToSend,
+      dateOfCreation,
+      dateOfUpdate,
+    });
+    return { message: " success", success: true };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestToGetAllUniversalDataWithId<T>(
+  parameterId: string,
+  databaseName: string
+): Promise<T> {
+  try {
+    const docRef = doc(db, databaseName, parameterId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const result = { ...docSnap.data() };
+      return result as T;
+    } else {
+      throw new Error("Le document n'existe pas");
+    }
+  } catch (error) {
+    console.log({ error: error });
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}
+
+export async function requestToDeleteUniversalDataWithId(
+  dataId: string,
+  databaseName: string
+) {
+  const docRef = doc(db, databaseName, dataId);
+  try {
+    await deleteDoc(docRef);
+    return {
+      message: "le document à été supprimer avec success",
+      success: true,
+    };
+  } catch (error) {
+    return {
+      message: "Un problème est survenu pendant la suppression",
+      success: false,
+    };
+  }
+}
+
+export interface PointDactiviteData {
+  postScore: number;
+  commentScore: number;
+  likesScore: number;
+  viralShareScore: number;
+  groupeData: GroupeDataType;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  id?: string;
+}
+
+export interface CreateBadgeData {
+  nomBadge: string;
+  imageBadge: string;
+  groupeData: GroupeDataType;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  savedState: boolean;
+  pointNecessaire: number;
+  id?: string;
+}
+
+export interface PrivacyPolicyData {
+  title: string;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  privacyPolicyText: string;
+  id?: string;
+}
+
+export interface TermsData {
+  title: string;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  termsText: string;
+  id?: string;
+}
+
+export interface OtherSettingData {
+  manualPaymentStatus: string;
+  RTL: string;
+  GPRSettings: string;
+  GDPRMandatory: string;
+  PhoneNumberRequired: string;
+  ValueAddedTaxStatus: string;
+  ValueAddedTax: number;
+  DefaultCurrency: string;
+  LastName: string;
+  Gender: string;
+  Phone: string;
+  DateofBirth: string;
+  MemberCount: string;
+  PhoneNumberCountryCodeStatus: string;
+  PhoneNumberCountryCode: string;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  id?: string;
+}
+
+export async function requestToUpdateUniversalDataWithId<T>(
+  parameterId: string,
+  databaseName: string,
+  data: T
+) {
+  try {
+    const docRef = doc(db, databaseName, parameterId);
+
+    const dateOfUpdate = new Date().toUTCString();
+    await updateDoc(docRef, {
+      ...data,
+      dateOfUpdate,
+    });
+
+    return {
+      message: " success",
+      success: true,
+    };
+  } catch (error) {
+    throw new Error(
+      "Une erreur est survenue pendant la récupération des données"
+    );
+  }
+}

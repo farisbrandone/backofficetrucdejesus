@@ -139,7 +139,7 @@ function ClientCreer() {
           description: "Le client a été crée avec success",
         });
         setStartSending(() => false);
-        window.location.replace("/GERER LES CLIENS");
+        window.location.replace("/GERER LES CLIENTS");
         return;
       } else {
         toast({
@@ -206,7 +206,7 @@ function ClientCreer() {
               name="nomClient"
               type="text"
               value={nomClient}
-              placeholder="Entrer le nom du groupe"
+              placeholder="Entrer le nom du client"
               onChange={handleNomClient}
               className={`${classNomClient ? "border-red-600" : ""}`}
               disabled={startSending}
@@ -240,7 +240,7 @@ function ClientCreer() {
               htmlFor="statusId"
               className="ml-2 text-[16px] font-semibold"
             >
-              Activé le groupe
+              Activé le client
             </label>
           </div>
           <div className="space-y-1">
@@ -309,7 +309,7 @@ function ClientCreer() {
                 id="logoClient"
                 name="logoClient"
                 value={logoClient}
-                placeholder="Entrer une image représentant le logo du groupe"
+                placeholder="Entrer une image représentant le logo du client"
                 onChange={handleLogoClient}
                 disabled={stateDownload || startSending}
               />

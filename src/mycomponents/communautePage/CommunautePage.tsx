@@ -41,7 +41,7 @@ function CommunautePage() {
           <SearbarBackOffice placeholder="Recherche par nom de communaute..." />
         </div>
       </div>
-      <div className="flex flex-wrap gap-3 mt-6 px-5">
+      <div className="flex flex-wrap gap-3 mt-[100px] px-5">
         <CardAddGroup
           icon={icon}
           text="CREER UNE NOUVELLE COMMUNAUTE"

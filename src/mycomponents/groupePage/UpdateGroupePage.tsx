@@ -190,7 +190,7 @@ function UpdateGroupePage() {
             <div className=" flex items-center gap-2 text-[#e91e63] mt-3">
               {groupeIcon}
               <h1 className=" text-[#344767] font-bold text-[18px] ">
-                Créer un nouveau groupe
+                Mettre à jour le groupe
               </h1>
             </div>
           </div>
@@ -210,10 +210,10 @@ function UpdateGroupePage() {
       <Card>
         <CardHeader>
           <CardTitle className="text-[12px] sm:text-[18px]">
-            Création d'un nouveau groupe
+            Mise à jour
           </CardTitle>
           <CardDescription>
-            Remplir les champs suivants et créer un nouveau groupe
+            Remplir les champs suivants et mettez à jour le groupe
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-2 text-[16px] sm:text-[18px]">
@@ -292,7 +292,7 @@ function UpdateGroupePage() {
           </div>
           <div className="space-y-1 ">
             <Label htmlFor="logoUrlGroupe">
-              Insérer le logo de la communauté {" (optionnel)"}
+              Insérer le logo du groupe {" (optionnel)"}
             </Label>
             <div className="flex items-center gap-2">
               <Input
@@ -323,7 +323,7 @@ function UpdateGroupePage() {
                 id="banniereUrlGroupe"
                 name="banniereUrlGroupe"
                 value={banniereUrlGroupe}
-                placeholder="Entrer une image représentant la bannière de la communauté"
+                placeholder="Entrer une image représentant la bannière du groupe"
                 onChange={handleBanniereUrlGroupe}
                 disabled={startSending || stateDownload1}
               />

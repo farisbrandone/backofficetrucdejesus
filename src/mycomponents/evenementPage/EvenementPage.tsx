@@ -59,9 +59,9 @@ function EvenementPage() {
         <div className="flex gap-3 ">
           <div className="titleAcceuil">
             <div className=" flex items-center gap-2 text-[#e91e63] mt-3">
-              {eventIcon("30", "30")}
+              <span className="icon-[bxs--calendar] text-3xl "></span>
               <h1 className=" text-[#344767] font-bold text-[18px] ">
-                EVENEMENTS
+                ÉVÉNEMENT
               </h1>
             </div>
           </div>
@@ -79,7 +79,7 @@ function EvenementPage() {
             <option selected>Un Truc de Jesus!</option>
           </select>
           <SearchBarForEvenement
-            placeholder="Recherche par nom d'évènement"
+            placeholder="Recherche par nom d'événement"
             setEventData={setEventData}
           />
         </div>
@@ -88,7 +88,7 @@ function EvenementPage() {
         <NavLink to="/EVENEMENTS/create-new-event">
           <CardAddGroup
             icon={eventIcon("130", "130")}
-            text="CREER UN NOUVEL ÉVÉNEMENT"
+            text="CREER UN NOUVEAU ÉVÉNEMENT"
             database="EventData"
           />
         </NavLink>

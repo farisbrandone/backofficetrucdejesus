@@ -328,13 +328,13 @@ function UpdateEvenement() {
 
           <div className="space-y-1">
             <Label htmlFor="titleEvent">
-              Nom du groupe <span className="text-[#e91e63] ">*</span>{" "}
+              Nom de l'événement <span className="text-[#e91e63] ">*</span>{" "}
             </Label>
             <Input
               id="titleEvent"
               name="titleEvent"
               value={titleEvent}
-              placeholder="Entrer le nom du groupe"
+              placeholder="Entrer le nom de l'événement"
               onChange={handleTitleEvent}
               className={`${classTitle ? "border-red-600" : ""}`}
               disabled={startSending}
@@ -342,13 +342,14 @@ function UpdateEvenement() {
           </div>
           <div className="space-y-1">
             <Label htmlFor="descriptionEvent">
-              Description du groupe <span className="text-[#e91e63]">*</span>
+              Description de l'événement{" "}
+              <span className="text-[#e91e63]">*</span>
             </Label>
             <Textarea
               id="descriptionEvent"
               name="descriptionEvent"
               value={descriptionEvent}
-              placeholder="Entrer une descriptionEvent du groupe"
+              placeholder="Entrer une descriptionEvent de l'événement"
               onChange={handleDescriptionEvent}
               required
               className={`${classDescription ? "border-red-600" : ""}`}
@@ -364,7 +365,7 @@ function UpdateEvenement() {
               id="locationOfEvent"
               name="locationOfEvent"
               value={locationOfEvent}
-              placeholder="Entrer le nom du groupe"
+              placeholder="Entrer le nom de l'événement"
               onChange={handleLocationOfEvent}
               className={`${classTitle ? "border-red-600" : ""}`}
               disabled={startSending}
@@ -415,7 +416,7 @@ function UpdateEvenement() {
               id="urlOfEvent"
               name="urlOfEvent"
               value={urlOfEvent}
-              placeholder={`Entrer l'url de l'évènement ${typeEvent}`}
+              placeholder={`Entrer l'url de l'événement ${typeEvent}`}
               onChange={handleUrlOfEvent}
               className={`${classTitle ? "border-red-600" : ""}`}
               disabled={startSending}
@@ -473,7 +474,7 @@ function UpdateEvenement() {
               htmlFor="statusId"
               className="ml-2 text-[16px] font-semibold"
             >
-              Activé le groupe
+              Activé l'événement
             </label>
           </div>
           <div className="space-y-1 " key="button2">
@@ -486,7 +487,7 @@ function UpdateEvenement() {
                 id="imageUrlEvent"
                 name="imageUrlEvent"
                 value={imageUrlEvent}
-                placeholder="Entrer une image représentant l'évènement"
+                placeholder="Entrer une image représentant l'événement"
                 onChange={handleImageUrlEvent}
                 disabled={stateDownload || startSending}
               />

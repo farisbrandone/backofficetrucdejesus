@@ -69,6 +69,16 @@ function UpdateRessourcesPage() {
   const [loadingFail, setLoadingFail] = useState(false);
   const { toast } = useToast();
   const { ressourceId } = useParams<string>();
+  const [status, setStatus] = useState("activate");
+
+  const handleChangeStatusRessources = () => {
+    console.log(status);
+    if (status === "activate") {
+      setStatus("desactivate");
+      return;
+    }
+    setStatus("activate");
+  };
 
   const handleTitleRessource = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -149,6 +159,7 @@ function UpdateRessourcesPage() {
         typeRessources: typeRessources,
         urlRessources: urlRessources,
         date: "",
+        status,
         id: ressourceId ? ressourceId : "",
       };
       console.log(data);
@@ -194,7 +205,7 @@ function UpdateRessourcesPage() {
         setImageRessource(data.imageRessource);
         setTextButtonRessource(data.textButtonRessource);
         setTypeRessources(data.typeRessources);
-
+        setStatus(data.status);
         setUrlRessources(data.urlRessources);
       } catch (error) {
         setLoadingFail(true);
@@ -308,6 +319,21 @@ function UpdateRessourcesPage() {
                 disabled={startSending}
               />
             </div>
+          </div>
+          <div className="felx flex-col items-center space-y-2">
+            <input
+              type="checkbox"
+              id="statusId"
+              value={status}
+              checked={status === "activate"}
+              onChange={handleChangeStatusRessources}
+            />
+            <label
+              htmlFor="statusId"
+              className="ml-2 text-[16px] font-semibold"
+            >
+              Activé le membre(status)
+            </label>
           </div>
 
           <div className="space-y-2 " key="button1">

@@ -294,7 +294,7 @@ function MembreUpdate() {
             Ajout d'un nouveau membre
           </CardTitle>
           <CardDescription>
-            Remplir les champs suivants et ajouter un nouveau client
+            Remplir les champs suivants et ajouter un nouveau membre
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-2 text-[16px] sm:text-[18px]">
@@ -307,7 +307,7 @@ function MembreUpdate() {
               name="name"
               type="text"
               value={name}
-              placeholder="Entrer le nom du groupe"
+              placeholder="Entrer le nom du membre"
               onChange={handleNomMembre}
               className={`${classNomMembre ? "border-red-600" : ""}`}
               disabled={startSending}
@@ -322,7 +322,7 @@ function MembreUpdate() {
               id="email"
               name="email"
               value={email}
-              placeholder="Entrer l'email du client"
+              placeholder="Entrer l'email du membre"
               onChange={handleEmailMembre}
               className={`${classEmailMembre ? "border-red-600" : ""}`}
               disabled={startSending}
@@ -359,7 +359,7 @@ function MembreUpdate() {
                 id="motsDepasse"
                 name="motsDepasse"
                 value={motsDepasse}
-                placeholder="Mots de passe du client"
+                placeholder="Mots de passe du membre"
                 onChange={handlePasswordMembre}
                 required
                 className={`${
@@ -387,7 +387,7 @@ function MembreUpdate() {
                 id="confirmPassword"
                 name="confirmPassword"
                 value={confirmPassword}
-                placeholder="Confirmation Mots de passe client"
+                placeholder="Confirmation Mots de passe membre"
                 onChange={handleConfirmPasswordMembre}
                 required
                 className={`${
@@ -469,7 +469,7 @@ function MembreUpdate() {
                 id="image"
                 name="image"
                 value={image}
-                placeholder="Entrer une image représentant le logo du groupe"
+                placeholder="Entrer une image représentant le logo du membre"
                 onChange={handleImage}
                 disabled={stateDownload || startSending}
               />

@@ -271,7 +271,7 @@ function NewEvenementPage() {
               id="titleEvent"
               name="titleEvent"
               value={titleEvent}
-              placeholder="Entrer le nom du groupe"
+              placeholder="Entrer le nom de l'événement"
               onChange={handleTitleEvent}
               className={`${classTitle ? "border-red-600" : ""}`}
               disabled={startSending}
@@ -286,7 +286,7 @@ function NewEvenementPage() {
               id="descriptionEvent"
               name="descriptionEvent"
               value={descriptionEvent}
-              placeholder="Entrer une description du groupe"
+              placeholder="Entrer une description de l'événement"
               onChange={handleDescriptionEvent}
               required
               className={`${classDescription ? "border-red-600" : ""}`}
@@ -302,7 +302,7 @@ function NewEvenementPage() {
               id="locationOfEvent"
               name="locationOfEvent"
               value={locationOfEvent}
-              placeholder="Entrer le nom du groupe"
+              placeholder="Entrer le nom de l'événement"
               onChange={handleLocationOfEvent}
               className={`${classTitle ? "border-red-600" : ""}`}
               disabled={startSending}

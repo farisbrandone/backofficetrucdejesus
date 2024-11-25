@@ -1,18 +1,18 @@
 import { Fragment } from "react/jsx-runtime";
 import { ButtonSideBar } from "./ui/ButtonSideBar";
-import { Outlet, useLoaderData, useNavigation } from "react-router-dom";
+import { Outlet, useNavigation } from "react-router-dom";
 
 export async function loader() {
   //we load data for routes pages
   /* const contacts = await getContacts();
   return { contacts }; */
   const contacts = [
-    "ACCEUIL",
+    "ACCUEIL",
     "COMMUNAUTES",
     "GROUPES",
     "EVENEMENTS",
     "INTEGRATIONS",
-    "GERER LES CLIENS",
+    "GERER LES CLIENTS",
     "MES VENTES",
     "ANALYTICS",
     "GERER LES MEMBRES",
@@ -22,8 +22,8 @@ export async function loader() {
 }
 
 function SidebarComponents() {
-  const contacts = useLoaderData();
-  console.log(contacts);
+  /*  const contacts = useLoaderData(); */
+
   const navigation = useNavigation();
   const textButton = [
     "/",
@@ -31,7 +31,7 @@ function SidebarComponents() {
     "GROUPES",
     "EVENEMENTS",
     "INTEGRATIONS",
-    "GERER LES CLIENS",
+    "GERER LES CLIENTS",
     "MES VENTES",
     "ANALYTICS",
     "GERER LES MEMBRES",

@@ -1,7 +1,15 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import HeaderForAllBackOffice from "../ui/HeaderForAllBackOffice";
 import PaymentComponent from "../ui/PaymentComponent";
 import { FooterBackoffice } from "../acceuilPage/FooterBackoffice";
+import {
+  type ComponentType,
+  dataForPayment,
+  dataForAutoResponder,
+  dataForWebinar,
+  dataForOtherIntegration,
+} from "../integrationPage/data";
+import clsx from "clsx";
 
 export const integrationIcon = (width: string, height: string) => (
   <svg
@@ -73,7 +81,66 @@ export const typePayment = [
   { typePayment: "VISA-MASTERCARD-BANK", imgage: "./visamastercard.png" },
 ];
 
+const initialLoadData = {
+  data: dataForPayment,
+  openPayment: true,
+  openResponder: false,
+  openWebinar: false,
+  openTherIntegration: false,
+};
+
 function IntegrationPage() {
+  const [dataPass, setDataPass] = useState<ComponentType>(initialLoadData);
+
+  const handlePassData = (value: string) => {
+    if (value === "dataForPayment") {
+      const result = {
+        data: dataForPayment,
+        openPayment: true,
+        openResponder: false,
+        openWebinar: false,
+        openTherIntegration: false,
+      };
+      setDataPass({ ...result });
+      return;
+    } else if (value === "dataForAutoResponder") {
+      const result = {
+        data: dataForAutoResponder,
+        openPayment: false,
+        openResponder: true,
+        openWebinar: false,
+        openTherIntegration: false,
+      };
+      setDataPass({ ...result });
+      return;
+    } else if (value === "dataForWebinar") {
+      const result = {
+        data: dataForWebinar,
+        openPayment: false,
+        openResponder: false,
+        openWebinar: true,
+        openTherIntegration: false,
+      };
+      setDataPass({ ...result });
+      return;
+    } else if (value === "dataForOtherIntegration") {
+      const result = {
+        data: dataForOtherIntegration,
+        openPayment: false,
+        openResponder: false,
+        openWebinar: false,
+        openTherIntegration: true,
+      };
+      setDataPass({ ...result });
+      return;
+    } else {
+      return;
+    }
+  };
+
+  const buttonClass =
+    "flex items-center gap-2 px-5 py-3 rounded-lg shadow-xl cursor-pointer text-[14px]";
+
   return (
     <div className="flex flex-col px-3">
       <HeaderForAllBackOffice />
@@ -100,28 +167,56 @@ function IntegrationPage() {
         </div>
       </div>
       <div className="flex gap-2 w-full mt-8">
-        <div className="flex items-center gap-2 px-5 py-3 rounded-lg shadow-xl cursor-pointer">
-          <div className="text-[#e91e63]"> {dollarIcon("25", "25")} </div>
-          <p className="text-[#e91e63] text-[14px] ">Integration du payement</p>
+        <div
+          className={clsx(
+            buttonClass,
+            { "text-[#e91e63] ": dataPass.openPayment },
+            { "text-[#191919] ": !dataPass.openPayment }
+          )}
+          onClick={() => handlePassData("dataForPayment")}
+        >
+          <div> {dollarIcon("25", "25")} </div>
+          <p className=" ">Integration du payement</p>
         </div>
-        <div className="flex items-center gap-2 px-5 py-3 rounded-lg shadow-xl cursor-pointer">
-          <div className="text-[#000]"> {emailIcon("25", "25")} </div>
-          <p className="text-[#000] text-[14px] ">Integration auto répondant</p>
+        <div
+          className={clsx(
+            buttonClass,
+            { "text-[#e91e63] ": dataPass.openResponder },
+            { "text-[#191919] ": !dataPass.openResponder }
+          )}
+          onClick={() => handlePassData("dataForAutoResponder")}
+        >
+          <div className=""> {emailIcon("25", "25")} </div>
+          <p className=" ">Integration auto répondant</p>
         </div>
-        <div className="flex items-center gap-2 px-5 py-3 rounded-lg shadow-xl cursor-pointer">
-          <div className="text-[#000]"> {cameraIcon("25", "25")} </div>
-          <p className="text-[#000] text-[14px] ">Integration de webinaire</p>
+        <div
+          className={clsx(
+            buttonClass,
+            { "text-[#e91e63] ": dataPass.openWebinar },
+            { "text-[#191919] ": !dataPass.openWebinar }
+          )}
+          onClick={() => handlePassData("dataForWebinar")}
+        >
+          <div className=""> {cameraIcon("25", "25")} </div>
+          <p className=" ">Integration de webinaire</p>
         </div>
-        <div className="flex items-center gap-2 px-5 py-3 rounded-lg shadow-xl cursor-pointer">
-          <div className="text-[#000]"> {integrationIcon("25", "25")} </div>
-          <p className="text-[#000] text-[14px] ">Autres intégrations</p>
+        <div
+          className={clsx(
+            buttonClass,
+            { "text-[#e91e63] ": dataPass.openTherIntegration },
+            { "text-[#191919] ": !dataPass.openTherIntegration }
+          )}
+          onClick={() => handlePassData("dataForOtherIntegration")}
+        >
+          <div className=""> {integrationIcon("25", "25")} </div>
+          <p className=" ">Autres intégrations</p>
         </div>
       </div>
 
       <div className="flex gap-3 mt-3 flex-wrap">
-        {typePayment.map((value, index) => (
+        {dataPass.data.map((value, index) => (
           <Fragment key={index}>
-            <PaymentComponent type={value.typePayment} image={value.imgage} />
+            <PaymentComponent data={value} />
           </Fragment>
         ))}
       </div>

@@ -1,9 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import { requestTogetAllRessourcesData, RessourcesDataType } from "@/fakeData";
+import {
+  requestToChangeStatus,
+  requestTogetAllRessourcesData,
+  RessourcesDataType,
+} from "@/fakeData";
 
 import { DropdownMenuForGroupe } from "../ui/DropdownMenuBackoffice";
 import { format } from "date-fns";
+import { toast } from "@/hooks/use-toast";
+import LoadingTotal from "../ui/LoadingTotal";
+import { Switch } from "@/components/ui/switch";
 
 export interface RessourcesDataComponentType {
   value: RessourcesDataType;
@@ -20,15 +27,12 @@ function RessourceDataComponent({
   setRessourcesData,
   setLoadingFail,
 }: RessourcesDataComponentType) {
-  /*  const [isPasswordVisible, setIsPasswordVisible] = useState(false); */
-  /* const [switchState, setSwitchState] = useState(value.status); */
-  /* const [loadingStatus, setLoadingStatus] = useState(false);
-  const togglePasswordVisibility = () => {
-    setIsPasswordVisible(!isPasswordVisible);
-  };
-  console.log({ value }); */
+  const [switchState, setSwitchState] = useState(value.status);
+  const [loadingStatus, setLoadingStatus] = useState(false);
 
-  /* const handleSwitch = async () => {
+  console.log({ value });
+
+  const handleSwitch = async () => {
     try {
       setLoadingStatus(true);
       let status;
@@ -40,7 +44,7 @@ function RessourceDataComponent({
       const result = await requestToChangeStatus(
         value.id,
         status,
-        "MembreData"
+        "RessourcesData"
       );
       if (result.success) {
         setSwitchState(status);
@@ -58,7 +62,7 @@ function RessourceDataComponent({
 
       setLoadingStatus(false);
     } catch (error) {}
-  }; */
+  };
   useEffect(() => {
     const getAllRessourcesData = async () => {
       try {
@@ -72,7 +76,7 @@ function RessourceDataComponent({
   }, []);
 
   return (
-    <div className="w-full grid grid-cols-6  mb-2">
+    <div className="w-full grid grid-cols-7  mb-2">
       <div className="place-content-center mx-auto ">
         {value.titleRessource}
       </div>
@@ -89,11 +93,12 @@ function RessourceDataComponent({
       <div className=" place-content-center mx-auto">
         {format(new Date(value.date), "dd/MM/yyyy")}
       </div>
+
       <div className=" place-content-center mx-auto ">
         {value.textButtonRessource}
       </div>
 
-      {/*  <div className="place-content-center mx-auto">
+      <div className="place-content-center mx-auto">
         {loadingStatus ? (
           <LoadingTotal />
         ) : (
@@ -103,29 +108,7 @@ function RessourceDataComponent({
             onCheckedChange={handleSwitch}
           />
         )}
-      </div> */}
-
-      {/* <div className="place-content-center mx-auto">
-        <Switch id="airplane-mode" />
-      </div> */}
-      {/*  <div className=" place-content-center mx-auto ">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              className="flex items-center justify-center"
-            >
-              ...
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56 bg-[#191919] text-white">
-            <DropdownMenuGroup>
-              <DropdownMenuItem>update</DropdownMenuItem>
-              <DropdownMenuItem>delete</DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div> */}
+      </div>
 
       <div className=" place-content-center mx-auto ">
         <DropdownMenuForGroupe

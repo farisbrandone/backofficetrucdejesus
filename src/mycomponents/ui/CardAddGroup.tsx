@@ -5,7 +5,7 @@ export interface CardAddGroupType {
 }
 function CardAddGroup({ icon, text }: CardAddGroupType) {
   return (
-    <div className="w-[300px] h-[300px] flex flex-col items-center justify-center  shadow-xl cursor-pointer ">
+    <div className="w-[400px] h-[370px] flex flex-col items-center justify-center  shadow-2xl border-[2px] cursor-pointer rounded-xl ">
       <div className="flex justify-center item-center w-full opacity-30 text-[#e91e63] ">
         {icon}
       </div>

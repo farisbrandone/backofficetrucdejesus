@@ -82,6 +82,7 @@ function CreerRessourcesPage() {
   const [classUrlRessources, setClassUrlRessources] = useState(false);
   const [classImageRessources, setClassImageRessources] = useState(false);
   const [startSending, setStartSending] = useState(false);
+  const [status, setStatus] = useState("activate");
   const { toast } = useToast();
 
   const handleTitleRessource = (e: ChangeEvent<HTMLInputElement>) => {
@@ -115,6 +116,15 @@ function CreerRessourcesPage() {
 
   const handleTypeRessources = (value: string) => {
     setTypeRessources(value);
+  };
+
+  const handleChangeStatusRessources = () => {
+    console.log(status);
+    if (status === "activate") {
+      setStatus("desactivate");
+      return;
+    }
+    setStatus("activate");
   };
 
   const createNewRessource = async () => {
@@ -162,6 +172,7 @@ function CreerRessourcesPage() {
         textButtonRessource: textButtonRessource,
         typeRessources: typeRessources,
         urlRessources: urlRessources,
+        status: status,
         date: "",
         id: "",
       };
@@ -290,6 +301,21 @@ function CreerRessourcesPage() {
               />
             </div>
           </div>
+          <div className="felx flex-col items-center space-y-2">
+            <input
+              type="checkbox"
+              id="statusId"
+              value={status}
+              checked={status === "activate"}
+              onChange={handleChangeStatusRessources}
+            />
+            <label
+              htmlFor="statusId"
+              className="ml-2 text-[16px] font-semibold"
+            >
+              Activé la ressource(status)
+            </label>
+          </div>
 
           <div className="space-y-2 " key="button1">
             <Label htmlFor="imageRessource">
@@ -399,10 +425,10 @@ function CreerRessourcesPage() {
             className="p-0 flex items-center justify-center bg-[#e91e63] hover:bg-[#e91e62e0]"
           >
             <NavLink
-              to="/GERER DES RESSOURCES"
+              to="/GERER LES RESSOURCES"
               className="w-full h-full flex items-center justify-center p-2"
             >
-              Retour à la ressources
+              Retour aux ressources
             </NavLink>
           </Button>
         </CardFooter>

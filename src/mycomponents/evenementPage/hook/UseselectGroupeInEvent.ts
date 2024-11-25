@@ -21,7 +21,7 @@ function UseselectGroupeInEvent() {
     const result = groupeForEventSelect.find((value) => {
       return value.groupeId === groupeId;
     });
-    console.log({ result });
+
     if (result) {
       const newResult = groupeForEventSelect.filter(
         (value) => value.groupeId !== groupeId

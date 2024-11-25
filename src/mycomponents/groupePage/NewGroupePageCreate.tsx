@@ -249,7 +249,7 @@ function NewGroupePageCreate() {
           </div>
           <div className="space-y-1 " key="button1">
             <Label htmlFor="logoUrlGroupe">
-              Insérer le logo de la communauté {" (optionnel)"}
+              Insérer le logo du groupe {" (optionnel)"}
             </Label>
             <div className="flex items-center gap-2" key="button21">
               <Input
@@ -282,7 +282,7 @@ function NewGroupePageCreate() {
                 id="banniereUrlGroupe"
                 name="banniereUrlGroupe"
                 value={banniereUrlGroupe}
-                placeholder="Entrer une image représentant la bannière de la communauté"
+                placeholder="Entrer une image représentant la bannière du groupe"
                 onChange={handleBanniereUrlGroupe}
                 disabled={stateDownload || startSending}
               />

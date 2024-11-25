@@ -10,6 +10,7 @@ import { NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { GroupeDataType, requestTogetAllGroupeData } from "@/fakeData";
 import SearchBarForGroupe from "../ui/searchBarUi/SearchBarForGroupe";
+import ButtonDropDownForMe from "../ui/ButtonDropDownForMe";
 
 export const groupeIcon = (
   <svg
@@ -88,10 +89,7 @@ function GroupePage() {
           </p>
         </div>
         <div className="flex gap-3">
-          {/* <div className="flex items-center justify-center">
-            <DropdownMenuBackoffice title="Setting" />
-          </div> */}
-
+          <ButtonDropDownForMe />
           <p className="align-middle self-center">Communauté</p>
           <select
             title="Select element"

@@ -70,7 +70,7 @@ function MembreGererPage() {
             >
               <NavLink
                 to="/GERER LES MEMBRES/ajouter-des-membres"
-                className="px-2 py-2 bg-[#e91e63] text-white font-bold rounded-md "
+                className="px-2 py-2 hover:bg-[#e91e63] bg-[#191919] text-white font-bold rounded-md transition-colors"
               >
                 <span className="inline-block">{PlusIcon("15", "15")}</span>{" "}
                 Ajouter des membres

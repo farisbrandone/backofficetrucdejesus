@@ -139,6 +139,20 @@ function ChannelPage() {
           </p>
         </div>
         <div className="flex gap-3">
+          <button
+            type="button"
+            title="Retour à la page communauté"
+            className="flex items-center"
+          >
+            <NavLink
+              to="/GROUPES"
+              className="flex items-center px-2 py-2 bg-[#fff] text-[#191919] hover:text-[#e91e63] hover:border-[#e91e63] transition-all font-bold rounded-md border-solid border-[1px] border-[#191919]"
+            >
+              <span className="icon-[material-symbols--arrow-circle-left-rounded] text-xl  mr-1 "></span>{" "}
+              <span>Retour</span>
+            </NavLink>
+          </button>
+
           <div className="flex items-center justify-center">
             <button
               type="button"
@@ -147,7 +161,7 @@ function ChannelPage() {
             >
               <NavLink
                 to={`/GERER LES CHAINES/ajouter-des-chaines/${groupeId}`}
-                className="px-2 py-2 bg-[#e91e63] text-white font-bold rounded-md "
+                className="px-2 py-2 bg-[#191919] hover:bg-[#e91e63] text-white font-bold rounded-md transition-colors "
               >
                 <span className="inline-block">{PlusIcon("15", "15")}</span>{" "}
                 Ajouter des chaines

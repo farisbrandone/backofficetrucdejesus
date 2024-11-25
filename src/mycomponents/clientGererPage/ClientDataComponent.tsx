@@ -19,6 +19,7 @@ import {
 import { NavLink } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import LoadingTotal from "../ui/LoadingTotal";
+import { format } from "date-fns";
 
 export interface UserDataType {
   name: string;
@@ -194,9 +195,15 @@ function ClientDataComponent({
             : eyeCloseIcon("15", "15")}
         </button>
       </div>
-      <div className=" place-content-center mx-auto">{value.dateCreated}</div>
-      <div className="place-content-center mx-auto ">{value.dateUpdated}</div>
-      <div className="flex items-center space-x-2">
+      <div className=" place-content-center mx-auto">
+        {" "}
+        {format(new Date(value.dateCreated), "dd MMM yyyy")}{" "}
+      </div>
+      <div className="place-content-center mx-auto ">
+        {" "}
+        {format(new Date(value.dateUpdated), "dd MMM yyyy")}{" "}
+      </div>
+      <div className="place-content-center mx-auto">
         {loadingStatus ? (
           <LoadingTotal />
         ) : (
@@ -221,10 +228,17 @@ function ClientDataComponent({
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <NavLink
-                  to={`/GERER LES CLIENS/update-client-page/${value.id}`}
+                  to={`/GERER LES CLIENTS/update-client-page/${value.id}`}
                 >
                   Mettre à jour
                 </NavLink>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                /*  onClick={() => setPageForDeletion(true)} */
+                className="cursor-pointer flex items-center"
+              >
+                <span className="icon-[icon-park-outline--list] mr-1"></span>
+                <p>Assigner une communauté</p>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => setPageForDeletion(true)}

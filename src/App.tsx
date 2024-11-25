@@ -43,6 +43,28 @@ import MainRessourcesPage from "./mycomponents/ressourcesPage/MainRessourcesPage
 import RessourcesPage from "./mycomponents/ressourcesPage/RessourcesPage";
 import CreerRessourcesPage from "./mycomponents/ressourcesPage/CreerRessourcesPage";
 import UpdateRessourcesPage from "./mycomponents/ressourcesPage/UpdateRessourcesPage";
+import MainLessonLibrary from "./mycomponents/lessonLibrary/MainLessonLibrary";
+import PageLessonLibrary from "./mycomponents/lessonLibrary/PageLessonLibrary";
+import CreerLessonLibrary from "./mycomponents/lessonLibrary/CreerLessonLibrary";
+import UpdateLessonLibrary from "./mycomponents/lessonLibrary/UpdateLessonLibrary";
+import MainAssets from "./mycomponents/assetsPage/MainAssets";
+import PageAssets from "./mycomponents/assetsPage/PageAssets";
+import CreerAssets from "./mycomponents/assetsPage/CreerAssets";
+import UpdateAssets from "./mycomponents/assetsPage/UpdateAssets";
+import { PageEmailNotification } from "./mycomponents/emailNotification/PageEmailNotification";
+import PagePopupBanners from "./mycomponents/groupeSetting/popupBanners/PagePopupBanners";
+import CreerPopupBanners from "./mycomponents/groupeSetting/popupBanners/CreerPopupBanners";
+import UpdatePopupBanners from "./mycomponents/groupeSetting/popupBanners/UpdatePopupBanners";
+import Layout from "./mycomponents/Layout/Layout";
+import PageBanners from "./mycomponents/groupeSetting/bannersAds/PageBanners";
+import CreerBannersAds from "./mycomponents/groupeSetting/bannersAds/CreerBannersAds";
+import UpdateBannersAds from "./mycomponents/groupeSetting/bannersAds/UpdateBannersAds";
+import { PageGamification } from "./mycomponents/groupeSetting/Gamification/PageGamification";
+import { PagePrivacyTerms } from "./mycomponents/groupeSetting/privacyTerms/PagePrivacyTerms";
+import PageOtherSetting from "./mycomponents/groupeSetting/otherSetting/PageOtherSetting";
+import PageLanguageSetting from "./mycomponents/groupeSetting/languageSettings/PageLanguageSetting";
+import ApprouveMembersPage from "./mycomponents/groupePage/groupeAction/ApprouveMembersPage";
+import AssignRolePage from "./mycomponents/groupePage/groupeAction/AssignRolePage";
 /**we configure the loder create in root sidebar component to load data */
 
 const router = createBrowserRouter([
@@ -112,19 +134,19 @@ const router = createBrowserRouter([
         element: <IntegrationPage />,
       },
       {
-        path: "/GERER LES CLIENS",
+        path: "/GERER LES CLIENTS",
         element: <ClientMain />,
         children: [
           {
-            path: "/GERER LES CLIENS",
+            path: "/GERER LES CLIENTS",
             element: <ClientGerer />,
           },
           {
-            path: "/GERER LES CLIENS/ajouter-des-clients",
+            path: "/GERER LES CLIENTS/ajouter-des-clients",
             element: <ClientCreer />,
           },
           {
-            path: "/GERER LES CLIENS/update-client-page/:clientId",
+            path: "/GERER LES CLIENTS/update-client-page/:clientId",
             element: <ClientUpdate />,
           },
         ],
@@ -191,9 +213,116 @@ const router = createBrowserRouter([
           },
         ],
       },
+      {
+        path: "/GERER LES LEÇONS",
+        element: <MainLessonLibrary />,
+        children: [
+          {
+            path: "/GERER LES LEÇONS",
+            element: <PageLessonLibrary />,
+          },
+          {
+            path: "/GERER LES LEÇONS/ajouter-des-leçons/:lessonType",
+            element: <CreerLessonLibrary />,
+          },
+          {
+            path: "/GERER LES LEÇONS/update-leçons-page/:lessonLibraryId",
+            element: <UpdateLessonLibrary />,
+          },
+        ],
+      },
+      {
+        path: "/GERER LES ASSETS",
+        element: <MainAssets />,
+        children: [
+          {
+            path: "/GERER LES ASSETS",
+            element: <PageAssets />,
+          },
+          {
+            path: "/GERER LES ASSETS/ajouter-des-assets",
+            element: <CreerAssets />,
+          },
+          {
+            path: "/GERER LES ASSETS/update-assets-page/:assetsId",
+            element: <UpdateAssets />,
+          },
+        ],
+      },
+      {
+        path: "/EMAIL NOTIFICATION",
+        element: <PageEmailNotification />,
+        children: [],
+      },
+      {
+        path: "/POPUPBANNERS",
+        element: <Layout />,
+        children: [
+          {
+            path: "/POPUPBANNERS",
+            element: <PagePopupBanners />,
+          },
+          {
+            path: "/POPUPBANNERS/ajouter-des-popupbanners",
+            element: <CreerPopupBanners />,
+          },
+          {
+            path: "/POPUPBANNERS/update-popupbanners-page/:assetsId",
+            element: <UpdatePopupBanners />,
+          },
+        ],
+      },
+      {
+        path: "/BANNERSADS",
+        element: <Layout />,
+        children: [
+          {
+            path: "/BANNERSADS",
+            element: <PageBanners />,
+          },
+          {
+            path: "/BANNERSADS/ajouter-des-bannersads",
+            element: <CreerBannersAds />,
+          },
+          {
+            path: "/BANNERSADS/update-bannersads-page/:assetsId",
+            element: <UpdateBannersAds />,
+          },
+        ],
+      },
+      {
+        path: "/GAMIFICATION",
+        element: <PageGamification />,
+        children: [],
+      },
+      {
+        path: "/PRIVACYTERMS",
+        element: <PagePrivacyTerms />,
+        children: [],
+      },
+      {
+        path: "/OTHERSETTINGS",
+        element: <PageOtherSetting />,
+        children: [],
+      },
+      {
+        path: "/LANGUAGESETTING",
+        element: <PageLanguageSetting />,
+        children: [],
+      },
+      {
+        path: "/APPROUVEMEMBERS",
+        element: <ApprouveMembersPage />,
+        children: [],
+      },
+      {
+        path: "/ASSIGNROLES",
+        element: <AssignRolePage />,
+        children: [],
+      },
     ],
   },
-  /* GERER LES CHAINES  updateCommunaute  MembreGererPage  ANALYTICS MES VENTES GERER LES CLIENS INTEGRATIONS EVENEMENTS GroupePage COMMUNAUTES{
+  /* POPUPBANNERS/update-popupbanners-page
     path: "/notification",
     element: <NotificationPage />,
     errorElement: <ErrorPage />,

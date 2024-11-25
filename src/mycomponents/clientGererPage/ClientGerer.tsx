@@ -203,8 +203,8 @@ function ClientGerer() {
               className="flex items-center"
             >
               <NavLink
-                to="/GERER LES CLIENS/ajouter-des-clients"
-                className="px-2 py-2 bg-[#e91e63] text-white font-bold rounded-md "
+                to="/GERER LES CLIENTS/ajouter-des-clients"
+                className="px-2 py-2 hover:bg-[#e91e63] text-white bg-[#191919] font-bold rounded-md transition-colors "
               >
                 <span className="inline-block">{PlusIcon("15", "15")}</span>{" "}
                 Ajouter des clients

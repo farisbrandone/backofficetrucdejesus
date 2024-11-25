@@ -268,7 +268,7 @@ function ButtonSideBar({ text }: { text: string }) {
     case "INTEGRATIONS":
       icon = integrationIcon("25", "25");
       break;
-    case "GERER LES CLIENS":
+    case "GERER LES CLIENTS":
       icon = gererLesClientIcon("25", "25");
       break;
     case "MES VENTES":
