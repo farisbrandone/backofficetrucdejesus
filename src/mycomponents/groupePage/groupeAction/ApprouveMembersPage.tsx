@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import { requestTogetAllMembreData } from "@/fakeData";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 
 import AprouveComponent from "./AprouveComponent";
 import { MemberDataType } from "@/mycomponents/membreGererPage/MemberDataComponent";
@@ -10,6 +10,8 @@ import SearchBarForMembre from "@/mycomponents/ui/searchBarUi/SearchBarForMembre
 function ApprouveMembersPage() {
   const [membreData, setMembreData] = useState<MemberDataType[]>();
   const [loadingFail, setLoadingFail] = useState(false);
+  const { groupeId } = useParams<string>();
+
   useEffect(() => {
     const getAllMembreData = async () => {
       try {
@@ -101,6 +103,7 @@ function ApprouveMembersPage() {
                 index={index}
                 setMembreData={setMembreData}
                 setLoadingFail={setLoadingFail}
+                groupeId={groupeId as string}
               />
             </Fragment>
           ))}

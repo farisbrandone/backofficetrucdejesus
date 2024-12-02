@@ -14,7 +14,7 @@ import ComplexeDescription from "@/mycomponents/ui/ComplexeDescription";
 import clsx from "clsx";
 import { ChangeEvent, useEffect, useState } from "react";
 
-function PrivacyPolicy() {
+function PrivacyPolicy({ communityId }: { communityId: string }) {
   const [title, setTitle] = useState("");
   const [privacyPolicyText, setPrivacyPolicyText] = useState("");
   const [startSending, setStartSending] = useState(false);
@@ -44,7 +44,7 @@ function PrivacyPolicy() {
     }
     const data = {
       title,
-
+      communityId,
       privacyPolicyText,
     };
     if (alreadyExist) {
@@ -100,9 +100,11 @@ function PrivacyPolicy() {
     const getAllData = async () => {
       try {
         setLoadingData(true);
-        const result = await requestTogetAllUniversalData<PrivacyPolicyData>(
-          "PrivacyPolicyData"
-        );
+        const result = (
+          await requestTogetAllUniversalData<PrivacyPolicyData>(
+            "PrivacyPolicyData"
+          )
+        ).filter((value) => value.communityId === communityId);
         setLoadingData(false);
         if (result.length > 0) {
           setAlreadyExist({ ...result[0] });

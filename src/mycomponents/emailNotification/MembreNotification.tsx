@@ -15,12 +15,14 @@ import { useToast } from "@/hooks/use-toast";
 import LoadingTotal from "../ui/LoadingTotal";
 import { Switch } from "@radix-ui/react-switch";
 import {
+  MembreNotificationDataType,
   requestToChangeStatus,
-  requestTogetAllMembreNotificationData,
-  requestToUpdateMembreNotificationData,
+  requestTogetAllUniversalData,
+  requestToSetUniversalData,
+  requestToUpdateUniversalDataWithId,
 } from "@/fakeData";
 import ComplexeDescription from "../ui/ComplexeDescription";
-function MembreNotification() {
+function MembreNotification({ communityId }: { communityId: string }) {
   const [authorMembre, setAuthorMembre] = useState("");
   const [emailAuthorMembre, setEmailAuthorMembre] = useState("");
   const [subjectMembre, setSubjectMembre] = useState("");
@@ -33,7 +35,10 @@ function MembreNotification() {
 
   const [switchStateMembre, setSwitchStateMembre] = useState("desactivate");
   const [loadingStatus, setLoadingStatus] = useState(false);
+  const [alreadyExist, setAlreadyExist] =
+    useState<MembreNotificationDataType>();
   const [loadingFail, setLoadingFail] = useState(false);
+  const [loadingData, setLoadingData] = useState(false);
   const [idEmailNotification, setIdEmailNotification] = useState("");
   const { toast } = useToast();
   console.log(loadingFail);
@@ -110,24 +115,22 @@ function MembreNotification() {
       setStartSending(() => false);
       return;
     }
-    try {
-      const getResult = await requestTogetAllMembreNotificationData();
-      if (
-        getResult[0].emailAuthorMembre !== emailAuthorMembre ||
-        getResult[0].titleMembre !== authorMembre ||
-        getResult[0].subjectMembre !== subjectMembre
-      ) {
-        var data = {
-          titleMembre: authorMembre,
-          emailAuthorMembre: emailAuthorMembre,
-          subjectMembre: subjectMembre,
-          messageOfEmailMembre: messageOfEmailMembre,
-          date: "",
-          id: getResult[0].id,
-          statusMembre: switchStateMembre,
-        };
-        const result = await requestToUpdateMembreNotificationData(data);
-        console.log(result);
+    let data = {
+      titleMembre: authorMembre,
+      emailAuthorMembre: emailAuthorMembre,
+      subjectMembre: subjectMembre,
+      messageOfEmailMembre: messageOfEmailMembre,
+      communityId,
+      statusMembre: switchStateMembre,
+    };
+    if (alreadyExist) {
+      try {
+        const result =
+          await requestToUpdateUniversalDataWithId<MembreNotificationDataType>(
+            alreadyExist.id as string,
+            "MembreNotificationData",
+            data
+          );
 
         if (result.success) {
           toast({
@@ -145,26 +148,42 @@ function MembreNotification() {
           setStartSending(() => false);
           return;
         }
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Erreur",
-          description: "Aucune modification n'a été effectuer",
-        });
-        setStartSending(() => false);
-        return;
-      }
-    } catch (error) {
+      } catch (error) {}
+    }
+    const resultAll =
+      await requestToSetUniversalData<MembreNotificationDataType>(
+        "MembreNotificationData",
+        data
+      );
+    if (resultAll.success) {
+      toast({
+        title: "Success",
+        description: " success",
+      });
+      setStartSending(() => false);
+      return;
+    } else {
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Une erreur est survenue, vérifier votre connexion",
+        description: "Une erreur est survenue cotée serveur",
       });
       setStartSending(() => false);
-      console.error("");
+      return;
     }
   };
 
+  /* 
+   var data = {
+          titleMembre: authorMembre,
+          emailAuthorMembre: emailAuthorMembre,
+          subjectMembre: subjectMembre,
+          messageOfEmailMembre: messageOfEmailMembre,
+          date: "",
+          id: getResult[0].id,
+          statusMembre: switchStateMembre,
+        };
+  
   useEffect(() => {
     const getEmailNotificationData = async () => {
       try {
@@ -182,23 +201,50 @@ function MembreNotification() {
 
       getEmailNotificationData();
     };
+  }, []); */
+
+  useEffect(() => {
+    const getAllData = async () => {
+      try {
+        setLoadingData(true);
+        const result = (
+          await requestTogetAllUniversalData<MembreNotificationDataType>(
+            "MembreNotificationData"
+          )
+        ).find((value) => value.communityId === communityId);
+        setLoadingData(false);
+        if (result) {
+          setAlreadyExist({ ...result });
+          setAuthorMembre(result.titleMembre);
+          setEmailAuthorMembre(result.emailAuthorMembre);
+          setSubjectMembre(result.subjectMembre);
+          setSwitchStateMembre(result.statusMembre);
+          setMessageOfEmailMembre(result.messageOfEmailMembre);
+          setIdEmailNotification(result.id as string);
+          return;
+        }
+      } catch (error) {
+        setLoadingFail(false);
+      }
+    };
+    getAllData();
   }, []);
 
-  /* if ((!author || !emailAuthor) && !loadingFail) {
-      return (
-        <div className="w-full text-center pt-4">
-          Le document est en cours de chargement ...
-        </div>
-      );
-    }
-  
-    if (loadingFail) {
-      return (
-        <div className="w-full text-center pt-4">
-          Une erreur est survenue pendant le chargement ou problème de connexion
-        </div>
-      );
-    } */
+  if (loadingData) {
+    return (
+      <div className="fixed bg-[#000]/50 flex flex-col items-center justify-center top-0 right-0 bottom-0 left-0 z-10">
+        Loading...
+      </div>
+    );
+  }
+
+  if (loadingFail) {
+    return (
+      <div className="fixed bg-[#000]/50 flex flex-col items-center justify-center top-0 right-0 bottom-0 left-0 z-10">
+        Une erreur est survenue pendant le chargement ou problème de connexion
+      </div>
+    );
+  }
 
   return (
     <TabsContent value="notification de nouveau membre">

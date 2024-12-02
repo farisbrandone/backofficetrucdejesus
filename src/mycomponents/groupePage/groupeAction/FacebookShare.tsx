@@ -15,14 +15,17 @@ export type FacebookShareForGroupeData = {
   facebookPostTitle: string;
   facebookPostDescription: string;
   facebookPostImage: string;
+  groupeId: string;
   dateOfCreation?: string;
   dateOfUpdate?: string;
   id?: string;
 };
 function FacebookGroupeShare({
+  groupeId,
   setHiddenForAll,
   setOpenFacebookGroupeShare,
 }: {
+  groupeId: string;
   setHiddenForAll: (x: boolean) => void;
   setOpenFacebookGroupeShare: (x: boolean) => void;
 }) {
@@ -66,6 +69,7 @@ function FacebookGroupeShare({
       facebookPostTitle,
       facebookPostDescription,
       facebookPostImage,
+      groupeId,
     };
 
     if (alreadyExist) {
@@ -122,10 +126,11 @@ function FacebookGroupeShare({
     const getAllData = async () => {
       try {
         setLoadingData(true);
-        const result =
+        const result = (
           await requestTogetAllUniversalData<FacebookShareForGroupeData>(
             "FacebookShareForGroupeData"
-          );
+          )
+        ).filter((value) => value.groupeId === groupeId);
         setLoadingData(false);
         if (result.length > 0) {
           setAlreadyExist({ ...result[0] });

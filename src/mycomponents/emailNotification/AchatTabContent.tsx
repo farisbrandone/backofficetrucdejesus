@@ -15,12 +15,14 @@ import { useToast } from "@/hooks/use-toast";
 import LoadingTotal from "../ui/LoadingTotal";
 import { Switch } from "@radix-ui/react-switch";
 import {
+  AchatNotificationDataType,
   requestToChangeStatus,
-  requestTogetAllAchatNotificationData,
-  requestToUpdateAchatNotificationData,
+  requestTogetAllUniversalData,
+  requestToSetUniversalData,
+  requestToUpdateUniversalDataWithId,
 } from "@/fakeData";
 import ComplexeDescription from "../ui/ComplexeDescription";
-function AchatTabContent() {
+function AchatTabContent({ communityId }: { communityId: string }) {
   const [authorAchat, setAuthorAchat] = useState("");
   const [emailAuthorAchat, setEmailAuthorAchat] = useState("");
   const [subjectAchat, setSubjectAchat] = useState("");
@@ -28,12 +30,12 @@ function AchatTabContent() {
   const [classAuthorAchat, setClassAuthorAchat] = useState(false);
   const [classEmailAuthorAchat, setClassEmailAuthorAchat] = useState(false);
   const [classSubjectAchat, setClassSubjectAchat] = useState(false);
-
   const [startSending, setStartSending] = useState(false);
-
   const [switchStateAchat, setSwitchStateAchat] = useState("desactivate");
   const [loadingStatus, setLoadingStatus] = useState(false);
+  const [alreadyExist, setAlreadyExist] = useState<AchatNotificationDataType>();
   const [loadingFail, setLoadingFail] = useState(false);
+  const [loadingData, setLoadingData] = useState(false);
   const [idEmailNotification, setIdEmailNotification] = useState("");
   const { toast } = useToast();
   console.log(loadingFail);
@@ -110,24 +112,22 @@ function AchatTabContent() {
       setStartSending(() => false);
       return;
     }
-    try {
-      const getResult = await requestTogetAllAchatNotificationData();
-      if (
-        getResult[0].emailAuthorAchat !== emailAuthorAchat ||
-        getResult[0].titleAchat !== authorAchat ||
-        getResult[0].titleAchat !== subjectAchat
-      ) {
-        var data = {
-          titleAchat: authorAchat,
-          emailAuthorAchat: emailAuthorAchat,
-          subjectAchat: subjectAchat,
-          messageOfEmailAchat: messageOfEmailAchat,
-          date: "",
-          id: getResult[0].id,
-          statusAchat: switchStateAchat,
-        };
-        const result = await requestToUpdateAchatNotificationData(data);
-        console.log(result);
+    let data = {
+      titleAchat: authorAchat,
+      emailAuthorAchat: emailAuthorAchat,
+      subjectAchat: subjectAchat,
+      messageOfEmailAchat: messageOfEmailAchat,
+      communityId,
+      statusAchat: switchStateAchat,
+    };
+    if (alreadyExist) {
+      try {
+        const result =
+          await requestToUpdateUniversalDataWithId<AchatNotificationDataType>(
+            alreadyExist.id as string,
+            "AchatNotificationData",
+            data
+          );
 
         if (result.success) {
           toast({
@@ -145,60 +145,73 @@ function AchatTabContent() {
           setStartSending(() => false);
           return;
         }
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Erreur",
-          description: "Aucune modification n'a été effectuer",
-        });
-        setStartSending(() => false);
-        return;
-      }
-    } catch (error) {
+      } catch (error) {}
+    }
+    const resultAll =
+      await requestToSetUniversalData<AchatNotificationDataType>(
+        "AchatNotificationData",
+        data
+      );
+    if (resultAll.success) {
+      toast({
+        title: "Success",
+        description: " success",
+      });
+      setStartSending(() => false);
+      return;
+    } else {
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Une erreur est survenue, vérifier votre connexion",
+        description: "Une erreur est survenue cotée serveur",
       });
       setStartSending(() => false);
-      console.error("");
+      return;
     }
   };
 
   useEffect(() => {
-    const getEmailNotificationData = async () => {
+    const getAllData = async () => {
       try {
-        const result = await requestTogetAllAchatNotificationData();
-        const data = result[0];
-        setAuthorAchat(data.titleAchat);
-        setEmailAuthorAchat(data.emailAuthorAchat);
-        setSubjectAchat(data.subjectAchat);
-        setSwitchStateAchat(data.statusAchat);
-        setMessageOfEmailAchat(data.messageOfEmailAchat);
-        setIdEmailNotification(data.id);
+        setLoadingData(true);
+        const result = (
+          await requestTogetAllUniversalData<AchatNotificationDataType>(
+            "AchatNotificationData"
+          )
+        ).find((value) => value.communityId === communityId);
+        setLoadingData(false);
+        if (result) {
+          setAlreadyExist({ ...result });
+          setAuthorAchat(result.titleAchat);
+          setEmailAuthorAchat(result.emailAuthorAchat);
+          setSubjectAchat(result.subjectAchat);
+          setSwitchStateAchat(result.statusAchat);
+          setMessageOfEmailAchat(result.messageOfEmailAchat);
+          setIdEmailNotification(result.id as string);
+          return;
+        }
       } catch (error) {
-        setLoadingFail(true);
+        setLoadingFail(false);
       }
-
-      getEmailNotificationData();
     };
+    getAllData();
   }, []);
 
-  /* if ((!author || !emailAuthor) && !loadingFail) {
-      return (
-        <div className="w-full text-center pt-4">
-          Le document est en cours de chargement ...
-        </div>
-      );
-    }
-  
-    if (loadingFail) {
-      return (
-        <div className="w-full text-center pt-4">
-          Une erreur est survenue pendant le chargement ou problème de connexion
-        </div>
-      );
-    } */
+  if (loadingData) {
+    return (
+      <div className="fixed bg-[#000]/50 flex flex-col items-center justify-center top-0 right-0 bottom-0 left-0 z-10">
+        Loading...
+      </div>
+    );
+  }
+
+  if (loadingFail) {
+    return (
+      <div className="fixed bg-[#000]/50 flex flex-col items-center justify-center top-0 right-0 bottom-0 left-0 z-10">
+        Une erreur est survenue pendant le chargement ou problème de connexion
+      </div>
+    );
+  }
 
   return (
     <TabsContent value="notification d'achat">

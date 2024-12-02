@@ -14,7 +14,7 @@ import ComplexeDescription from "@/mycomponents/ui/ComplexeDescription";
 import clsx from "clsx";
 import { ChangeEvent, useEffect, useState } from "react";
 
-function Terms() {
+function Terms({ communityId }: { communityId: string }) {
   const [title, setTitle] = useState("");
   const [termsText, setTermsText] = useState("");
   const [startSending, setStartSending] = useState(false);
@@ -44,7 +44,7 @@ function Terms() {
     }
     const data = {
       title,
-
+      communityId,
       termsText,
     };
     if (alreadyExist) {
@@ -99,10 +99,11 @@ function Terms() {
     const getAllData = async () => {
       try {
         setLoadingData(true);
-        const result = await requestTogetAllUniversalData<TermsData>(
-          "TermsData"
-        );
+        const result = (
+          await requestTogetAllUniversalData<TermsData>("TermsData")
+        ).filter((value) => value.communityId === communityId);
         setLoadingData(false);
+
         if (result.length > 0) {
           setAlreadyExist({ ...result[0] });
 

@@ -44,7 +44,7 @@ function AssetsComponent({
         status = "activate";
       }
       const result = await requestToChangeStatus(
-        value.id,
+        value.id as string,
         status,
         "AssetsData"
       );
@@ -93,7 +93,7 @@ function AssetsComponent({
         {value.amountAssets}
       </div>
       <div className=" place-content-center mx-auto">
-        {format(new Date(value.date), "dd/MM/yyyy")}
+        {format(new Date(value.dateOfCreation as string), "dd/MM/yyyy")}
       </div>
       <div className="place-content-center mx-auto">
         {loadingStatus ? (
@@ -110,7 +110,7 @@ function AssetsComponent({
       <div className=" place-content-center mx-auto ">
         <DropdownMenuForGroupe
           title="..."
-          groupeId={value.id}
+          groupeId={value.id as string}
           baseUrl="GERER LES ASSETS/update-assets-page"
           groupeForEventSelect={[]}
         />

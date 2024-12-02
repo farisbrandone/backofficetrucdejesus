@@ -6,11 +6,12 @@ import { CarteCreerForGroup } from "../ui/CarteCreer";
 /* import { DropdownMenuBackoffice } from "../ui/DropdownMenuBackoffice"; */
 
 import { Fragment } from "react/jsx-runtime";
-import { NavLink } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { GroupeDataType, requestTogetAllGroupeData } from "@/fakeData";
+import { NavLink, useParams } from "react-router-dom";
+import { ChangeEvent, useEffect, useState } from "react";
+import { GroupeDataType, requestTogetAllUniversalData } from "@/fakeData";
 import SearchBarForGroupe from "../ui/searchBarUi/SearchBarForGroupe";
 import ButtonDropDownForMe from "../ui/ButtonDropDownForMe";
+import { CommunityDataType } from "../communautePage/CommunityDetailsUpdate";
 
 export const groupeIcon = (
   <svg
@@ -39,20 +40,36 @@ export const groupeIcon = (
 
 function GroupePage() {
   const [groupeData, setGroupeData] = useState<GroupeDataType[]>();
+  const [communityData, setCommunityData] = useState<CommunityDataType[]>();
 
   const [loadingFail, setLoadingFail] = useState(false);
+  const { communityId } = useParams<string>();
+  const [communitySelect, setCommunitySelect] = useState(communityId);
+
+  const handleCommunitySelect = (e: ChangeEvent<HTMLSelectElement>) => {
+    e.preventDefault();
+    setCommunitySelect(e.target.value);
+  };
 
   useEffect(() => {
     const getAllGroupeData = async () => {
       try {
-        const data = await requestTogetAllGroupeData();
-        setGroupeData([...data]);
+        const data = requestTogetAllUniversalData<GroupeDataType>("GroupeData");
+        const commData =
+          requestTogetAllUniversalData<CommunityDataType>("CommunityData");
+
+        const [result1, result2] = await Promise.all([data, commData]);
+        const trueResult = result1.filter(
+          (value) => value.communityId === communitySelect
+        );
+        setGroupeData([...trueResult]);
+        setCommunityData([...result2]);
       } catch (error) {
         setLoadingFail(true);
       }
     };
     getAllGroupeData();
-  }, []);
+  }, [communitySelect]);
 
   if (!groupeData && !loadingFail) {
     return (
@@ -89,14 +106,18 @@ function GroupePage() {
           </p>
         </div>
         <div className="flex gap-3">
-          <ButtonDropDownForMe />
+          <ButtonDropDownForMe communityId={communitySelect as string} />
           <p className="align-middle self-center">Communauté</p>
           <select
             title="Select element"
             id="countries"
             className=" w-[200px] bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500   p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            value={communitySelect}
+            onChange={handleCommunitySelect}
           >
-            <option selected>Un Truc de Jesus!</option>
+            {communityData?.map((value) => (
+              <option value={value.id}>{value.title}</option>
+            ))}
           </select>
           <SearchBarForGroupe
             placeholder="Recherche par nom de groupe..."
@@ -120,10 +141,10 @@ function GroupePage() {
               titleGroupe={value.titleGroupe}
               descriptionGroupe={value.descriptionGroupe}
               typeAccess={value.typeAccess}
-              date={value.date}
+              date={value.dateOfCreation as string}
               logoUrlGroupe={value.logoUrlGroupe}
               banniereUrlGroupe={value.banniereUrlGroupe}
-              groupeId={value.id}
+              groupeId={value.id as string}
               status={value.status}
               groupeData={groupeData}
               setGroupeData={setGroupeData}

@@ -1,12 +1,13 @@
 import { requestToGetCommunityDataBySearchValue } from "@/fakeData";
 import { toast } from "@/hooks/use-toast";
-import { communityDataType } from "@/mycomponents/communautePage/UpdateCommunaute";
+import { CommunityDataType } from "@/mycomponents/communautePage/CommunityDetailsUpdate";
+
 import { ChangeEvent, FormEvent, useState } from "react";
 
 export interface SearchBackofficeType {
   placeholder: string;
   setCommunityData: React.Dispatch<
-    React.SetStateAction<communityDataType[] | undefined>
+    React.SetStateAction<CommunityDataType[] | undefined>
   >;
   setLoadingForSearchBar: React.Dispatch<React.SetStateAction<boolean>>;
   setSuccess: React.Dispatch<React.SetStateAction<string>>;

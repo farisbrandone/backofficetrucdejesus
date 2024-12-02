@@ -1,7 +1,6 @@
 import {
   requestToDeleteAssetsWithId,
   requestToDeleteEventWithId,
-  requestToDeleteGroupeWithId,
   requestToDeleteLessonLibraryWithId,
   requestToDeleteMembreWithId,
   requestToDeleteRessourcesWithId,
@@ -18,6 +17,7 @@ import { CNAME } from "../CNAME/CNAME";
 import { WebhookUrl } from "../webhookUrl/WebhookUrl";
 import clsx from "clsx";
 import AssignGroupe, { AssignGroupeForMember } from "./AssignGroupe";
+import { CommunityDataType } from "../communautePage/CommunityDetails";
 
 const dataTitleForMenuItem = [
   /*  {
@@ -87,7 +87,13 @@ const dataTitleForMenuItem = [
   },
 ];
 
-export function DropdownMenuBackoffice({ title }: { title: string }) {
+export function DropdownMenuBackoffice({
+  title,
+  valueCommunity,
+}: {
+  title: string;
+  valueCommunity: CommunityDataType;
+}) {
   const [putHidden, setPutHidden] = useState(true);
   const [stateRotate, setStateRotate] = useState("0");
   const elementRef = useRef<HTMLDivElement>(null);
@@ -157,17 +163,42 @@ export function DropdownMenuBackoffice({ title }: { title: string }) {
         {dataTitleForMenuItem.map((value) => (
           <Fragment key={value.title}>
             {value.title === "Autoresponder" ? (
-              <Autoresponder title={value.title} icon={value.icon} />
+              <Autoresponder
+                title={value.title}
+                icon={value.icon}
+                communityId={valueCommunity.id as string}
+              />
             ) : value.title === "FB Share" ? (
-              <FacebookShare title={value.title} icon={value.icon} />
+              <FacebookShare
+                title={value.title}
+                icon={value.icon}
+                communityId={valueCommunity.id as string}
+              />
             ) : value.title === "Custom Scripts" ? (
-              <CustumScript title={value.title} icon={value.icon} />
+              <CustumScript
+                title={value.title}
+                icon={value.icon}
+                communityId={valueCommunity.id as string}
+              />
             ) : value.title === "CName" ? (
-              <CNAME title={value.title} icon={value.icon} />
+              <CNAME
+                title={value.title}
+                icon={value.icon}
+                communityId={valueCommunity.id as string}
+              />
             ) : value.title === "Webhook URL" ? (
-              <WebhookUrl title={value.title} icon={value.icon} />
+              <WebhookUrl
+                title={value.title}
+                icon={value.icon}
+                communityId={valueCommunity.id as string}
+              />
             ) : (
-              <MenuItem url={value.url} title={value.title} icon={value.icon} />
+              <MenuItem
+                url={value.url}
+                title={value.title}
+                icon={value.icon}
+                communityId={valueCommunity.id as string}
+              />
             )}
           </Fragment>
         ))}
@@ -177,17 +208,19 @@ export function DropdownMenuBackoffice({ title }: { title: string }) {
 }
 
 const MenuItem = ({
+  communityId,
   url,
   title,
   icon,
 }: {
+  communityId: string;
   url: string;
   title: string;
   icon: JSX.Element;
 }) => {
   return (
     <div className="pl-1 w-full hover:text-[#e91e63]">
-      <NavLink to={url} className=" block pl-1 w-full ">
+      <NavLink to={`${url}/${communityId}`} className=" block pl-1 w-full ">
         {" "}
         {icon} {title}{" "}
       </NavLink>
@@ -200,11 +233,14 @@ export function DropdownMenuForGroupe({
   groupeId,
   baseUrl,
   groupeForEventSelect,
+  setOpenStateForUpdate,
 }: {
   title: string;
   groupeId: string;
   baseUrl: string;
   groupeForEventSelect: stateGroupeEvent[];
+  setOpenStateForUpdate?: React.Dispatch<React.SetStateAction<boolean>>;
+  communityId?: string;
 }) {
   const [pageForDeletion, setPageForDeletion] = useState(false);
   const [stateSuppression, setStateSuppression] = useState(false);
@@ -247,7 +283,7 @@ export function DropdownMenuForGroupe({
     setStateSuppression(() => true);
     let result;
     if (baseUrl === "GROUPES/update-groupe-page") {
-      result = await requestToDeleteGroupeWithId(groupeId);
+      result = await requestToDeleteUniversalDataWithId(groupeId, "GroupeData");
     }
     if (baseUrl === "EVENEMENTS/update-event-page") {
       result = await requestToDeleteEventWithId(groupeId, groupeForEventSelect);
@@ -406,16 +442,18 @@ export function DropdownMenuForGroupe({
               </NavLink>
             </div>
           )}
-          <div>
-            {" "}
-            <NavLink
-              to={`/${baseUrl}/${groupeId}`}
-              className="w-full hover:text-[#e91e63] flex items-center"
-            >
-              <span className="icon-[material-symbols--edit] mr-1"></span>
-              <p>Mettre à jour</p>
-            </NavLink>
-          </div>
+          {baseUrl !== "GERER LES RESSOURCES/update-ressources-page" && (
+            <div>
+              {" "}
+              <NavLink
+                to={`/${baseUrl}/${groupeId}`}
+                className="w-full hover:text-[#e91e63] flex items-center"
+              >
+                <span className="icon-[material-symbols--edit] mr-1"></span>
+                <p>Mettre à jour</p>
+              </NavLink>
+            </div>
+          )}
           {baseUrl === "EVENEMENTS/update-event-page" && (
             <div
               onClick={() => setPageForAssignGroupe(true)}
@@ -425,6 +463,17 @@ export function DropdownMenuForGroupe({
               <p>Assigner un groupe</p>
             </div>
           )}
+
+          {baseUrl === "GERER LES RESSOURCES/update-ressources-page" &&
+            setOpenStateForUpdate && (
+              <div
+                onClick={() => setOpenStateForUpdate(true)}
+                className="cursor-pointer w-full hover:text-[#e91e63] flex items-center"
+              >
+                <span className="icon-[cil--list] mr-1"></span>
+                <p>Mettre à jour</p>
+              </div>
+            )}
 
           {baseUrl === "GERER LES MEMBRES/update-membre-page" && (
             <div

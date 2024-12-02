@@ -3,7 +3,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PrivacyPolicy from "./PrivacyPolicy";
 import Terms from "./Terms";
 
-export function BodyPrivacyTerms() {
+export function BodyPrivacyTerms({ communityId }: { communityId: string }) {
   const [tabPage, setTabPage] = useState("privacy policy");
 
   return (
@@ -26,8 +26,8 @@ export function BodyPrivacyTerms() {
           <span className="">Terms</span>
         </TabsTrigger>
       </TabsList>
-      <PrivacyPolicy />
-      <Terms />
+      <PrivacyPolicy communityId={communityId} />
+      <Terms communityId={communityId} />
     </Tabs>
   );
 }

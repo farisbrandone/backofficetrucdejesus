@@ -135,8 +135,6 @@ function UpdateBannersAds() {
         groupePageAssociate: groupePageAssociate,
         statusGroupePage: statusGroupePage,
         status: status,
-        dateOfCreation: "",
-        dateOfUpdate: "",
       };
       console.log(data);
       const result = await requestToSetUniversalData<BannersAdsDataType>(

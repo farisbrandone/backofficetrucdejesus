@@ -4,6 +4,11 @@ import CarteCreer from "../ui/CarteCreer";
 
 import { Fragment } from "react/jsx-runtime";
 import { communauteIcon } from "./UpdateCommunaute";
+import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { CommunityDataType } from "./CommunityDetails";
+import { requestTogetAllUniversalData } from "@/fakeData";
+import CommunityCard from "./ui/CommunityCard";
 
 export const icon = (
   <svg
@@ -20,6 +25,40 @@ export const icon = (
 );
 
 function CommunautePage() {
+  const [communityData, setCommunityData] = useState<CommunityDataType[]>([]);
+
+  const [loadingFail, setLoadingFail] = useState(false);
+
+  useEffect(() => {
+    const getAllEventData = async () => {
+      try {
+        const data = await requestTogetAllUniversalData<CommunityDataType>(
+          "CommunityData"
+        );
+        setCommunityData([...data]);
+      } catch (error) {
+        setLoadingFail(true);
+      }
+    };
+    getAllEventData();
+  }, []);
+
+  if (!communityData && !loadingFail) {
+    return (
+      <div className="w-full text-center pt-4">
+        Le document est en cours de chargement ...
+      </div>
+    );
+  }
+
+  if (loadingFail) {
+    return (
+      <div className="w-full text-center pt-4">
+        Une erreur est survenue pendant le chargement ou problème de connexion
+      </div>
+    );
+  }
+
   return (
     <Fragment>
       {/*  <HeaderForAllBackOffice /> */}
@@ -42,17 +81,26 @@ function CommunautePage() {
         </div>
       </div>
       <div className="flex flex-wrap gap-3 mt-[100px] px-5">
-        <CardAddGroup
-          icon={icon}
-          text="CREER UNE NOUVELLE COMMUNAUTE"
-          database="CommunityData"
-        />
+        <NavLink to="/COMMUNAUTES/create-new-community">
+          <CardAddGroup
+            icon={icon}
+            text="CREER UNE NOUVELLE COMMUNAUTE"
+            database="CommunityData"
+          />
+        </NavLink>
         <CarteCreer
           value={0}
           title="Réseau 100% JÉSUS"
           date="18 Feb 2024"
           subTitle="Faisons confiance"
+          valueCommunity={communityData[0]}
         />
+
+        {communityData.map((value) => (
+          <Fragment key={value.id}>
+            <CommunityCard valueCommunity={value} />
+          </Fragment>
+        ))}
       </div>
     </Fragment>
   );

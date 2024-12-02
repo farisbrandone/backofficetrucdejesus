@@ -146,7 +146,6 @@ function UpdateAssets() {
         valueAssets: valueAssets,
         webhookUrlAssets,
         status,
-        date: "",
         id: assetsId ? assetsId : "",
       };
       console.log(data);

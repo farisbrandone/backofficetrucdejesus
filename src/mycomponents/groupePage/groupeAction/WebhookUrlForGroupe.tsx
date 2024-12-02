@@ -11,15 +11,18 @@ import { ChangeEvent, useEffect, useState } from "react";
 
 export type WebhookUrlForGroupeData = {
   webhookUrl: string;
+  groupeId: string;
   dateOfCreation?: string;
   dateOfUpdate?: string;
   id?: string;
 };
 
 export default function WebhookUrlForGroupe({
+  groupeId,
   setHiddenForAll,
   setOpenWebhookUrlForGroupe,
 }: {
+  groupeId: string;
   setHiddenForAll: (x: boolean) => void;
   setOpenWebhookUrlForGroupe: (x: boolean) => void;
 }) {
@@ -48,6 +51,7 @@ export default function WebhookUrlForGroupe({
 
     const data = {
       webhookUrl,
+      groupeId,
     };
 
     if (alreadyExist) {
@@ -103,10 +107,11 @@ export default function WebhookUrlForGroupe({
     const getAllData = async () => {
       try {
         setLoadingData(true);
-        const result =
+        const result = (
           await requestTogetAllUniversalData<WebhookUrlForGroupeData>(
             "WebhookUrlForGroupeData"
-          );
+          )
+        ).filter((value) => value.groupeId === groupeId);
         setLoadingData(false);
         if (result.length > 0) {
           setAlreadyExist({ ...result[0] });

@@ -54,7 +54,7 @@ const innerButton = [
   },
 ];
 
-function ButtonDropDownForMe() {
+function ButtonDropDownForMe({ communityId }: { communityId: string }) {
   const [putHidden, setPutHidden] = useState(true);
   const [stateRotate, setStateRotate] = useState("0");
   const elementRef = useRef<HTMLDivElement>(null);
@@ -123,7 +123,7 @@ function ButtonDropDownForMe() {
         {innerButton.map((value) => (
           <button
             className="mybutton hover:text-[#e91e63] w-full text-white text-start pl-2 transition-all duration-500 "
-            onClick={() => navigate(value.url)}
+            onClick={() => navigate(`${value.url}/${communityId}`)}
           >
             {" "}
             <span className="mr-1 inline-block"> {value.icon}</span>{" "}

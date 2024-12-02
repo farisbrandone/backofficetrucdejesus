@@ -13,6 +13,9 @@ interface AssignRoleComponentType {
   >;
   setLoadingFail: React.Dispatch<React.SetStateAction<boolean>>;
   setOpenAsignRole: React.Dispatch<React.SetStateAction<boolean>>;
+  setMemberSelect: React.Dispatch<
+    React.SetStateAction<MemberDataType | undefined>
+  >;
 }
 
 export const phoneIcon = (width: string, heigth: string) => {
@@ -32,6 +35,7 @@ export const phoneIcon = (width: string, heigth: string) => {
 };
 
 function AssignRoleComponent({
+  setMemberSelect,
   value,
   setOpenAsignRole,
   setMembreData,
@@ -73,6 +77,10 @@ function AssignRoleComponent({
   /*   setLoadingStatus(false);
     } catch (error) {}
   }; */
+  const handleMemberSelect = () => {
+    setMemberSelect({ ...value });
+  };
+
   useEffect(() => {
     const getAllMembreData = async () => {
       try {
@@ -125,7 +133,10 @@ function AssignRoleComponent({
         )}
       </div> */}
       <div className="place-content-center mx-auto">
-        <ButtonDropDownForAssignRole setOpenAsignRole={setOpenAsignRole} />
+        <ButtonDropDownForAssignRole
+          setOpenAsignRole={setOpenAsignRole}
+          handleMemberSelect={handleMemberSelect}
+        />
       </div>
     </div>
   );

@@ -18,15 +18,18 @@ export type GroupeSettingForGroupeData = {
   QuotaLimitation: string;
   Chatwithmembers: string;
   ClosedGroup: string;
+  groupeId: string;
   dateOfCreation?: string;
   dateOfUpdate?: string;
   id?: string;
 };
 
 export default function GroupeSettingForGroupe({
+  groupeId,
   setHiddenForAll,
   setOpenGroupeSettingForGroupe,
 }: {
+  groupeId: string;
   setHiddenForAll: (x: boolean) => void;
   setOpenGroupeSettingForGroupe: (x: boolean) => void;
 }) {
@@ -138,6 +141,7 @@ export default function GroupeSettingForGroupe({
       QuotaLimitation,
       Chatwithmembers,
       ClosedGroup,
+      groupeId,
     };
     if (alreadyExist) {
       try {
@@ -193,10 +197,11 @@ export default function GroupeSettingForGroupe({
     const getAllData = async () => {
       try {
         setLoadingData(true);
-        const result =
+        const result = (
           await requestTogetAllUniversalData<GroupeSettingForGroupeData>(
             "GroupeSettingForGroupeData"
-          );
+          )
+        ).filter((value) => value.groupeId === groupeId);
         setLoadingData(false);
         if (result.length > 0) {
           setAlreadyExist({ ...result[0] });

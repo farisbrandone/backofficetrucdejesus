@@ -20,9 +20,9 @@ import {
   /* where, */
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
-import { communityDataType } from "./mycomponents/communautePage/UpdateCommunaute";
 import { stateGroupeEvent } from "./mycomponents/evenementPage/hook/UseselectGroupeInEvent";
 import { MemberDataType } from "./mycomponents/membreGererPage/MemberDataComponent";
+import { CommunityDataType } from "./mycomponents/communautePage/CommunityDetails";
 export interface User {
   iconUrl: string;
   title: string;
@@ -36,8 +36,11 @@ export interface GroupeDataType {
   titleGroupe: string;
   descriptionGroupe: string;
   typeAccess: string;
-  date: string;
-  id: string;
+  communityId?: string;
+  memberId?: string[];
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  id?: string;
   banniereUrlGroupe: string;
   logoUrlGroupe: string;
   status: string;
@@ -75,27 +78,35 @@ export interface ChannelPageDataType {
 
 export interface RessourcesDataType {
   titleRessource: string;
-  descriptionRessource: string;
-  imageRessource: string;
-  textButtonRessource: string;
+  communityId?: string;
+  descriptionRessource?: string;
+  imageRessource?: string;
+  textButtonRessource?: string;
   typeRessources: string;
-  urlRessources: string;
+  urlRessources?: string;
+  urlExterne?: string;
+  urlVideo?: string;
+  urlAudio?: string;
+  instruction?: string;
   status: string;
-  date: string;
-  id: string;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  id?: string;
 }
 
-export interface LessonLibraryDataType {
+/* export interface LessonLibraryDataType {
   titleLessonLibrary: string;
   descriptionLessonLibrary: string;
   imageLessonLibrary: string;
   textButtonLessonLibrary: string;
   typeLessonLibrary: string;
   urlLessonLibrary: string;
+  communityId:string
   status: string;
-  date: string;
-  id: string;
-}
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  id?:string;
+} */
 
 export async function seedData(): Promise<User[]> {
   let notifications: User[] = [];
@@ -116,7 +127,7 @@ export async function seedData(): Promise<User[]> {
   }
 }
 
-export async function requestTogetAllGroupeData(): Promise<GroupeDataType[]> {
+/* export async function requestTogetAllGroupeData(): Promise<GroupeDataType[]> {
   let groupeData: GroupeDataType[] = [];
   try {
     const querySnapshot = await getDocs(collection(db, "GroupeData"));
@@ -163,8 +174,8 @@ export async function requestTogetAllGroupeData(): Promise<GroupeDataType[]> {
       "Une erreur est survenue pendant la récupération des données"
     );
   }
-}
-export async function requestToSetGroupeData({
+} */
+/* export async function requestToSetGroupeData({
   titleGroupe,
   descriptionGroupe,
   logoUrlGroupe,
@@ -224,7 +235,7 @@ export async function requestToUpdateGroupeData(
     };
   }
 }
-
+ */
 export async function requestToChangeStatus(
   id: string,
   status: string,
@@ -275,7 +286,7 @@ export async function requestToChangeStatusChannel(
   }
 }
 
-export async function requestToGetGroupDataWithId(
+/* export async function requestToGetGroupDataWithId(
   groupeId: string
 ): Promise<GroupeDataType> {
   try {
@@ -335,7 +346,7 @@ export async function requestToDeleteGroupeWithId(dataId: string) {
       success: false,
     };
   }
-}
+} */
 
 export async function seedDataWithId(dataId: string): Promise<User> {
   try {
@@ -354,7 +365,7 @@ export async function seedDataWithId(dataId: string): Promise<User> {
     );
   }
 }
-export async function seedCommunityDataWithId(): Promise<communityDataType> {
+/* export async function seedCommunityDataWithId(): Promise<CommunityDataType> {
   try {
     const docRef = doc(db, "CommunityData", "RH7E1UQKdNJ42iBtAOku");
     const docSnap = await getDoc(docRef);
@@ -372,7 +383,7 @@ export async function seedCommunityDataWithId(): Promise<communityDataType> {
     );
   }
 }
-
+ */
 export async function setDataWithId(singleData: User) {
   const NotifRef = collection(db, "Notifications");
   try {
@@ -1420,12 +1431,12 @@ export const requestToGetGroupeDataBySearchValue = async (
         typeAccess,
         banniereUrlGroupe,
         logoUrlGroupe,
-        date,
         status,
         nombreDePartages,
         nombreDevenements,
         nombreDeChaines,
         nombreDePassionnner,
+        communityId,
       } = doc.data();
       groupeData.push({
         id,
@@ -1434,7 +1445,7 @@ export const requestToGetGroupeDataBySearchValue = async (
         typeAccess,
         banniereUrlGroupe,
         logoUrlGroupe,
-        date,
+        communityId,
         status,
         nombreDePartages,
         nombreDevenements,
@@ -1457,7 +1468,7 @@ export const requestToGetGroupeDataBySearchValue = async (
 export const requestToGetCommunityDataBySearchValue = async (
   searchValue: string
 ) => {
-  let communityData: communityDataType[] = [];
+  let communityData: CommunityDataType[] = [];
 
   try {
     const clientRef = collection(db, "CommunityData");
@@ -1471,13 +1482,24 @@ export const requestToGetCommunityDataBySearchValue = async (
     console.log({ querySnapshot });
     querySnapshot.forEach((doc) => {
       const id = doc.id;
-      const { title, description, logoUrl, banniereUrl } = doc.data();
+      const {
+        title,
+        description,
+        logoUrl,
+        banniereUrl,
+        communityUrl,
+        faviconUrl,
+        timeZone,
+      } = doc.data();
       communityData.push({
         id,
         title,
         description,
         logoUrl,
         banniereUrl,
+        communityUrl,
+        faviconUrl,
+        timeZone,
       });
     });
     const filteredDocuments = communityData.filter((doc) =>
@@ -1530,9 +1552,11 @@ export async function requestToSetMembreData({
       nombreDeBadge,
     });
 
-    const dataGroupe = await requestTogetAllGroupeData();
+    const dataGroupe = await requestTogetAllUniversalData<GroupeDataType>(
+      "GroupeData"
+    );
     const newVal = dataGroupe.map((val) => {
-      const groupeDataRef = doc(db, "GroupeData", val.id);
+      const groupeDataRef = doc(db, "GroupeData", val.id as string);
       const promisei = updateDoc(groupeDataRef, {
         nombreDePassionnner: increment(1),
       });
@@ -1714,9 +1738,11 @@ export async function requestToDeleteMembreWithId(dataId: string) {
   const docRef = doc(db, "MembreData", dataId);
   try {
     const promise1 = deleteDoc(docRef);
-    const dataGroupe = await requestTogetAllGroupeData();
+    const dataGroupe = await requestTogetAllUniversalData<GroupeDataType>(
+      "GroupeData"
+    );
     const newVal = dataGroupe.map((val) => {
-      const groupeDataRef = doc(db, "GroupeData", val.id);
+      const groupeDataRef = doc(db, "GroupeData", val.id as string);
       const promisei = updateDoc(groupeDataRef, {
         nombreDePassionnner: increment(-1),
       });
@@ -1743,11 +1769,17 @@ export async function requestToSetRessourcesData({
   textButtonRessource,
   typeRessources,
   urlRessources,
+  urlExterne,
+  urlVideo,
+  urlAudio,
+  instruction,
   status,
 }: RessourcesDataType) {
   try {
     const NotifRef = collection(db, "RessourcesData");
-    const date = new Date().toUTCString();
+    const dateOfCreation = new Date().toUTCString();
+    const dateOfUpdate = new Date().toUTCString();
+
     await setDoc(doc(NotifRef), {
       titleRessource,
       descriptionRessource,
@@ -1755,7 +1787,12 @@ export async function requestToSetRessourcesData({
       textButtonRessource,
       typeRessources,
       urlRessources,
-      date,
+      urlExterne,
+      urlVideo,
+      urlAudio,
+      instruction,
+      dateOfCreation,
+      dateOfUpdate,
       status,
     });
     return { message: "Le groupe a été créer avec success", success: true };
@@ -1783,8 +1820,14 @@ export async function requestTogetAllRessourcesData(): Promise<
           textButtonRessource,
           typeRessources,
           urlRessources,
-          date,
+          urlExterne,
+          urlVideo,
+          urlAudio,
+          instruction,
+          communityId,
           status,
+          dateOfCreation,
+          dateOfUpdate,
         } = doc.data();
         ressourcesData.push({
           id,
@@ -1794,8 +1837,14 @@ export async function requestTogetAllRessourcesData(): Promise<
           textButtonRessource,
           typeRessources,
           urlRessources,
-          date,
+          urlExterne,
+          urlVideo,
+          urlAudio,
+          instruction,
+          communityId,
           status,
+          dateOfCreation,
+          dateOfUpdate,
         });
       });
 
@@ -1826,19 +1875,31 @@ export async function requestToGetRessourcesDataWithId(
         textButtonRessource,
         typeRessources,
         urlRessources,
-        date,
+        urlExterne,
+        urlVideo,
+        urlAudio,
+        instruction,
+        communityId,
         status,
+        dateOfCreation,
+        dateOfUpdate,
       } = docSnap.data();
       return {
         id,
+        communityId,
         titleRessource,
         descriptionRessource,
         imageRessource,
         textButtonRessource,
         typeRessources,
         urlRessources,
-        date,
+        urlExterne,
+        urlVideo,
+        urlAudio,
+        instruction,
         status,
+        dateOfCreation,
+        dateOfUpdate,
       };
     } else {
       throw new Error("Le document n'existe pas");
@@ -1859,12 +1920,16 @@ export async function requestToUpdateRessourcesData({
   textButtonRessource,
   typeRessources,
   urlRessources,
+  urlExterne,
+  urlVideo,
+  urlAudio,
+  instruction,
   status,
 }: RessourcesDataType) {
   try {
-    const docRef = doc(db, "RessourcesData", id);
+    const docRef = doc(db, "RessourcesData", id as string);
 
-    const date = new Date().toUTCString();
+    const dateOfUpdate = new Date().toUTCString();
     await updateDoc(docRef, {
       titleRessource,
       descriptionRessource,
@@ -1872,8 +1937,12 @@ export async function requestToUpdateRessourcesData({
       textButtonRessource,
       typeRessources,
       urlRessources,
-      date,
+      urlExterne,
+      urlVideo,
+      urlAudio,
+      instruction,
       status,
+      dateOfUpdate,
     });
 
     return {
@@ -1922,24 +1991,36 @@ export const requestToGetRessourcesDataBySearchValue = async (
       const id = doc.id;
       const {
         titleRessource,
+        communityId,
         descriptionRessource,
         imageRessource,
         textButtonRessource,
         typeRessources,
         urlRessources,
-        date,
+        urlExterne,
+        urlVideo,
+        urlAudio,
+        instruction,
         status,
+        dateOfCreation,
+        dateOfUpdate,
       } = doc.data();
       ressourcesData.push({
         id,
+        communityId,
         titleRessource,
         descriptionRessource,
         imageRessource,
         textButtonRessource,
         typeRessources,
         urlRessources,
-        date,
+        urlExterne,
+        urlVideo,
+        urlAudio,
+        instruction,
         status,
+        dateOfCreation,
+        dateOfUpdate,
       });
     });
     const filteredDocuments = ressourcesData.filter((doc) =>
@@ -1960,9 +2041,11 @@ export interface LessonLibraryDataType {
   textButtonLessonLibrary: string;
   typeLessonLibrary: string;
   urlLessonLibrary: string;
+  communityId?: string;
   status: string;
-  date: string;
-  id: string;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  id?: string;
 }
 
 export async function requestToSetLessonLibraryData({
@@ -2016,7 +2099,7 @@ export async function requestTogetAllLessonLibraryData(): Promise<
           typeLessonLibrary,
           urlLessonLibrary,
           status,
-          date,
+          communityId,
         } = doc.data();
         lessonLibraryData.push({
           id,
@@ -2028,7 +2111,7 @@ export async function requestTogetAllLessonLibraryData(): Promise<
           typeLessonLibrary,
           urlLessonLibrary,
           status,
-          date,
+          communityId,
         });
       });
 
@@ -2065,7 +2148,7 @@ export const requestToGetLessonLibraryDataBySearchValue = async (
         typeLessonLibrary,
         urlLessonLibrary,
         status,
-        date,
+        communityId,
       } = doc.data();
       lessonLibraryData.push({
         id,
@@ -2077,7 +2160,7 @@ export const requestToGetLessonLibraryDataBySearchValue = async (
         typeLessonLibrary,
         urlLessonLibrary,
         status,
-        date,
+        communityId,
       });
     });
     const filteredDocuments = lessonLibraryData.filter((doc) =>
@@ -2107,7 +2190,7 @@ export async function requestToGetLessonLibraryDataWithId(
         typeLessonLibrary,
         urlLessonLibrary,
         status,
-        date,
+        communityId,
       } = docSnap.data();
       return {
         id,
@@ -2119,7 +2202,7 @@ export async function requestToGetLessonLibraryDataWithId(
         typeLessonLibrary,
         urlLessonLibrary,
         status,
-        date,
+        communityId,
       };
     } else {
       throw new Error("Le document n'existe pas");
@@ -2144,9 +2227,8 @@ export async function requestToUpdateLessonLibraryData({
   status,
 }: LessonLibraryDataType) {
   try {
-    const docRef = doc(db, "LessonLibraryData", id);
+    const docRef = doc(db, "LessonLibraryData", id as string);
 
-    const date = new Date().toUTCString();
     await updateDoc(docRef, {
       titleLessonLibrary,
       descriptionLessonLibrary,
@@ -2156,7 +2238,6 @@ export async function requestToUpdateLessonLibraryData({
       typeLessonLibrary,
       urlLessonLibrary,
       status,
-      date,
     });
 
     return {
@@ -2193,9 +2274,11 @@ export interface AssetsDataType {
   amountAssets: string;
   valueAssets: string;
   webhookUrlAssets: string;
+  communityId?: string;
   status: string;
-  date: string;
-  id: string;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  id?: string;
 }
 
 export async function requestToSetAssetsData({
@@ -2244,7 +2327,7 @@ export async function requestTogetAllAssetsData(): Promise<AssetsDataType[]> {
           valueAssets,
           webhookUrlAssets,
           status,
-          date,
+          communityId,
         } = doc.data();
         assetsData.push({
           id,
@@ -2255,7 +2338,7 @@ export async function requestTogetAllAssetsData(): Promise<AssetsDataType[]> {
           valueAssets,
           webhookUrlAssets,
           status,
-          date,
+          communityId,
         });
       });
 
@@ -2291,7 +2374,7 @@ export const requestToGetAssetsDataBySearchValue = async (
         valueAssets,
         webhookUrlAssets,
         status,
-        date,
+        communityId,
       } = doc.data();
       assetsData.push({
         id,
@@ -2302,7 +2385,7 @@ export const requestToGetAssetsDataBySearchValue = async (
         valueAssets,
         webhookUrlAssets,
         status,
-        date,
+        communityId,
       });
     });
     const filteredDocuments = assetsData.filter((doc) =>
@@ -2331,7 +2414,7 @@ export async function requestToGetAssetsDataWithId(
         valueAssets,
         webhookUrlAssets,
         status,
-        date,
+        communityId,
       } = docSnap.data();
       return {
         id,
@@ -2342,7 +2425,7 @@ export async function requestToGetAssetsDataWithId(
         valueAssets,
         webhookUrlAssets,
         status,
-        date,
+        communityId,
       };
     } else {
       throw new Error("Le document n'existe pas");
@@ -2366,7 +2449,7 @@ export async function requestToUpdateAssetsData({
   status,
 }: AssetsDataType) {
   try {
-    const docRef = doc(db, "AssetsData", id);
+    const docRef = doc(db, "AssetsData", id as string);
 
     const date = new Date().toUTCString();
     await updateDoc(docRef, {
@@ -2413,8 +2496,10 @@ export interface EmailNotificationDataType {
   subject: string;
   messageOfEmail: string;
   status: string;
-  date: string;
-  id: string;
+  communityId?: string;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  id?: string;
 }
 
 export async function requestToSetEmailNotificationData({
@@ -2426,14 +2511,13 @@ export async function requestToSetEmailNotificationData({
 }: EmailNotificationDataType) {
   try {
     const NotifRef = collection(db, "EmailNotificationData");
-    const date = new Date().toUTCString();
+
     await setDoc(doc(NotifRef), {
       title,
       emailAuthor,
       subject,
       messageOfEmail,
       status,
-      date,
     });
     return { message: " success", success: true };
   } catch (error) {
@@ -2455,8 +2539,14 @@ export async function requestTogetAllEmailNotificationData(): Promise<
     if (querySnapshot.docs.length !== 0) {
       querySnapshot.forEach((doc) => {
         const id = doc.id;
-        const { title, emailAuthor, subject, messageOfEmail, status, date } =
-          doc.data();
+        const {
+          title,
+          emailAuthor,
+          subject,
+          messageOfEmail,
+          status,
+          communityId,
+        } = doc.data();
         emailNotificationData.push({
           id,
           title,
@@ -2464,7 +2554,7 @@ export async function requestTogetAllEmailNotificationData(): Promise<
           subject,
           messageOfEmail,
           status,
-          date,
+          communityId,
         });
       });
 
@@ -2489,16 +2579,14 @@ export async function requestToUpdateEmailNotificationData({
   status,
 }: EmailNotificationDataType) {
   try {
-    const docRef = doc(db, "EmailNotificationData", id);
+    const docRef = doc(db, "EmailNotificationData", id as string);
 
-    const date = new Date().toUTCString();
     await updateDoc(docRef, {
       title,
       emailAuthor,
       subject,
       messageOfEmail,
       status,
-      date,
     });
 
     return {
@@ -2520,11 +2608,13 @@ export interface AchatNotificationDataType {
   subjectAchat: string;
   messageOfEmailAchat: string;
   statusAchat: string;
-  date: string;
-  id: string;
+  communityId?: string;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  id?: string;
 }
 
-export async function requestToSetAchatNotificationData({
+/* export async function requestToSetAchatNotificationData({
   titleAchat,
   emailAuthorAchat,
   subjectAchat,
@@ -2623,7 +2713,7 @@ export async function requestToUpdateAchatNotificationData({
       "Une erreur est survenue pendant la récupération des données"
     );
   }
-}
+} */
 
 /* ------------------------------------------------------------ */
 
@@ -2633,11 +2723,13 @@ export interface MembreNotificationDataType {
   subjectMembre: string;
   messageOfEmailMembre: string;
   statusMembre: string;
-  date: string;
-  id: string;
+  communityId?: string;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  id?: string;
 }
 
-export async function requestToSetMembreNotificationData({
+/* export async function requestToSetMembreNotificationData({
   titleMembre,
   emailAuthorMembre,
   subjectMembre,
@@ -2737,7 +2829,7 @@ export async function requestToUpdateMembreNotificationData({
     );
   }
 }
-
+ */
 /* --------------------------------------------------------------------- */
 
 export interface BulkNotificationDataType {
@@ -2746,11 +2838,13 @@ export interface BulkNotificationDataType {
   subjectBulk: string;
   messageOfEmailBulk: string;
   statusBulk: string;
-  date: string;
-  id: string;
+  communityId?: string;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  id?: string;
 }
 
-export async function requestToSetBulkNotificationData({
+/* export async function requestToSetBulkNotificationData({
   titleBulk,
   emailAuthorBulk,
   subjectBulk,
@@ -2849,7 +2943,7 @@ export async function requestToUpdateBulkNotificationData({
   }
 }
 
-requestToSetAutoresponderData;
+requestToSetAutoresponderData; */
 
 export interface AutoresponderDataType {
   webinarValue: string;
@@ -2858,8 +2952,10 @@ export interface AutoresponderDataType {
   emailValue: string;
   phoneValue: string;
   supportHTTPSValue: boolean;
-  date: string;
-  id: string;
+  communityId?: string;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  id?: string;
 }
 export async function requestToSetAutoresponderData({
   webinarValue,
@@ -2893,8 +2989,10 @@ export interface FacebookShareData {
   facebookPostTitle: string;
   facebookPostDescription: string;
   facebookPostImage: string;
-  date: string;
-  id: string;
+  communityId?: string;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  id?: string;
 }
 
 export async function requestToSetFacebookShareData({
@@ -2923,8 +3021,10 @@ export interface CustumScriptData {
   fBRetargetingPixel: string;
   perfectAudiencePixel: string;
   codeSnippet: string;
-  date: string;
-  id: string;
+  communityId?: string;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  id?: string;
 }
 
 export async function requestToSetCustumScriptData({
@@ -2952,8 +3052,10 @@ export async function requestToSetCustumScriptData({
 export interface CNAMEData {
   CNAMEURL: string;
 
-  date: string;
-  id: string;
+  communityId: string;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  id?: string;
 }
 
 export async function requestToSetCNAMEData({ CNAMEURL }: CNAMEData) {
@@ -2974,9 +3076,10 @@ export async function requestToSetCNAMEData({ CNAMEURL }: CNAMEData) {
 
 export interface WebhookUrlData {
   webhookUrl: string;
-
-  date: string;
-  id: string;
+  communityId: string;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  id?: string;
 }
 
 export async function requestToSetWebhookUrlData({
@@ -3006,9 +3109,10 @@ export interface PopupBannersDataType {
   statusCommunityPage: string;
   statusGroupePage: string;
   groupePageAssociate: GroupeDataType[];
+  communityId?: string;
   id?: string;
-  dateOfCreation: string;
-  dateOfUpdate: string;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
 }
 
 export interface BannersAdsDataType {
@@ -3019,12 +3123,13 @@ export interface BannersAdsDataType {
   statusCommunityPage: string;
   statusGroupePage: string;
   groupePageAssociate: GroupeDataType[];
+  communityId?: string;
   id?: string;
-  dateOfCreation: string;
-  dateOfUpdate: string;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
 }
 
-export async function requestTogetAllPopupBannersData(): Promise<
+/* export async function requestTogetAllPopupBannersData(): Promise<
   PopupBannersDataType[]
 > {
   let PopupBannersData: PopupBannersDataType[] = [];
@@ -3071,7 +3176,7 @@ export async function requestTogetAllPopupBannersData(): Promise<
       "Une erreur est survenue pendant la récupération des données"
     );
   }
-}
+} */
 
 export async function requestTogetAllUniversalData<T>(
   databaseName: string
@@ -3190,12 +3295,14 @@ export interface PrivacyPolicyData {
   title: string;
   dateOfCreation?: string;
   dateOfUpdate?: string;
+  communityId?: string;
   privacyPolicyText: string;
   id?: string;
 }
 
 export interface TermsData {
   title: string;
+  communityId?: string;
   dateOfCreation?: string;
   dateOfUpdate?: string;
   termsText: string;
@@ -3218,6 +3325,7 @@ export interface OtherSettingData {
   MemberCount: string;
   PhoneNumberCountryCodeStatus: string;
   PhoneNumberCountryCode: string;
+  communityId?: string;
   dateOfCreation?: string;
   dateOfUpdate?: string;
   id?: string;

@@ -13,15 +13,18 @@ export type CustumScriptForGroupeData = {
   fBRetargetingPixel: string;
   perfectAudiencePixel: string;
   codeSnippet: string;
+  groupeId: string;
   dateOfCreation?: string;
   dateOfUpdate?: string;
   id?: string;
 };
 
 export default function CustumScriptForGroupe({
+  groupeId,
   setHiddenForAll,
   setOpenScriptGroupeShare,
 }: {
+  groupeId: string;
   setHiddenForAll: (x: boolean) => void;
   setOpenScriptGroupeShare: (x: boolean) => void;
 }) {
@@ -62,6 +65,7 @@ export default function CustumScriptForGroupe({
       fBRetargetingPixel,
       perfectAudiencePixel,
       codeSnippet,
+      groupeId,
     };
 
     if (alreadyExist) {
@@ -118,10 +122,11 @@ export default function CustumScriptForGroupe({
     const getAllData = async () => {
       try {
         setLoadingData(true);
-        const result =
+        const result = (
           await requestTogetAllUniversalData<CustumScriptForGroupeData>(
             "CustumScriptForGroupeData"
-          );
+          )
+        ).filter((value) => value.groupeId === groupeId);
         setLoadingData(false);
         if (result.length > 0) {
           setAlreadyExist({ ...result[0] });

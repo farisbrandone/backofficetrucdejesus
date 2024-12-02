@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { NavLink, useParams } from "react-router-dom";
 import { ChangeEvent, useState, Fragment } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { requestToSetLessonLibraryData } from "@/fakeData";
+import { requestToSetUniversalData } from "@/fakeData";
 import { LessonLibraryDataType } from "@/fakeData";
 /* import {
   Select,
@@ -65,7 +65,7 @@ export const gererMembreIcon = (width: string, heigth: string) => {
 };
 
 function CreerLessonLibrary() {
-  const { lessonType } = useParams<string>();
+  const { lessonType, communityId } = useParams<string>();
   const [titleLessonLibrary, setTitleLessonLibrary] = useState("");
   const [descriptionLessonLibrary, setDescriptionLessonLibrary] = useState("");
   const [imageLessonLibrary, setImageLessonLibrary] = useState("");
@@ -208,11 +208,13 @@ function CreerLessonLibrary() {
         shortDescriptionLessonLibrary: shortDescriptionLessonLibrary,
         urlLessonLibrary: urlLessonLibrary,
         status: status,
-        date: "",
-        id: "",
+        communityId: communityId as string,
       };
       console.log(data);
-      const result = await requestToSetLessonLibraryData(data);
+      const result = await requestToSetUniversalData<LessonLibraryDataType>(
+        "LessonLibraryData",
+        data
+      );
       console.log(result);
 
       if (result.success) {

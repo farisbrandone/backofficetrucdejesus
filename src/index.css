@@ -83,16 +83,28 @@
   body {
     @apply bg-background text-foreground w-screen;
   }
+  .download-btn {
+    @apply bg-indigo-600 hover:bg-gray-100 hover:text-indigo-600 fill-white hover:fill-indigo-600 px-4 flex text-white items-center gap-2 rounded;
+  }
+
+  .inputStyle {
+    @apply border-[#191919] focus:border-[#e91e63] border-[1px] border-solid focus:outline-none rounded-l-md h-[36px] px-2 max-w-[800px];
+  }
+  .inputStyle2 {
+    @apply border-[#191919] focus:border-[#e91e63] border-[1px] border-solid focus:outline-none rounded-l-md h-[36px] px-2;
+  }
+  .buttonRetour {
+    @apply font-bold rounded-md border-[#191919] hover:border-[#e91e63] hover:text-[#e91e63] border-[1px] border-solid flex items-center gap-1 text-center p-2;
+  }
+  .saveButton {
+    @apply bg-[#191919] text-white p-2 flex items-center gap-1 text-center rounded-md;
+  }
 }
 
 .headerclass {
   box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
     rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
     rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
-}
-
-.download-btn {
-  @apply bg-indigo-600 hover:bg-gray-100 hover:text-indigo-600 fill-white hover:fill-indigo-600 px-4 flex text-white items-center gap-2 rounded;
 }
 
 .headerSide::after {

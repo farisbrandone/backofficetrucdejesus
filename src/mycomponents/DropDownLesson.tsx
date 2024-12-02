@@ -27,7 +27,13 @@ const dataTitleForMenuItem = [
   },
 ];
 
-export function DropDownLesson({ title }: { title: string }) {
+export function DropDownLesson({
+  title,
+  communityId,
+}: {
+  title: string;
+  communityId: string;
+}) {
   const [rotation, setRotation] = useState(0);
   const rotateTriangle = () => {
     console.log("dingo");
@@ -65,7 +71,12 @@ export function DropDownLesson({ title }: { title: string }) {
       <DropdownMenuContent className="w-56 bg-[#191919] text-white rounded-xl shadow-2xl ">
         {dataTitleForMenuItem.map((value) => (
           <Fragment key={value.title}>
-            <MenuItem url={value.url} title={value.title} icon={value.icon} />
+            <MenuItem
+              url={value.url}
+              title={value.title}
+              icon={value.icon}
+              communityId={communityId}
+            />
           </Fragment>
         ))}
       </DropdownMenuContent>
@@ -77,14 +88,16 @@ const MenuItem = ({
   url,
   title,
   icon,
+  communityId,
 }: {
+  communityId: string;
   url: string;
   title: string;
   icon: JSX.Element;
 }) => {
   return (
     <DropdownMenuItem className="">
-      <NavLink to={url}>
+      <NavLink to={`${url}/${communityId}`}>
         {" "}
         {icon} {title}{" "}
       </NavLink>

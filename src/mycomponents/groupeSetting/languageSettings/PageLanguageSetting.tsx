@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { myData as data } from "./data";
 import HeaderForAllBackOffice from "@/mycomponents/ui/HeaderForAllBackOffice";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 
 import LanguageComponent from "./LanguageComponent";
 import { Button } from "@/components/ui/button";
@@ -33,12 +33,14 @@ export type LanguageSettingDataType = {
   "Manual Payment": Record<MA, string>;
   "Payment Page": Record<PA, string>;
   "My Orders": Record<OR, string>;
+  communityId?: string;
   dateOfCreation?: string;
   dateOfUpdate?: string;
   id?: string;
 };
 
 function PageLanguageSetting() {
+  const { communityId } = useParams<string>();
   const [signInState, setSignInState] = useState<Record<T, string>>();
   const [communityState, setCommunityState] = useState<Record<CO, string>>();
   const [checkoutPageState, setCheckoutPageState] =
@@ -77,6 +79,7 @@ function PageLanguageSetting() {
       "Manual Payment": manualPaymentState,
       "Payment Page": paymentPage,
       "My Orders": myOrders,
+      communityId: communityId,
     };
 
     if (alreadyExist) {
@@ -132,10 +135,11 @@ function PageLanguageSetting() {
     const getAllData = async () => {
       try {
         setLoadingData(true);
-        const result =
+        const result = (
           await requestTogetAllUniversalData<LanguageSettingDataType>(
             "OtherSettingData"
-          );
+          )
+        ).filter((value) => value.communityId === communityId);
         setLoadingData(false);
         if (result.length > 0) {
           setAlreadyExist({ ...result[0] });

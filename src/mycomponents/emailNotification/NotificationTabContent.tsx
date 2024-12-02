@@ -15,12 +15,14 @@ import { useToast } from "@/hooks/use-toast";
 import LoadingTotal from "../ui/LoadingTotal";
 import { Switch } from "@radix-ui/react-switch";
 import {
+  EmailNotificationDataType,
   requestToChangeStatus,
-  requestTogetAllEmailNotificationData,
-  requestToUpdateEmailNotificationData,
+  requestTogetAllUniversalData,
+  requestToSetUniversalData,
+  requestToUpdateUniversalDataWithId,
 } from "@/fakeData";
 import ComplexeDescription from "../ui/ComplexeDescription";
-function NotificationTabContent() {
+function NotificationTabContent({ communityId }: { communityId: string }) {
   const [author, setAuthor] = useState("");
   const [emailAuthor, setEmailAuthor] = useState("");
   const [subject, setSubject] = useState("");
@@ -33,8 +35,11 @@ function NotificationTabContent() {
 
   const [switchState, setSwitchState] = useState("desactivate");
   const [loadingStatus, setLoadingStatus] = useState(false);
-  const [loadingFail, setLoadingFail] = useState(false);
+
   const [idEmailNotification, setIdEmailNotification] = useState("");
+  const [alreadyExist, setAlreadyExist] = useState<EmailNotificationDataType>();
+  const [loadingFail, setLoadingFail] = useState(false);
+  const [loadingData, setLoadingData] = useState(false);
   const { toast } = useToast();
   console.log(loadingFail);
   const handleSwitch = async () => {
@@ -105,24 +110,22 @@ function NotificationTabContent() {
       setStartSending(() => false);
       return;
     }
-    try {
-      const getResult = await requestTogetAllEmailNotificationData();
-      if (
-        getResult[0].emailAuthor !== emailAuthor ||
-        getResult[0].title !== author ||
-        getResult[0].subject !== subject
-      ) {
-        var data = {
-          title: author,
-          emailAuthor: emailAuthor,
-          subject: subject,
-          messageOfEmail: messageOfEmail,
-          date: "",
-          id: getResult[0].id,
-          status: switchState,
-        };
-        const result = await requestToUpdateEmailNotificationData(data);
-        console.log(result);
+    let data = {
+      title: author,
+      emailAuthor: emailAuthor,
+      subject: subject,
+      messageOfEmail: messageOfEmail,
+      communityId,
+      status: switchState,
+    };
+    if (alreadyExist) {
+      try {
+        const result =
+          await requestToUpdateUniversalDataWithId<EmailNotificationDataType>(
+            alreadyExist.id as string,
+            "EmailNotificationData",
+            data
+          );
 
         if (result.success) {
           toast({
@@ -140,27 +143,43 @@ function NotificationTabContent() {
           setStartSending(() => false);
           return;
         }
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Erreur",
-          description: "Aucune modification n'a été effectuer",
-        });
-        setStartSending(() => false);
-        return;
-      }
-    } catch (error) {
+      } catch (error) {}
+    }
+    const resultAll =
+      await requestToSetUniversalData<EmailNotificationDataType>(
+        "EmailNotificationData",
+        data
+      );
+    if (resultAll.success) {
+      toast({
+        title: "Success",
+        description: " success",
+      });
+      setStartSending(() => false);
+      return;
+    } else {
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Une erreur est survenue, vérifier votre connexion",
+        description: "Une erreur est survenue cotée serveur",
       });
       setStartSending(() => false);
-      console.error("");
+      return;
     }
   };
 
-  useEffect(() => {
+  /*  useEffect(() => {
+
+     var data = {
+          title: author,
+          emailAuthor: emailAuthor,
+          subject: subject,
+          messageOfEmail: messageOfEmail,
+         communityId,
+          status: switchState,
+        };
+
+
     const getEmailNotificationData = async () => {
       try {
         const result = await requestTogetAllEmailNotificationData();
@@ -177,23 +196,51 @@ function NotificationTabContent() {
 
       getEmailNotificationData();
     };
+  }, []); */
+
+  useEffect(() => {
+    const getAllData = async () => {
+      try {
+        setLoadingData(true);
+        const result = (
+          await requestTogetAllUniversalData<EmailNotificationDataType>(
+            "EmailNotificationData"
+          )
+        ).find((value) => value.communityId === communityId);
+        setLoadingData(false);
+        if (result) {
+          setAlreadyExist({ ...result });
+          setAuthor(result.title);
+          setEmailAuthor(result.emailAuthor);
+          setSubject(result.subject);
+          setSwitchState(result.status);
+          setMessageOfEmail(result.messageOfEmail);
+          setIdEmailNotification(result.id as string);
+
+          return;
+        }
+      } catch (error) {
+        setLoadingFail(false);
+      }
+    };
+    getAllData();
   }, []);
 
-  /* if ((!author || !emailAuthor) && !loadingFail) {
-      return (
-        <div className="w-full text-center pt-4">
-          Le document est en cours de chargement ...
-        </div>
-      );
-    }
-  
-    if (loadingFail) {
-      return (
-        <div className="w-full text-center pt-4">
-          Une erreur est survenue pendant le chargement ou problème de connexion
-        </div>
-      );
-    } */
+  if (loadingData) {
+    return (
+      <div className="fixed bg-[#000]/50 flex flex-col items-center justify-center top-0 right-0 bottom-0 left-0 z-10">
+        Loading...
+      </div>
+    );
+  }
+
+  if (loadingFail) {
+    return (
+      <div className="fixed bg-[#000]/50 flex flex-col items-center justify-center top-0 right-0 bottom-0 left-0 z-10">
+        Une erreur est survenue pendant le chargement ou problème de connexion
+      </div>
+    );
+  }
 
   return (
     <TabsContent value="notification d'inscription">

@@ -89,7 +89,7 @@ const innerButton = [
   },
 ];
 
-function GroupePageAction() {
+function GroupePageAction({ groupeId }: { groupeId: string }) {
   const [putHidden, setPutHidden] = useState(true);
   const [stateRotate, setStateRotate] = useState("0");
   const [openFacebookGroupeShare, setOpenFacebookGroupeShare] = useState(false);
@@ -158,18 +158,21 @@ function GroupePageAction() {
         <FacebookGroupeShare
           setOpenFacebookGroupeShare={setOpenFacebookGroupeShare}
           setHiddenForAll={setHiddenForAll}
+          groupeId={groupeId}
         />
       )}
       {openScriptGroupeShare && (
         <CustumScriptForGroupe
           setOpenScriptGroupeShare={setOpenScriptGroupeShare}
           setHiddenForAll={setHiddenForAll}
+          groupeId={groupeId}
         />
       )}
       {openAutoresponderForGroupe && (
         <AutoresponderForGroupe
           setOpenAutoresponderForGroupe={setOpenAutoresponderForGroupe}
           setHiddenForAll={setHiddenForAll}
+          groupeId={groupeId}
         />
       )}
 
@@ -177,6 +180,7 @@ function GroupePageAction() {
         <WebhookUrlForGroupe
           setOpenWebhookUrlForGroupe={setOpenWebhookUrlForGroupe}
           setHiddenForAll={setHiddenForAll}
+          groupeId={groupeId}
         />
       )}
 
@@ -184,12 +188,14 @@ function GroupePageAction() {
         <NotificationGroupePage
           setOpenNotificationGroupe={setOpenNotificationGroupe}
           setHiddenForAll={setHiddenForAll}
+          groupeId={groupeId}
         />
       )}
       {openGroupeSettingForGroupe && (
         <GroupeSettingForGroupe
           setOpenGroupeSettingForGroupe={setOpenGroupeSettingForGroupe}
           setHiddenForAll={setHiddenForAll}
+          groupeId={groupeId}
         />
       )}
 
@@ -242,7 +248,7 @@ function GroupePageAction() {
                     setHiddenForAll(false);
                     return;
                   }
-                  navigate(value.url);
+                  navigate(`${value.url}/${groupeId}`);
                 }}
               >
                 {" "}

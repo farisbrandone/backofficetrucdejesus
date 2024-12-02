@@ -29,12 +29,13 @@ export type MembreTabContentGroupeData = {
   subjectMembre: string;
   messageOfEmailMembre: string;
   statusMembre: string;
+  groupeId: string;
   dateOfCreation?: string;
   dateOfUpdate?: string;
   id?: string;
 };
 
-function MembreNotificationForGroupe() {
+function MembreNotificationForGroupe({ groupeId }: { groupeId: string }) {
   const [authorMembre, setAuthorMembre] = useState("");
   const [emailAuthorMembre, setEmailAuthorMembre] = useState("");
   const [subjectMembre, setSubjectMembre] = useState("");
@@ -135,6 +136,7 @@ function MembreNotificationForGroupe() {
       subjectMembre: subjectMembre,
       messageOfEmailMembre: messageOfEmailMembre,
       statusMembre: switchStateMembre,
+      groupeId,
     };
     setStartSending(() => true);
     if (alreadyExist) {
@@ -191,10 +193,11 @@ function MembreNotificationForGroupe() {
     const getAllData = async () => {
       try {
         setLoadingData(true);
-        const result =
+        const result = (
           await requestTogetAllUniversalData<MembreTabContentGroupeData>(
             "MembreTabContentGroupeData"
-          );
+          )
+        ).filter((value) => value.groupeId === groupeId);
         setLoadingData(false);
         if (result.length > 0) {
           setAlreadyExist({ ...result[0] });

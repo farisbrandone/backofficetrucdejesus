@@ -1,0 +1,71 @@
+[
+  { "value": "UTC-12:00", "text": "UTC-12:00 International Date Line West" },
+  { "value": "UTC-11:00", "text": "UTC-11:00 Coordinated Universal Time-11" },
+  { "value": "UTC-10:00", "text": "UTC-10:00 Hawaii" },
+  { "value": "UTC-09:00", "text": "UTC-09:00 Alaska" },
+  { "value": "UTC-08:00", "text": "UTC-08:00 Pacific Time (US & Canada)" },
+  { "value": "UTC-07:00", "text": "UTC-07:00 Mountain Time (US & Canada)" },
+  { "value": "UTC-06:00", "text": "UTC-06:00 Central Time (US & Canada)" },
+  { "value": "UTC-05:00", "text": "UTC-05:00 Eastern Time (US & Canada)" },
+  { "value": "UTC-04:00", "text": "UTC-04:00 Atlantic Time (Canada)" },
+  { "value": "UTC-03:30", "text": "UTC-03:30 Newfoundland" },
+  {
+    "value": "UTC-03:00",
+    "text": "UTC-03:00 Brazil, Buenos Aires, Georgetown"
+  },
+  { "value": "UTC-02:00", "text": "UTC-02:00 Mid-Atlantic" },
+  { "value": "UTC-01:00", "text": "UTC-01:00 Azores" },
+  { "value": "UTC+00:00", "text": "UTC+00:00 Greenwich Mean Time, London" },
+  {
+    "value": "UTC+01:00",
+    "text": "UTC+01:00 Central European Time, West Africa Time"
+  },
+  {
+    "value": "UTC+02:00",
+    "text": "UTC+02:00 Eastern European Time, Egypt Standard Time"
+  },
+  {
+    "value": "UTC+03:00",
+    "text": "UTC+03:00 East Africa Time, Arabia Standard Time"
+  },
+  { "value": "UTC+03:30", "text": "UTC+03:30 Iran Standard Time" },
+  {
+    "value": "UTC+04:00",
+    "text": "UTC+04:00 Moscow Standard Time, Gulf Standard Time"
+  },
+  { "value": "UTC+04:30", "text": "UTC+04:30 Afghanistan" },
+  {
+    "value": "UTC+05:00",
+    "text": "UTC+05:00 Pakistan Standard Time, Ekaterinburg Standard Time"
+  },
+  { "value": "UTC+05:30", "text": "UTC+05:30 India Standard Time, Sri Lanka" },
+  { "value": "UTC+05:45", "text": "UTC+05:45 Nepal" },
+  {
+    "value": "UTC+06:00",
+    "text": "UTC+06:00 Bangladesh Standard Time, Bhutan"
+  },
+  { "value": "UTC+06:30", "text": "UTC+06:30 Cocos Islands, Myanmar" },
+  { "value": "UTC+07:00", "text": "UTC+07:00 Indochina Time, Bangkok" },
+  {
+    "value": "UTC+08:00",
+    "text": "UTC+08:00 China Standard Time, Australian Western Standard Time"
+  },
+  {
+    "value": "UTC+09:00",
+    "text": "UTC+09:00 Japan Standard Time, Korea Standard Time"
+  },
+  {
+    "value": "UTC+09:30",
+    "text": "UTC+09:30 Australian Central Standard Time"
+  },
+  {
+    "value": "UTC+10:00",
+    "text": "UTC+10:00 Australian Eastern Standard Time, Vladivostok"
+  },
+  { "value": "UTC+11:00", "text": "UTC+11:00 Solomon Islands, Magadan" },
+  {
+    "value": "UTC+12:00",
+    "text": "UTC+12:00 Fiji, Kamchatka, Marshall Islands"
+  },
+  { "value": "UTC+13:00", "text": "UTC+13:00 Nuku'alofa" }
+]

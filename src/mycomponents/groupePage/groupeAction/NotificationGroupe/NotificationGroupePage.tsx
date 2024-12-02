@@ -5,9 +5,11 @@ import BulkNotificationForGroupe from "./BulkNotificationForGroupe";
 import MembreNotificationForGroupe from "./MembreNotificationGroupe";
 
 export default function NotificationGroupePage({
+  groupeId,
   setHiddenForAll,
   setOpenNotificationGroupe,
 }: {
+  groupeId: string;
   setHiddenForAll: (x: boolean) => void;
   setOpenNotificationGroupe: (x: boolean) => void;
 }) {
@@ -81,9 +83,9 @@ export default function NotificationGroupePage({
               </span>
             </TabsTrigger>
           </TabsList>
-          <NotificationTabContentGroupe />
-          <MembreNotificationForGroupe />
-          <BulkNotificationForGroupe />
+          <NotificationTabContentGroupe groupeId={groupeId} />
+          <MembreNotificationForGroupe groupeId={groupeId} />
+          <BulkNotificationForGroupe groupeId={groupeId} />
         </Tabs>
       </div>
     </div>

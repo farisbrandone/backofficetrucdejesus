@@ -11,8 +11,10 @@ import { format } from "date-fns";
 import { toast } from "@/hooks/use-toast";
 import LoadingTotal from "../ui/LoadingTotal";
 import { Switch } from "@/components/ui/switch";
+import RessourceFormulaireForUpdate from "./RessourceFormulaireForUpdate";
 
 export interface RessourcesDataComponentType {
+  communityId: string;
   value: RessourcesDataType;
   index: number;
   setRessourcesData: React.Dispatch<
@@ -22,6 +24,7 @@ export interface RessourcesDataComponentType {
 }
 
 function RessourceDataComponent({
+  communityId,
   value,
   /*  index, */
   setRessourcesData,
@@ -29,7 +32,7 @@ function RessourceDataComponent({
 }: RessourcesDataComponentType) {
   const [switchState, setSwitchState] = useState(value.status);
   const [loadingStatus, setLoadingStatus] = useState(false);
-
+  const [openStateForUpdate, setOpenStateForUpdate] = useState(false);
   console.log({ value });
 
   const handleSwitch = async () => {
@@ -42,7 +45,7 @@ function RessourceDataComponent({
         status = "activate";
       }
       const result = await requestToChangeStatus(
-        value.id,
+        value.id as string,
         status,
         "RessourcesData"
       );
@@ -77,6 +80,13 @@ function RessourceDataComponent({
 
   return (
     <div className="w-full grid grid-cols-7  mb-2">
+      {openStateForUpdate && (
+        <RessourceFormulaireForUpdate
+          communityId={communityId}
+          setOpenStateForUpdate={setOpenStateForUpdate}
+          ressourceId={value.id as string}
+        />
+      )}
       <div className="place-content-center mx-auto ">
         {value.titleRessource}
       </div>
@@ -91,7 +101,7 @@ function RessourceDataComponent({
         {value.typeRessources}
       </div>
       <div className=" place-content-center mx-auto">
-        {format(new Date(value.date), "dd/MM/yyyy")}
+        {format(new Date(value.dateOfUpdate as string), "dd/MM/yyyy")}
       </div>
 
       <div className=" place-content-center mx-auto ">
@@ -112,10 +122,12 @@ function RessourceDataComponent({
 
       <div className=" place-content-center mx-auto ">
         <DropdownMenuForGroupe
+          communityId={communityId}
           title="..."
-          groupeId={value.id}
+          groupeId={value.id as string}
           baseUrl="GERER LES RESSOURCES/update-ressources-page"
           groupeForEventSelect={[]}
+          setOpenStateForUpdate={setOpenStateForUpdate}
         />
       </div>
     </div>

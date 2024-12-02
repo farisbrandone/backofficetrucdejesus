@@ -4,12 +4,14 @@ import { GroupeDataType } from "@/fakeData";
 import PointDactivite from "./PointDactivite";
 import CreateBadge from "./CreateBadge";
 export function BodyGamification({
+  communityId,
   groupeData,
 }: {
+  communityId: string;
   groupeData: GroupeDataType | undefined;
 }) {
   const [tabPage, setTabPage] = useState("points d'activités");
-
+  console.log(communityId);
   return (
     <Tabs value={tabPage} className="max-w-screen-xl   ">
       <TabsList className="grid w-full grid-cols-2 pt-2 sm:h-[60px]">

@@ -10,6 +10,7 @@ import {
   dataForOtherIntegration,
 } from "../integrationPage/data";
 import clsx from "clsx";
+/* import { useParams } from "react-router-dom"; */
 
 export const integrationIcon = (width: string, height: string) => (
   <svg
@@ -91,7 +92,7 @@ const initialLoadData = {
 
 function IntegrationPage() {
   const [dataPass, setDataPass] = useState<ComponentType>(initialLoadData);
-
+  /* const {communityId}=useParams<string>() */
   const handlePassData = (value: string) => {
     if (value === "dataForPayment") {
       const result = {

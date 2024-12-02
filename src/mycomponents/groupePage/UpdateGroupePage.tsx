@@ -20,8 +20,8 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import {
   GroupeDataType,
-  requestToGetGroupDataWithId,
-  requestToUpdateGroupeData,
+  requestToGetAllUniversalDataWithId,
+  requestToUpdateUniversalDataWithId,
 } from "@/fakeData";
 import { useParams } from "react-router-dom";
 
@@ -105,14 +105,17 @@ function UpdateGroupePage() {
         banniereUrlGroupe: banniereUrlGroupe,
         typeAccess: typeAccess,
         status: status,
-        date: "",
         id: groupeId,
         nombreDePartages: 0,
         nombreDevenements: 0,
         nombreDeChaines: 0,
         nombreDePassionnner: 0,
       };
-      const result = await requestToUpdateGroupeData(data);
+      const result = await requestToUpdateUniversalDataWithId<GroupeDataType>(
+        groupeId,
+        "GroupeData",
+        data
+      );
       console.log(result);
 
       if (result.success) {
@@ -147,7 +150,10 @@ function UpdateGroupePage() {
   useEffect(() => {
     async function getCommunityData() {
       try {
-        const data = await requestToGetGroupDataWithId(groupeId as string);
+        const data = await requestToGetAllUniversalDataWithId<GroupeDataType>(
+          groupeId as string,
+          "GroupeData"
+        );
         setLogoUrlGroupe(data.logoUrlGroupe);
         setTitleGroupe(data.titleGroupe);
         setDescriptionGroupe(data.descriptionGroupe);

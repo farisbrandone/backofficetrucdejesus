@@ -24,15 +24,18 @@ export type AutoresponderForGroupeData = {
   emailValue: string;
   phoneValue: string;
   supportHTTPSValue: boolean;
+  groupeId: string;
   dateOfCreation?: string;
   dateOfUpdate?: string;
   id?: string;
 };
 
 export default function AutoresponderForGroupe({
+  groupeId,
   setHiddenForAll,
   setOpenAutoresponderForGroupe,
 }: {
+  groupeId: string;
   setHiddenForAll: (x: boolean) => void;
   setOpenAutoresponderForGroupe: (x: boolean) => void;
 }) {
@@ -91,6 +94,7 @@ export default function AutoresponderForGroupe({
       emailValue,
       phoneValue,
       supportHTTPSValue,
+      groupeId,
     };
 
     if (alreadyExist) {
@@ -118,7 +122,15 @@ export default function AutoresponderForGroupe({
           setStartSending(() => false);
           return;
         }
-      } catch (error) {}
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Une erreur est survenue cotée serveur",
+        });
+        setStartSending(() => false);
+        return;
+      }
     }
     const resultAll =
       await requestToSetUniversalData<AutoresponderForGroupeData>(
@@ -147,10 +159,11 @@ export default function AutoresponderForGroupe({
     const getAllData = async () => {
       try {
         setLoadingData(true);
-        const result =
+        const result = (
           await requestTogetAllUniversalData<AutoresponderForGroupeData>(
             "AutoresponderForGroupeData"
-          );
+          )
+        ).filter((value) => value.groupeId === groupeId);
         setLoadingData(false);
         if (result.length > 0) {
           setAlreadyExist({ ...result[0] });

@@ -29,12 +29,13 @@ export type BulkTabContentGroupeData = {
   subjectBulk: string;
   messageOfEmailBulk: string;
   statusBulk: string;
+  groupeId: string;
   dateOfCreation?: string;
   dateOfUpdate?: string;
   id?: string;
 };
 
-function BulkNotificationForGroupe() {
+function BulkNotificationForGroupe({ groupeId }: { groupeId: string }) {
   const [authorBulk, setAuthorBulk] = useState("");
   const [emailAuthorBulk, setEmailAuthorBulk] = useState("");
   const [subjectBulk, setSubjectBulk] = useState("");
@@ -134,6 +135,7 @@ function BulkNotificationForGroupe() {
       subjectBulk: subjectBulk,
       messageOfEmailBulk: messageOfEmailBulk,
       statusBulk: switchStateBulk,
+      groupeId,
     };
     setStartSending(() => true);
     if (alreadyExist) {
@@ -189,10 +191,11 @@ function BulkNotificationForGroupe() {
     const getAllData = async () => {
       try {
         setLoadingData(true);
-        const result =
+        const result = (
           await requestTogetAllUniversalData<BulkTabContentGroupeData>(
             "BulkTabContentGroupeData"
-          );
+          )
+        ).filter((value) => value.groupeId === groupeId);
         setLoadingData(false);
         if (result.length > 0) {
           setAlreadyExist({ ...result[0] });

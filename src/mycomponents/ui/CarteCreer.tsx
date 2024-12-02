@@ -11,7 +11,7 @@ import {
   GroupeDataType,
   requestToChangeStatus,
   requestTogetAllEventData,
-  requestTogetAllGroupeData,
+  requestTogetAllUniversalData,
 } from "@/fakeData";
 import { toast } from "@/hooks/use-toast";
 import LoadingTotal from "./LoadingTotal";
@@ -22,6 +22,7 @@ import clsx from "clsx";
 
 import { useNavigate } from "react-router-dom";
 import AssignGroupe from "./AssignGroupe";
+import { CommunityDataType } from "../communautePage/CommunityDetailsUpdate";
 
 export interface timestamp {
   seconds: number;
@@ -33,6 +34,7 @@ export interface CarteCreerType {
   date: string;
   subTitle: string;
   value: number;
+  valueCommunity: CommunityDataType;
 }
 
 export default function CarteCreer({
@@ -40,6 +42,7 @@ export default function CarteCreer({
   date,
   subTitle,
   value,
+  valueCommunity,
 }: CarteCreerType) {
   const [move, setMove] = useState(false);
   const navigate = useNavigate();
@@ -121,7 +124,10 @@ export default function CarteCreer({
           ))}
         </div>
         <div className="mr-4">
-          <DropdownMenuBackoffice title="ACTIONS" />
+          <DropdownMenuBackoffice
+            title="ACTIONS"
+            valueCommunity={valueCommunity}
+          />
         </div>
       </div>
     </div>
@@ -196,7 +202,9 @@ export function CarteCreerForGroup({
   useEffect(() => {
     const getAllGroupeData = async () => {
       try {
-        const data = await requestTogetAllGroupeData();
+        const data = await requestTogetAllUniversalData<GroupeDataType>(
+          "GroupeData"
+        );
         setGroupeData([...data]);
       } catch (error) {
         setLoadingFail(true);
@@ -294,7 +302,7 @@ export function CarteCreerForGroup({
             baseUrl="GROUPES/update-groupe-page"
             groupeForEventSelect={[]}
           /> */}
-          <GroupePageAction />
+          <GroupePageAction groupeId={groupeId} />
         </div>
       </div>
     </div>

@@ -4,7 +4,11 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AchatTabContent from "./AchatTabContent";
 import MembreNotification from "./MembreNotification";
 import BulkNotification from "./BulkNotification";
-export function BodyEmailNotification() {
+export function BodyEmailNotification({
+  communityId,
+}: {
+  communityId: string;
+}) {
   const [tabPage, setTabPage] = useState("notification d'inscription");
 
   return (
@@ -55,10 +59,10 @@ export function BodyEmailNotification() {
           </span>
         </TabsTrigger>
       </TabsList>
-      <NotificationTabContent />
-      <AchatTabContent />
-      <MembreNotification />
-      <BulkNotification />
+      <NotificationTabContent communityId={communityId} />
+      <AchatTabContent communityId={communityId} />
+      <MembreNotification communityId={communityId} />
+      <BulkNotification communityId={communityId} />
     </Tabs>
   );
 }

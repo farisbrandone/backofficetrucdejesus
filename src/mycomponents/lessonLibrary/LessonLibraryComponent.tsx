@@ -13,6 +13,7 @@ import LoadingTotal from "../ui/LoadingTotal";
 import { Switch } from "@/components/ui/switch";
 
 export interface LessonLibraryDataComponentType {
+  communityId: string;
   value: LessonLibraryDataType;
   index: number;
   setLessonLibraryData: React.Dispatch<
@@ -22,6 +23,7 @@ export interface LessonLibraryDataComponentType {
 }
 
 function LessonLibraryComponent({
+  communityId,
   value,
   /*  index, */
   setLessonLibraryData,
@@ -42,7 +44,7 @@ function LessonLibraryComponent({
         status = "activate";
       }
       const result = await requestToChangeStatus(
-        value.id,
+        value.id as string,
         status,
         "LessonLibraryData"
       );
@@ -91,7 +93,7 @@ function LessonLibraryComponent({
         {value.typeLessonLibrary}
       </div>
       <div className=" place-content-center mx-auto">
-        {format(new Date(value.date), "dd/MM/yyyy")}
+        {format(new Date(value.dateOfCreation as string), "dd/MM/yyyy")}
       </div>
 
       <div className=" place-content-center mx-auto ">
@@ -113,9 +115,10 @@ function LessonLibraryComponent({
       <div className=" place-content-center mx-auto ">
         <DropdownMenuForGroupe
           title="..."
-          groupeId={value.id}
+          groupeId={value.id as string}
           baseUrl="GERER LES LEÇONS/update-lesson-page"
           groupeForEventSelect={[]}
+          communityId={communityId}
         />
       </div>
     </div>

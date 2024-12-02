@@ -1,4 +1,4 @@
-import { requestTogetAllGroupeData } from "@/fakeData";
+import { GroupeDataType, requestTogetAllUniversalData } from "@/fakeData";
 import { toast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
 
@@ -39,11 +39,13 @@ function UseselectGroupeInEvent() {
     const getGroupeData = async () => {
       try {
         setLoadingGroupeForEvent(true);
-        const result = await requestTogetAllGroupeData();
-        console.log({ monrésultat: result });
+        const result = await requestTogetAllUniversalData<GroupeDataType>(
+          "GroupeData"
+        );
+
         const resultClean = result.map((value) => {
           return {
-            groupeId: value.id,
+            groupeId: value.id as string,
             titleGroupe: value.titleGroupe,
             checked: false,
           };

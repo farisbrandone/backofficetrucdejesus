@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import ButtonUploadFile from "../ui/ButtonUploadFile";
 import { Button } from "@/components/ui/button";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { ChangeEvent, useState, Fragment } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { requestToSetUniversalData } from "@/fakeData";
@@ -55,6 +55,7 @@ function CreerAssets() {
   const [classImageAssetss, setClassImageAssetss] = useState(false);
   const [startSending, setStartSending] = useState(false);
   const [status, setStatus] = useState("activate");
+  const { communityId } = useParams<string>();
   const { toast } = useToast();
   const databaseName = "AssetsData";
   const handleAmountAsset = (e: ChangeEvent<HTMLInputElement>) => {
@@ -155,8 +156,7 @@ function CreerAssets() {
         valueAssets: valueAssets,
         webhookUrlAssets,
         status,
-        date: "",
-        id: "",
+        communityId: communityId as string,
       };
       console.log(data);
       const result = await requestToSetUniversalData<AssetsDataType>(

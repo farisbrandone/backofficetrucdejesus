@@ -1,12 +1,18 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch";
-import { requestTogetAllMembreData } from "@/fakeData";
+import {
+  GroupeDataType,
+  requestTogetAllMembreData,
+  requestToGetAllUniversalDataWithId,
+  requestToUpdateUniversalDataWithId,
+} from "@/fakeData";
 import { format } from "date-fns";
 import LoadingTotal from "@/mycomponents/ui/LoadingTotal";
 import { MemberDataType } from "@/mycomponents/membreGererPage/MemberDataComponent";
 
 export interface MemberDataComponentType {
+  groupeId: string;
   value: MemberDataType;
   index: number;
   setMembreData: React.Dispatch<
@@ -32,24 +38,41 @@ export const phoneIcon = (width: string, heigth: string) => {
 };
 
 function AprouveComponent({
+  groupeId,
   value,
   /*  index, */
   setMembreData,
   setLoadingFail,
 }: MemberDataComponentType) {
-  const [switchState, setSwitchState] = useState(value.status);
   const [loadingStatus, setLoadingStatus] = useState(false);
-
-  const handleSwitch = async () => {
+  const [myGroupeData, setMyGroupeData] = useState<GroupeDataType>();
+  const [switchState, setSwitchState] = useState("desactivate");
+  const handleSwitch = async (memberId: string) => {
     try {
       setLoadingStatus(true);
-      let status;
-      if (switchState === "activate") {
-        status = "desactivate";
-        setSwitchState(status); /**pour le moment */
-      } else {
-        status = "activate";
-        setSwitchState(status); /**pour le moment */
+      if (myGroupeData) {
+        if (switchState === "activate") {
+          const result = myGroupeData?.memberId?.filter(
+            (value) => value !== memberId
+          );
+          const changeGroupe = await requestToUpdateUniversalDataWithId(
+            groupeId,
+            "GroupeData",
+            { memberId: result }
+          );
+          console.log(changeGroupe);
+
+          setSwitchState("desactivate");
+        } else {
+          const result = myGroupeData?.memberId?.push(memberId);
+          const changeGroupe = await requestToUpdateUniversalDataWithId(
+            groupeId,
+            "GroupeData",
+            { memberId: result }
+          );
+          console.log(changeGroupe);
+          setSwitchState("activate");
+        }
       }
       /*  const result = await requestToChangeStatus(
         value.id,
@@ -76,9 +99,21 @@ function AprouveComponent({
   useEffect(() => {
     const getAllMembreData = async () => {
       try {
+        setLoadingStatus(true);
         const data = await requestTogetAllMembreData();
+        const groupeData =
+          await requestToGetAllUniversalDataWithId<GroupeDataType>(
+            groupeId,
+            "GroupeData"
+          );
+        setMyGroupeData({ ...groupeData });
         setMembreData([...data]);
+        if (groupeData.memberId?.includes(value.id)) {
+          setSwitchState("activate");
+        }
+        setLoadingStatus(false);
       } catch (error) {
+        setLoadingStatus(false);
         setLoadingFail(true);
       }
     };
@@ -120,7 +155,7 @@ function AprouveComponent({
           <Switch
             id="airplane-mode"
             checked={switchState === "activate"}
-            onCheckedChange={handleSwitch}
+            onCheckedChange={() => handleSwitch(value.id)}
           />
         )}
       </div>

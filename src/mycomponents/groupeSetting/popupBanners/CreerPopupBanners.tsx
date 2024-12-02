@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
 import { Button } from "@/components/ui/button";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -54,7 +54,7 @@ function CreerPopupBanners() {
   const [loadingGroupeData, setLoadingGroupeData] = useState(false);
   const [types, setTypes] = useState("");
   const { toast } = useToast();
-
+  const { communityId } = useParams<string>();
   const handleGroupePageAssociate = (value: GroupeDataType) => {
     const result = groupePageAssociate.find((val) => {
       return value.id === val.id;
@@ -137,7 +137,6 @@ function CreerPopupBanners() {
       return;
     }
     try {
-      console.log("inside try");
       var data: PopupBannersDataType = {
         title: title,
         targetUrl: targetUrl,
@@ -147,8 +146,7 @@ function CreerPopupBanners() {
         statusGroupePage: statusGroupePage,
         types: types,
         status: status,
-        dateOfCreation: "",
-        dateOfUpdate: "",
+        communityId: communityId as string,
       };
       console.log(data);
       const result = await requestToSetUniversalData<PopupBannersDataType>(

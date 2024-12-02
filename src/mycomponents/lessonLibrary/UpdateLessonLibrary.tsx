@@ -211,7 +211,6 @@ function UpdateLessonLibrary() {
         shortDescriptionLessonLibrary: shortDescriptionLessonLibrary,
         urlLessonLibrary: urlLessonLibrary,
         status: status,
-        date: "",
         id: lessonLibraryId ? lessonLibraryId : "",
       };
       console.log(data);

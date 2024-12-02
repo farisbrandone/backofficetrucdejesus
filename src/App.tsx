@@ -65,6 +65,7 @@ import PageOtherSetting from "./mycomponents/groupeSetting/otherSetting/PageOthe
 import PageLanguageSetting from "./mycomponents/groupeSetting/languageSettings/PageLanguageSetting";
 import ApprouveMembersPage from "./mycomponents/groupePage/groupeAction/ApprouveMembersPage";
 import AssignRolePage from "./mycomponents/groupePage/groupeAction/AssignRolePage";
+import CreerCommunaute from "./mycomponents/communautePage/CreerCommunaute";
 /**we configure the loder create in root sidebar component to load data */
 
 const router = createBrowserRouter([
@@ -91,8 +92,12 @@ const router = createBrowserRouter([
             element: <CommunautePage />,
           },
           {
-            path: "/COMMUNAUTES/update",
+            path: "/COMMUNAUTES/update/:communityId",
             element: <UpdateCommunaute />,
+          },
+          {
+            path: "/COMMUNAUTES/create-new-community",
+            element: <CreerCommunaute />,
           },
         ],
       },
@@ -101,11 +106,11 @@ const router = createBrowserRouter([
         element: <GroupeMain />,
         children: [
           {
-            path: "/GROUPES",
+            path: "/GROUPES/:communityId",
             element: <GroupePage />,
           },
           {
-            path: "/GROUPES/create-new-groupe",
+            path: "/GROUPES/create-new-groupe/:communityId",
             element: <NewGroupePageCreate />,
           },
           {
@@ -130,7 +135,7 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "/INTEGRATIONS",
+        path: "/INTEGRATIONS/:communityId",
         element: <IntegrationPage />,
       },
       {
@@ -200,11 +205,11 @@ const router = createBrowserRouter([
         element: <MainRessourcesPage />,
         children: [
           {
-            path: "/GERER LES RESSOURCES",
+            path: "/GERER LES RESSOURCES/:communityId",
             element: <RessourcesPage />,
           },
           {
-            path: "/GERER LES RESSOURCES/ajouter-des-ressources",
+            path: "/GERER LES RESSOURCES/ajouter-des-ressources/:communityId",
             element: <CreerRessourcesPage />,
           },
           {
@@ -218,11 +223,11 @@ const router = createBrowserRouter([
         element: <MainLessonLibrary />,
         children: [
           {
-            path: "/GERER LES LEÇONS",
+            path: "/GERER LES LEÇONS/:communityId",
             element: <PageLessonLibrary />,
           },
           {
-            path: "/GERER LES LEÇONS/ajouter-des-leçons/:lessonType",
+            path: "/GERER LES LEÇONS/ajouter-des-leçons/:lessonType/:communityId",
             element: <CreerLessonLibrary />,
           },
           {
@@ -236,11 +241,11 @@ const router = createBrowserRouter([
         element: <MainAssets />,
         children: [
           {
-            path: "/GERER LES ASSETS",
+            path: "/GERER LES ASSETS/:communityId",
             element: <PageAssets />,
           },
           {
-            path: "/GERER LES ASSETS/ajouter-des-assets",
+            path: "/GERER LES ASSETS/ajouter-des-assets/:communityId",
             element: <CreerAssets />,
           },
           {
@@ -250,7 +255,7 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "/EMAIL NOTIFICATION",
+        path: "/EMAIL NOTIFICATION/:communityId",
         element: <PageEmailNotification />,
         children: [],
       },
@@ -259,11 +264,11 @@ const router = createBrowserRouter([
         element: <Layout />,
         children: [
           {
-            path: "/POPUPBANNERS",
+            path: "/POPUPBANNERS/:communityId",
             element: <PagePopupBanners />,
           },
           {
-            path: "/POPUPBANNERS/ajouter-des-popupbanners",
+            path: "/POPUPBANNERS/ajouter-des-popupbanners/:communityId",
             element: <CreerPopupBanners />,
           },
           {
@@ -277,11 +282,11 @@ const router = createBrowserRouter([
         element: <Layout />,
         children: [
           {
-            path: "/BANNERSADS",
+            path: "/BANNERSADS/:communityId",
             element: <PageBanners />,
           },
           {
-            path: "/BANNERSADS/ajouter-des-bannersads",
+            path: "/BANNERSADS/ajouter-des-bannersads/:communityId",
             element: <CreerBannersAds />,
           },
           {
@@ -291,32 +296,32 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "/GAMIFICATION",
+        path: "/GAMIFICATION/:communityId",
         element: <PageGamification />,
         children: [],
       },
       {
-        path: "/PRIVACYTERMS",
+        path: "/PRIVACYTERMS/:communityId",
         element: <PagePrivacyTerms />,
         children: [],
       },
       {
-        path: "/OTHERSETTINGS",
+        path: "/OTHERSETTINGS/:communityId",
         element: <PageOtherSetting />,
         children: [],
       },
       {
-        path: "/LANGUAGESETTING",
+        path: "/LANGUAGESETTING/:communityId",
         element: <PageLanguageSetting />,
         children: [],
       },
       {
-        path: "/APPROUVEMEMBERS",
+        path: "/APPROUVEMEMBERS/:groupeId",
         element: <ApprouveMembersPage />,
         children: [],
       },
       {
-        path: "/ASSIGNROLES",
+        path: "/ASSIGNROLES/:groupeId",
         element: <AssignRolePage />,
         children: [],
       },

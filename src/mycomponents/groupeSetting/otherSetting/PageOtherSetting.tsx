@@ -10,7 +10,7 @@ import { toast } from "@/hooks/use-toast";
 import { createDecimalArray, generateWorldCurrencyArray } from "@/lib/utils";
 import HeaderForAllBackOffice from "@/mycomponents/ui/HeaderForAllBackOffice";
 import { ChangeEvent, useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import countryCode from "../../../../countryPhoneCodes.json";
 import LoadingTotal from "@/mycomponents/ui/LoadingTotal";
 
@@ -18,6 +18,7 @@ const taxArrayValue = createDecimalArray(0.1, 251);
 const arrayCurrency = generateWorldCurrencyArray();
 
 export default function PageOtherSetting() {
+  const { communityId } = useParams<string>();
   const [manualPaymentStatus, setManualPaymentStatus] = useState("desactivate");
   const [RTL, setRTL] = useState("desactivate");
   const [GPRSettings, setGPRSettings] = useState("desactivate");
@@ -168,6 +169,7 @@ export default function PageOtherSetting() {
       MemberCount,
       PhoneNumberCountryCodeStatus,
       PhoneNumberCountryCode,
+      communityId,
     };
     if (alreadyExist) {
       try {
@@ -222,9 +224,11 @@ export default function PageOtherSetting() {
     const getAllData = async () => {
       try {
         setLoadingData(true);
-        const result = await requestTogetAllUniversalData<OtherSettingData>(
-          "OtherSettingData"
-        );
+        const result = (
+          await requestTogetAllUniversalData<OtherSettingData>(
+            "OtherSettingData"
+          )
+        ).filter((value) => value.communityId === communityId);
         setLoadingData(false);
         if (result.length > 0) {
           setAlreadyExist({ ...result[0] });

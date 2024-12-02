@@ -1,10 +1,11 @@
 import { Toaster } from "@/components/ui/toaster";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import HeaderForAllBackOffice from "@/mycomponents/ui/HeaderForAllBackOffice";
 import { FooterBackoffice } from "@/mycomponents/acceuilPage/FooterBackoffice";
 import { BodyPrivacyTerms } from "./BodyPrivacyTerms";
 
 function PagePrivacyTerms() {
+  const { communityId } = useParams<string>();
   return (
     <div className="w-full flex flex-col pl-3 ">
       <HeaderForAllBackOffice />
@@ -37,7 +38,7 @@ function PagePrivacyTerms() {
       </div>
 
       <div className=" w-full px-2 flex items-center  mt-[20px] mx-auto ">
-        <BodyPrivacyTerms />
+        <BodyPrivacyTerms communityId={communityId as string} />
         <Toaster />
       </div>
 

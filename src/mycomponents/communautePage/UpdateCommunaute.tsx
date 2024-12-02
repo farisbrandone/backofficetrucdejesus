@@ -1,23 +1,8 @@
-import { faker } from "@faker-js/faker";
-import { Fragment } from "react/jsx-runtime";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@radix-ui/react-label";
-import { Input } from "@/components/ui/input";
-import ButtonUploadFile from "../ui/ButtonUploadFile";
-import axios from "axios";
-import { ChangeEvent, useEffect, useState } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { NavLink } from "react-router-dom";
-import { seedCommunityDataWithId } from "@/fakeData";
+import { useState } from "react";
+import clsx from "clsx";
+import { useParams } from "react-router-dom";
+import CommunityDetailsUpdate from "./CommunityDetailsUpdate";
+import ColorCustumisationUpdate from "./ColorCustumisationUpdate";
 
 export const communauteIcon = (width: string, heigth: string) => (
   <svg
@@ -33,275 +18,63 @@ export const communauteIcon = (width: string, heigth: string) => (
   </svg>
 );
 
-export interface communityDataType {
-  title: string;
-  description: string;
-  logoUrl: string;
-  banniereUrl: string;
-  id: string;
-}
-
 function UpdateCommunaute() {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [logoUrl, setLogoUrl] = useState("");
-  const [banniereUrl, setBanniereUrl] = useState("");
-  const [stateDownload, setStateDownload] = useState(false);
-  const [classTitle, setClassTitle] = useState(false);
-  const [classDescription, setClassDescription] = useState(false);
-  const [startSending, setStartSending] = useState(false);
-  const [loadingFail, setLoadingFail] = useState(false);
+  const [openState, setOpenState] = useState(true);
 
-  const { toast } = useToast();
+  const { communityId } = useParams<string>();
 
-  const handleTitle = (e: ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    setTitle(() => e.target.value);
-    setClassTitle(false);
-  };
-  const handleDescription = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    e.preventDefault();
-    setDescription(() => e.target.value);
-    setClassDescription(false);
-  };
-  const handleLogoUrl = (e: ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    setLogoUrl(() => e.target.value);
-  };
-  const handleBanniereUrl = (e: ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    setBanniereUrl(() => e.target.value);
-  };
-
-  const sendModificationOnCommunity = async () => {
-    console.log("banga");
-    setStartSending(() => true);
-    if (!title || !description) {
-      if (!title) {
-        setClassTitle(true);
-      }
-      if (!description) {
-        setClassDescription(true);
-      }
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Tous les champs requis n'ont pas été remplis",
-      });
-      setStartSending(() => false);
-      return;
-    }
-    try {
-      console.log("inside try");
-      var data = {
-        title: title,
-        description: description,
-        logoUrl: logoUrl,
-        banniereUrl: banniereUrl,
-      };
-      const result = await axios.post(
-        /* "https://serverbackofficetrucdejesus.onrender.com/api/firebase/send-multiple-notification", */
-        "http://localhost:4000/api/firebase/send-modification-on-community",
-        data
-      );
-      console.log(result);
-
-      if (result.status === 200) {
-        console.log("shunga");
-        toast({
-          title: "Success",
-          description: "La communauté a été mis à jour avec success",
-        });
-        setStartSending(() => false);
-        return;
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Erreur",
-          description: "Une erreur est survenue cotée serveur",
-        });
-        setStartSending(() => false);
-      }
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description:
-          "Une erreur est survenue pendant la mise à jour de la communauté, vérifier votre connexion",
-      });
-      setStartSending(() => false);
-      console.error("");
-    }
-  };
-
-  useEffect(() => {
-    async function getCommunityData() {
-      try {
-        const data = await seedCommunityDataWithId();
-        setLogoUrl(data.logoUrl);
-        setTitle(data.title);
-        setDescription(data.description);
-        setBanniereUrl(data.banniereUrl);
-      } catch (error) {
-        setLoadingFail(true);
-      }
-    }
-    getCommunityData();
-  }, []);
-
-  if ((!description || !title) && !loadingFail) {
-    return (
-      <div className="w-full text-center pt-4">
-        Le document est en cours de chargement ...
-      </div>
-    );
-  }
-
-  if (loadingFail) {
-    return (
-      <div className="w-full text-center pt-4">
-        Une erreur est survenue pendant le chargement ou problème de connexion
-      </div>
-    );
-  }
   return (
-    <Fragment>
-      {/* <HeaderForAllBackOffice /> */}
+    <>
       <div className="w-full flex flex-col gap-4 max-[840px]:w-full min-[840px]:flex-row min-[840px]:items-center min-[840px]:justify-between mt-10">
         <div className="flex gap-3 ">
           <div className="titleAcceuil">
             <div className=" flex items-center gap-2 text-[#e91e63] mt-3">
               {communauteIcon("30", "30")}
               <h1 className=" text-[#344767] font-bold text-[18px] ">
-                Mettre à jour la communauté
+                METTRE À JOUR LA COMMUNAUTE
               </h1>
             </div>
           </div>
         </div>
-        <div className="flex gap-3">
-          <p className="align-middle self-center">Communauté</p>
-          <select
-            title="Select element"
-            id="countries"
-            className=" w-[200px] bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500   p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          >
-            <option selected>{faker.word.words(2)}</option>
-          </select>
-        </div>
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-[12px] sm:text-[18px]">
-            Mise à jour de la page communauté
-          </CardTitle>
-          <CardDescription>
-            Remplir les champs suivants et mettre à jour la page communauté
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-2 text-[16px] sm:text-[18px]">
-          <div className="space-y-1">
-            <Label htmlFor="title">
-              Nom de la communauté <span className="text-[#e91e63] ">*</span>{" "}
-            </Label>
-            <Input
-              id="title"
-              name="title"
-              value={title}
-              placeholder="Entrer le nom de la communauté"
-              onChange={handleTitle}
-              className={`${classTitle ? "border-red-600" : ""}`}
-              disabled={startSending}
-            />
+      <div className="mt-5 ">
+        <div className="flex items-center gap-3 mb-5 ">
+          <div
+            className={clsx(
+              "flex items-center gap-1 px-2 py-1 shadow-xl cursor-pointer",
+              { "text-[#e91e63]": openState }
+            )}
+            onClick={() => setOpenState(true)}
+          >
+            {" "}
+            <span className="icon-[material-symbols--info]"></span>{" "}
+            <p>Détails de la communauté</p>{" "}
           </div>
-          <div className="space-y-1">
-            <Label htmlFor="description">
-              Description de la communauté{" "}
-              <span className="text-[#e91e63]">*</span>
-            </Label>
-            <Textarea
-              id="description"
-              name="description"
-              value={description}
-              placeholder="Entrer une description de la communauté"
-              onChange={handleDescription}
-              required
-              className={`${classDescription ? "border-red-600" : ""}`}
-              disabled={startSending}
-            />
+          <div
+            className={clsx(
+              "relative flex items-center gap-1 px-2 py-1 shadow-xl cursor-pointer",
+              { "text-[#e91e63]": !openState && communityId }
+            )}
+            onClick={() => {
+              if (communityId) {
+                setOpenState(false);
+              }
+            }}
+          >
+            <span className="icon-[bx--paint]"></span>
+            <p>Personnalisation des couleurs</p>
+            {}
           </div>
-          <div className="space-y-1 ">
-            <Label htmlFor="logoUrl">
-              Insérer le logo de la communauté {" (optionnel)"}
-            </Label>
-            <div className="flex items-center gap-2">
-              <Input
-                id="logoUrl"
-                name="logUrl"
-                value={logoUrl}
-                placeholder="Entrer une image représentant le logo de la communauté"
-                onChange={handleLogoUrl}
-                disabled={stateDownload || startSending}
-              />
-              <ButtonUploadFile
-                setImageUrl={setLogoUrl}
-                setStateDownloadProps={setStateDownload}
-                stateDownloadProps={stateDownload}
-                name="updateCommunaute"
-                valueForHtml="updateCommunaute"
-                key="updateCommunaute"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-1 ">
-            <Label htmlFor="banniereUrl">
-              Mettre à jour l'image bannière de la communauté {" (optionnel)"}
-            </Label>
-            <div className="flex items-center gap-2">
-              <Input
-                id="banniereUrl"
-                name="banniereUrl"
-                value={banniereUrl}
-                placeholder="Entrer une image représentant la bannière de la communauté"
-                onChange={handleBanniereUrl}
-                disabled={stateDownload || startSending}
-              />
-              <ButtonUploadFile
-                setImageUrl={setBanniereUrl}
-                setStateDownloadProps={setStateDownload}
-                stateDownloadProps={stateDownload}
-                name="updateCommunaute1"
-                valueForHtml="updateCommunaute1"
-                key="updateCommunaute1"
-              />
-            </div>
-          </div>
-        </CardContent>
-        {startSending && (
-          <div>Patienter l'action est en cours d'éxécution...</div>
+        </div>
+        {openState && communityId && (
+          <CommunityDetailsUpdate communityId={communityId} />
         )}
-        <CardFooter className="flex items-center gap-3">
-          <Button
-            disabled={stateDownload || startSending}
-            onClick={sendModificationOnCommunity}
-          >
-            Envoyer les modifications
-          </Button>
-          <Button
-            disabled={stateDownload || startSending}
-            className="p-0 flex items-center justify-center bg-[#e91e63] hover:bg-[#e91e62e0]"
-          >
-            <NavLink
-              to="/COMMUNAUTES"
-              className="w-full h-full flex items-center justify-center p-2"
-            >
-              Retour à la page communauté
-            </NavLink>
-          </Button>
-        </CardFooter>
-      </Card>
-    </Fragment>
+
+        {!openState && communityId && (
+          <ColorCustumisationUpdate communityId={communityId} />
+        )}
+      </div>
+    </>
   );
 }
 

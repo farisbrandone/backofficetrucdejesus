@@ -29,12 +29,13 @@ export type NotificationTabContentGroupeData = {
   subject: string;
   messageOfEmail: string;
   status: string;
+  groupeId: string;
   dateOfCreation?: string;
   dateOfUpdate?: string;
   id?: string;
 };
 
-function NotificationTabContentGroupe() {
+function NotificationTabContentGroupe({ groupeId }: { groupeId: string }) {
   const [author, setAuthor] = useState("");
   const [emailAuthor, setEmailAuthor] = useState("");
   const [subject, setSubject] = useState("");
@@ -127,6 +128,7 @@ function NotificationTabContentGroupe() {
       subject: subject,
       messageOfEmail: messageOfEmail,
       status: switchState,
+      groupeId,
     };
 
     if (alreadyExist) {
@@ -183,10 +185,11 @@ function NotificationTabContentGroupe() {
     const getAllData = async () => {
       try {
         setLoadingData(true);
-        const result =
+        const result = (
           await requestTogetAllUniversalData<NotificationTabContentGroupeData>(
             "NotificationTabContentGroupeData"
-          );
+          )
+        ).filter((value) => value.groupeId === groupeId);
         setLoadingData(false);
         if (result.length > 0) {
           setAlreadyExist({ ...result[0] });

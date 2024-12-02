@@ -1,5 +1,5 @@
 import { Toaster } from "@/components/ui/toaster";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import HeaderForAllBackOffice from "@/mycomponents/ui/HeaderForAllBackOffice";
 import { FooterBackoffice } from "@/mycomponents/acceuilPage/FooterBackoffice";
 import { ChangeEvent, useEffect, useState } from "react";
@@ -13,7 +13,7 @@ function PageGamification() {
   >([]);
   const [loadingGroupeData, setLoadingGroupeData] = useState(false);
   const [groupeSelect, setGroupeSelect] = useState("");
-
+  const { communityId } = useParams<string>();
   const handleGroupeSelectValue = (e: ChangeEvent<HTMLSelectElement>) => {
     e.preventDefault();
     setGroupeSelect(e.target.value);
@@ -28,7 +28,7 @@ function PageGamification() {
         );
         console.log({ groupeData });
         setGroupePageAssociateTotal([...groupeData]);
-        setGroupeSelect(groupeData[0].id);
+        setGroupeSelect(groupeData[0].id as string);
         setLoadingGroupeData(false);
       } catch (error) {
         toast({
@@ -99,6 +99,7 @@ function PageGamification() {
           groupeData={groupePageAssociateTotal.find(
             (value) => value.id === groupeSelect
           )}
+          communityId={communityId as string}
         />
         <Toaster />
       </div>

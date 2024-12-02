@@ -1,6 +1,6 @@
-import { GroupeDataType, requestTogetAllGroupeData } from "@/fakeData";
+import { GroupeDataType, requestTogetAllUniversalData } from "@/fakeData";
 import { ChangeEvent, useEffect, useState } from "react";
-import { communityDataType } from "../communautePage/UpdateCommunaute";
+import { CommunityDataType } from "../communautePage/CommunityDetails";
 
 export default function AssignGroupe({
   setPageForAssignGroupe,
@@ -33,7 +33,9 @@ export default function AssignGroupe({
   useEffect(() => {
     const getAllMembreData = async () => {
       try {
-        const data = await requestTogetAllGroupeData();
+        const data = await requestTogetAllUniversalData<GroupeDataType>(
+          "GroupeData"
+        );
         setTotalGroupe([...data]);
       } catch (error) {
         setLoadingFail(true);
@@ -136,7 +138,9 @@ export function AssignGroupeForMember({
   useEffect(() => {
     const getAllMembreData = async () => {
       try {
-        const data = await requestTogetAllGroupeData();
+        const data = await requestTogetAllUniversalData<GroupeDataType>(
+          "GroupeData"
+        );
         setTotalGroupe([...data]);
       } catch (error) {
         setLoadingFail(true);
@@ -213,8 +217,8 @@ export function AssignCommunity({
 }: {
   setPageForAssignCommunity: (val: boolean) => void;
 }) {
-  const [groupeAssign, setCommunityAssign] = useState<communityDataType[]>([]);
-  const [totalCommunity, setTotalCommunity] = useState<communityDataType[]>();
+  const [groupeAssign, setCommunityAssign] = useState<CommunityDataType[]>([]);
+  const [totalCommunity, setTotalCommunity] = useState<CommunityDataType[]>();
   const [loadingFail, setLoadingFail] = useState(false);
   console.log(setTotalCommunity, setLoadingFail);
   const handleCheckbox = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -267,8 +271,8 @@ export function AssignCommunity({
   }
 
   const findData = (
-    value: communityDataType[],
-    searchValue: communityDataType
+    value: CommunityDataType[],
+    searchValue: CommunityDataType
   ): boolean => {
     const result = value.find((val) => val.id === searchValue.id);
     if (result) {

@@ -1,20 +1,105 @@
 import { ChangeEvent, Fragment, useEffect, useState } from "react";
-import { requestTogetAllMembreData } from "@/fakeData";
-import { NavLink } from "react-router-dom";
+import {
+  requestTogetAllMembreData,
+  requestTogetAllUniversalData,
+  requestToSetUniversalData,
+  requestToUpdateUniversalDataWithId,
+} from "@/fakeData";
+import { NavLink, useParams } from "react-router-dom";
 import { MemberDataType } from "@/mycomponents/membreGererPage/MemberDataComponent";
 import { FooterBackoffice } from "@/mycomponents/acceuilPage/FooterBackoffice";
 import SearchBarForMembre from "@/mycomponents/ui/searchBarUi/SearchBarForMembre";
 import AssignRoleComponent from "./AssignRoleComponent";
 import clsx from "clsx";
+import { toast } from "@/hooks/use-toast";
+
+export interface RoleUserGroupeDataType {
+  groupeId: string;
+  role: string;
+  member: MemberDataType;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  id?: string;
+}
 
 function AssignRolePage() {
   const [membreData, setMembreData] = useState<MemberDataType[]>();
-  const [loadingFail, setLoadingFail] = useState(false);
   const [openAsignRole, setOpenAsignRole] = useState(false);
+  const [memberSelect, setMemberSelect] = useState<MemberDataType>();
+  const [alreadyExist, setAlreadyExist] = useState<RoleUserGroupeDataType>();
+  const [loadingFail, setLoadingFail] = useState(false);
+  const [loadingData, setLoadingData] = useState(false);
+  const [startSending, setStartSending] = useState(false);
   const [radioValue, setRadioValue] = useState("");
+  const { groupeId } = useParams<string>();
 
   const handleRadioChange = (e: ChangeEvent<HTMLInputElement>) => {
     setRadioValue(e.target.value);
+  };
+
+  const submitRoleUser = async () => {
+    if (!radioValue || !memberSelect) {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Donnée fournit insufisant",
+      });
+      return;
+    }
+
+    const data = {
+      groupeId: groupeId as string,
+      role: radioValue,
+      member: memberSelect,
+    };
+
+    if (alreadyExist) {
+      try {
+        const result =
+          await requestToUpdateUniversalDataWithId<RoleUserGroupeDataType>(
+            alreadyExist.id as string,
+            "RoleUserGroupeData",
+            data
+          );
+
+        if (result.success) {
+          toast({
+            title: "Success",
+            description: " success",
+          });
+          setStartSending(() => false);
+          return;
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Erreur",
+            description: "Une erreur est survenue cotée serveur",
+          });
+          setStartSending(() => false);
+          return;
+        }
+      } catch (error) {}
+    }
+    const resultAll = await requestToSetUniversalData<RoleUserGroupeDataType>(
+      "RoleUserGroupeData",
+      data
+    );
+    if (resultAll.success) {
+      toast({
+        title: "Success",
+        description: " success",
+      });
+      setStartSending(() => false);
+      return;
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Une erreur est survenue cotée serveur",
+      });
+      setStartSending(() => false);
+      return;
+    }
   };
 
   useEffect(() => {
@@ -29,7 +114,38 @@ function AssignRolePage() {
     getAllMembreData();
   }, []);
 
-  if (!membreData && !loadingFail) {
+  useEffect(() => {
+    const getAllData = async () => {
+      try {
+        setLoadingData(true);
+        const result = (
+          await requestTogetAllUniversalData<RoleUserGroupeDataType>(
+            "RoleUserGroupeData"
+          )
+        ).find((value) => value.groupeId === groupeId);
+        setLoadingData(false);
+        if (result) {
+          setAlreadyExist({ ...result });
+          setMemberSelect(result.member);
+          setRadioValue(result.role);
+          return;
+        }
+      } catch (error) {
+        setLoadingFail(true);
+      }
+    };
+    getAllData();
+  }, []);
+
+  if (loadingData) {
+    return (
+      <div className="fixed bg-[#000]/50 flex flex-col items-center justify-center top-0 right-0 bottom-0 left-0 z-10">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!membreData && !loadingFail && loadingData) {
     return (
       <div className="w-full text-center pt-4">
         Le document est en cours de chargement ...
@@ -64,7 +180,7 @@ function AssignRolePage() {
             <div className="flex flex-col h-[500px] gap-3">
               <p className="mx-4 px-2 py-3 border-l-[5px] border-l-solid border-l-[#e91e63] rounded-md mt-3 ">
                 <span className="text-[#e91e63] font-bold">Email:</span>{" "}
-                farisbrandone@yahoo.com
+                {memberSelect?.email}
               </p>
               <div className="flex items-start justify-between mt-4 px-4 flex-1">
                 <div className="flex items-center gap-3">
@@ -73,7 +189,7 @@ function AssignRolePage() {
                       htmlFor="assignRole1"
                       className={clsx(
                         "relative w-[20px] h-[20px] rounded-full border-[2px] border-solid border-[#fff] afterRadio block ",
-                        { "bg-[#e91e63]": radioValue === "option1" }
+                        { "bg-[#e91e63]": radioValue === "Admin" }
                       )}
                     ></label>
                   </div>
@@ -86,10 +202,11 @@ function AssignRolePage() {
                     placeholder="!!"
                     type="radio"
                     id="assignRole1"
-                    value="option1"
-                    checked={radioValue === "option1"}
+                    value="Admin"
+                    checked={radioValue === "Admin"}
                     onChange={handleRadioChange}
                     className="hidden"
+                    disabled={startSending}
                   />
                 </div>
                 <div className="flex items-center gap-3">
@@ -98,23 +215,28 @@ function AssignRolePage() {
                       htmlFor="assignRole2"
                       className={clsx(
                         "relative w-[20px] h-[20px] rounded-full border-[2px] border-solid border-[#fff]   afterRadio block ",
-                        { "bg-[#e91e63]": radioValue === "option2" }
+                        { "bg-[#e91e63]": radioValue === "Moderator" }
                       )}
                     ></label>
                     <input
                       placeholder="!!"
                       type="radio"
                       id="assignRole2"
-                      value="option2"
+                      value="Moderator"
                       className="hidden"
-                      checked={radioValue === "option2"}
+                      checked={radioValue === "Moderator"}
                       onChange={handleRadioChange}
+                      disabled={startSending}
                     />
                   </div>
                   <p>Moderator (Permission to edit post and edit comment.)</p>
                 </div>
               </div>
-              <button className="p-2 bg-[#191919] text-white rounded-md text-center w-[100px] ml-3 mb-5 ">
+              <button
+                className="p-2 bg-[#191919] text-white rounded-md text-center w-[100px] ml-3 mb-5 "
+                onClick={submitRoleUser}
+                disabled={startSending}
+              >
                 {" "}
                 Enregistrer{" "}
               </button>
@@ -182,6 +304,7 @@ function AssignRolePage() {
                 setMembreData={setMembreData}
                 setLoadingFail={setLoadingFail}
                 setOpenAsignRole={setOpenAsignRole}
+                setMemberSelect={setMemberSelect}
               />
             </Fragment>
           ))}

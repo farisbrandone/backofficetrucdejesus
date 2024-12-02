@@ -11,10 +11,10 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import ButtonUploadFile from "../ui/ButtonUploadFile";
 import { Button } from "@/components/ui/button";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { ChangeEvent, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { requestToSetRessourcesData } from "@/fakeData";
+import { requestToSetUniversalData } from "@/fakeData";
 import { RessourcesDataType } from "@/fakeData";
 import {
   Select,
@@ -83,6 +83,7 @@ function CreerRessourcesPage() {
   const [classImageRessources, setClassImageRessources] = useState(false);
   const [startSending, setStartSending] = useState(false);
   const [status, setStatus] = useState("activate");
+  const { communityId } = useParams<string>();
   const { toast } = useToast();
 
   const handleTitleRessource = (e: ChangeEvent<HTMLInputElement>) => {
@@ -173,11 +174,13 @@ function CreerRessourcesPage() {
         typeRessources: typeRessources,
         urlRessources: urlRessources,
         status: status,
-        date: "",
-        id: "",
+        communityId,
       };
       console.log(data);
-      const result = await requestToSetRessourcesData(data);
+      const result = await requestToSetUniversalData<RessourcesDataType>(
+        "RessourcesData",
+        data
+      );
       console.log(result);
 
       if (result.success) {

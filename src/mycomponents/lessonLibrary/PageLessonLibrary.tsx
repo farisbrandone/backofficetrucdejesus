@@ -6,9 +6,9 @@ import { Fragment } from "react/jsx-runtime";
 import { useEffect, useState } from "react";
 import {
   LessonLibraryDataType,
-  requestTogetAllLessonLibraryData,
+  requestTogetAllUniversalData,
 } from "@/fakeData";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 
 import LessonLibraryComponent from "./LessonLibraryComponent";
 import SearchBarForLessonLibrary from "../ui/searchBarUi/SearchBarForLessonLibrary";
@@ -18,11 +18,14 @@ function PageLessonLibrary() {
   const [lessonLibraryData, setLessonLibraryData] =
     useState<LessonLibraryDataType[]>();
   const [loadingFail, setLoadingFail] = useState(false);
+  const { communityId } = useParams<string>();
 
   useEffect(() => {
     const getAllLessonLibraryData = async () => {
       try {
-        const data = await requestTogetAllLessonLibraryData();
+        const data = await requestTogetAllUniversalData<LessonLibraryDataType>(
+          "LessonLibraryData"
+        );
         setLessonLibraryData([...data]);
       } catch (error) {
         setLoadingFail(true);
@@ -83,7 +86,10 @@ function PageLessonLibrary() {
             </button>
           </div>
           <div className="flex items-center justify-center">
-            <DropDownLesson title="Ajouter des leçons" />
+            <DropDownLesson
+              title="Ajouter des leçons"
+              communityId={communityId as string}
+            />
             {/* <button
               type="button"
               title="Ajouter des leçons"
@@ -138,6 +144,7 @@ function PageLessonLibrary() {
                 index={index}
                 setLessonLibraryData={setLessonLibraryData}
                 setLoadingFail={setLoadingFail}
+                communityId={communityId as string}
               />
             </Fragment>
           ))}

@@ -5,15 +5,19 @@ import SearbarBackOffice from "../ui/SearbarBackOffice"; */
 import { Fragment } from "react/jsx-runtime";
 import { useEffect, useState } from "react";
 import { requestTogetAllRessourcesData, RessourcesDataType } from "@/fakeData";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { PlusIcon } from "../clientGererPage/ClientGerer";
 import SearchBarForRessource from "../ui/searchBarUi/SearchBarForRessource";
 import RessourceDataComponent from "./RessourceDataComponent";
 import { ressourceIcon } from "./UpdateRessourcesPage";
+import RessourcesFormulaire from "./RessourcesFormulaire";
 
 function RessourcesPage() {
   const [ressourcesData, setRessourcesData] = useState<RessourcesDataType[]>();
   const [loadingFail, setLoadingFail] = useState(false);
+  const [openState, setOpenState] = useState(false);
+
+  const { communityId } = useParams<string>();
 
   useEffect(() => {
     const getAllRessourcesData = async () => {
@@ -48,6 +52,12 @@ function RessourcesPage() {
       {/*  <HeaderForAllBackOffice /> */}
       <div></div>
       <FooterBackoffice />
+      {openState && (
+        <RessourcesFormulaire
+          setOpenState={setOpenState}
+          communityId={communityId as string}
+        />
+      )}
       <div className="w-full flex flex-col gap-4 max-[840px]:w-full min-[840px]:flex-row min-[840px]:items-center min-[840px]:justify-between mt-10">
         <div className="flex gap-3 ">
           <div className="titleAcceuil">
@@ -71,28 +81,23 @@ function RessourcesPage() {
             >
               <NavLink
                 to="/COMMUNAUTES"
-                className="flex items-center px-2 py-2 bg-[#fff] text-[#191919] font-bold rounded-md border-solid border-[1px] border-[#191919]"
+                className="flex items-center px-2 py-2 bg-[#fff] text-[#191919] font-bold rounded-md border-solid border-[1px] border-[#191919] hover:border-[#e91e63] hover:text-[#e91e63] "
               >
                 <span className="icon-[material-symbols--arrow-circle-left-rounded] text-xl  mr-1 "></span>{" "}
                 <span>Retour</span>
               </NavLink>
             </button>
           </div>
-          <div className="flex items-center justify-center">
-            <button
-              type="button"
-              title="Ajouter des ressources"
-              className="flex items-center"
-            >
-              <NavLink
-                to="/GERER LES RESSOURCES/ajouter-des-ressources"
-                className="px-2 py-2 bg-[#e91e63] text-white font-bold rounded-md "
-              >
-                <span className="inline-block">{PlusIcon("15", "15")}</span>{" "}
-                Ajouter des ressources
-              </NavLink>
-            </button>
-          </div>
+
+          <button
+            type="button"
+            title="Ajouter des ressources"
+            className="flex items-center bg-[#191919] gap-1 text-white hover:bg-[#e91e63] rounded-sm px-1 min-h-[40px] self-center"
+            onClick={() => setOpenState(true)}
+          >
+            <span className="inline-block">{PlusIcon("15", "15")}</span>{" "}
+            <p> Ajouter des ressources</p>
+          </button>
 
           <p className="align-middle self-center">Communauté</p>
           <select
@@ -133,6 +138,7 @@ function RessourcesPage() {
                 index={index}
                 setRessourcesData={setRessourcesData}
                 setLoadingFail={setLoadingFail}
+                communityId={communityId as string}
               />
             </Fragment>
           ))}

@@ -14,10 +14,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import ButtonUploadFile from "../ui/ButtonUploadFile";
 import { Button } from "@/components/ui/button";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { ChangeEvent, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { GroupeDataType, requestToSetGroupeData } from "@/fakeData";
+import { GroupeDataType, requestToSetUniversalData } from "@/fakeData";
 
 function NewGroupePageCreate() {
   const [titleGroupe, setTitleGroupe] = useState("");
@@ -32,7 +32,7 @@ function NewGroupePageCreate() {
   const [stateDownload1, setStateDownload1] = useState(false);
   const [typeAccess, setTypeAccess] = useState("Public");
   const { toast } = useToast();
-
+  const { communityId } = useParams<string>();
   const handleTitleGroupe = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setTitleGroupe(() => e.target.value);
@@ -93,15 +93,17 @@ function NewGroupePageCreate() {
         banniereUrlGroupe: banniereUrlGroupe,
         typeAccess: typeAccess,
         status: status,
-        date: "",
-        id: "",
+        communityId: communityId as string,
         nombreDePartages: 0,
         nombreDevenements: 0,
         nombreDeChaines: 0,
         nombreDePassionnner: 0,
       };
       console.log(data);
-      const result = await requestToSetGroupeData(data);
+      const result = await requestToSetUniversalData<GroupeDataType>(
+        "GroupeData",
+        data
+      );
       console.log(result);
 
       if (result.success) {

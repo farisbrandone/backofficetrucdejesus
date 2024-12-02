@@ -1,10 +1,11 @@
 import { Toaster } from "@/components/ui/toaster";
 import HeaderForAllBackOffice from "../ui/HeaderForAllBackOffice";
 import { FooterBackoffice } from "../acceuilPage/FooterBackoffice";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { BodyEmailNotification } from "./BodyEmailNotification";
 
 function PageEmailNotification() {
+  const { communityId } = useParams<string>();
   return (
     <div className="w-full flex flex-col pl-3 ">
       <HeaderForAllBackOffice />
@@ -38,7 +39,7 @@ function PageEmailNotification() {
       </div>
       {/* <HeaderBackoffice /> */}
       <div className=" w-full px-2 flex items-center  mt-[20px] mx-auto ">
-        <BodyEmailNotification />
+        <BodyEmailNotification communityId={communityId as string} />
         <Toaster />
       </div>
       {/*  </div>

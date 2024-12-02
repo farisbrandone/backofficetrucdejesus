@@ -24,8 +24,10 @@ const innerButton = [
 ];
 
 function ButtonDropDownForAssignRole({
+  handleMemberSelect,
   setOpenAsignRole,
 }: {
+  handleMemberSelect: () => void;
   setOpenAsignRole: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [putHidden, setPutHidden] = useState(true);
@@ -91,7 +93,10 @@ function ButtonDropDownForAssignRole({
           <button
             type="button"
             className="mybutton hover:text-[#e91e63] P-2 text-white text-start pl-2 transition-all duration-500 "
-            onClick={() => setOpenAsignRole(true)}
+            onClick={() => {
+              setOpenAsignRole(true);
+              handleMemberSelect();
+            }}
           >
             {" "}
             <span className="mr-1 inline-block"> {value.icon}</span>{" "}

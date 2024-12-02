@@ -152,14 +152,14 @@ function UpdateRessourcesPage() {
     }
     try {
       var data: RessourcesDataType = {
-        titleRessource: titleRessource,
-        descriptionRessource: descriptionRessource,
-        imageRessource: imageRessource,
-        textButtonRessource: textButtonRessource,
-        typeRessources: typeRessources,
-        urlRessources: urlRessources,
-        date: "",
+        titleRessource,
+        descriptionRessource,
+        imageRessource,
+        urlRessources,
+        textButtonRessource,
+        typeRessources,
         status,
+
         id: ressourceId ? ressourceId : "",
       };
       console.log(data);
@@ -201,12 +201,12 @@ function UpdateRessourcesPage() {
           ressourceId as string
         );
         setTitleRessource(data.titleRessource);
-        setDescriptionRessource(data.descriptionRessource);
-        setImageRessource(data.imageRessource);
-        setTextButtonRessource(data.textButtonRessource);
+        setDescriptionRessource(data.descriptionRessource as string);
+        setImageRessource(data.imageRessource as string);
+        setTextButtonRessource(data.textButtonRessource as string);
         setTypeRessources(data.typeRessources);
         setStatus(data.status);
-        setUrlRessources(data.urlRessources);
+        setUrlRessources(data.urlRessources as string);
       } catch (error) {
         setLoadingFail(true);
       }

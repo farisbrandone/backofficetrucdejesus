@@ -15,14 +15,16 @@ import { useToast } from "@/hooks/use-toast";
 
 import { Switch } from "@radix-ui/react-switch";
 import {
+  BulkNotificationDataType,
   requestToChangeStatus,
-  requestTogetAllBulkNotificationData,
-  requestToUpdateBulkNotificationData,
+  requestTogetAllUniversalData,
+  requestToSetUniversalData,
+  requestToUpdateUniversalDataWithId,
 } from "@/fakeData";
 import LoadingTotal from "@/mycomponents/ui/LoadingTotal";
 import ComplexeDescription from "@/mycomponents/ui/ComplexeDescription";
 
-function BulkNotification() {
+function BulkNotification({ communityId }: { communityId: string }) {
   const [authorBulk, setAuthorBulk] = useState("");
   const [emailAuthorBulk, setEmailAuthorBulk] = useState("");
   const [subjectBulk, setSubjectBulk] = useState("");
@@ -35,7 +37,9 @@ function BulkNotification() {
 
   const [switchStateBulk, setSwitchStateBulk] = useState("desactivate");
   const [loadingStatus, setLoadingStatus] = useState(false);
+  const [alreadyExist, setAlreadyExist] = useState<BulkNotificationDataType>();
   const [loadingFail, setLoadingFail] = useState(false);
+  const [loadingData, setLoadingData] = useState(false);
   const [idEmailNotification, setIdEmailNotification] = useState("");
   const { toast } = useToast();
   console.log(loadingFail);
@@ -112,24 +116,22 @@ function BulkNotification() {
       setStartSending(() => false);
       return;
     }
-    try {
-      const getResult = await requestTogetAllBulkNotificationData();
-      if (
-        getResult[0].emailAuthorBulk !== emailAuthorBulk ||
-        getResult[0].titleBulk !== authorBulk ||
-        getResult[0].subjectBulk !== subjectBulk
-      ) {
-        var data = {
-          titleBulk: authorBulk,
-          emailAuthorBulk: emailAuthorBulk,
-          subjectBulk: subjectBulk,
-          messageOfEmailBulk: messageOfEmailBulk,
-          date: "",
-          id: getResult[0].id,
-          statusBulk: switchStateBulk,
-        };
-        const result = await requestToUpdateBulkNotificationData(data);
-        console.log(result);
+    var data = {
+      titleBulk: authorBulk,
+      emailAuthorBulk: emailAuthorBulk,
+      subjectBulk: subjectBulk,
+      messageOfEmailBulk: messageOfEmailBulk,
+      communityId,
+      statusBulk: switchStateBulk,
+    };
+    if (alreadyExist) {
+      try {
+        const result =
+          await requestToUpdateUniversalDataWithId<BulkNotificationDataType>(
+            alreadyExist.id as string,
+            "BulkNotificationData",
+            data
+          );
 
         if (result.success) {
           toast({
@@ -147,27 +149,43 @@ function BulkNotification() {
           setStartSending(() => false);
           return;
         }
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Erreur",
-          description: "Aucune modification n'a été effectuer",
-        });
-        setStartSending(() => false);
-        return;
-      }
-    } catch (error) {
+      } catch (error) {}
+    }
+    const resultAll = await requestToSetUniversalData<BulkNotificationDataType>(
+      "BulkNotificationData",
+      data
+    );
+    if (resultAll.success) {
+      toast({
+        title: "Success",
+        description: " success",
+      });
+      setStartSending(() => false);
+      return;
+    } else {
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Une erreur est survenue, vérifier votre connexion",
+        description: "Une erreur est survenue cotée serveur",
       });
       setStartSending(() => false);
-      console.error("");
+      return;
     }
   };
 
-  useEffect(() => {
+  /*  
+ 
+   var data = {
+          titleBulk: authorBulk,
+          emailAuthorBulk: emailAuthorBulk,
+          subjectBulk: subjectBulk,
+          messageOfEmailBulk: messageOfEmailBulk,
+          date: "",
+          id: getResult[0].id,
+          statusBulk: switchStateBulk,
+        };
+ 
+ useEffect(() => {
     const getEmailNotificationData = async () => {
       try {
         const result = await requestTogetAllBulkNotificationData();
@@ -184,23 +202,50 @@ function BulkNotification() {
 
       getEmailNotificationData();
     };
+  }, []); */
+
+  useEffect(() => {
+    const getAllData = async () => {
+      try {
+        setLoadingData(true);
+        const result = (
+          await requestTogetAllUniversalData<BulkNotificationDataType>(
+            "BulkNotificationData"
+          )
+        ).find((value) => value.communityId === communityId);
+        setLoadingData(false);
+        if (result) {
+          setAlreadyExist({ ...result });
+          setAuthorBulk(result.titleBulk);
+          setEmailAuthorBulk(result.emailAuthorBulk);
+          setSubjectBulk(result.subjectBulk);
+          setSwitchStateBulk(result.statusBulk);
+          setMessageOfEmailBulk(result.messageOfEmailBulk);
+          setIdEmailNotification(result.id as string);
+          return;
+        }
+      } catch (error) {
+        setLoadingFail(false);
+      }
+    };
+    getAllData();
   }, []);
 
-  /* if ((!author || !emailAuthor) && !loadingFail) {
-      return (
-        <div className="w-full text-center pt-4">
-          Le document est en cours de chargement ...
-        </div>
-      );
-    }
-  
-    if (loadingFail) {
-      return (
-        <div className="w-full text-center pt-4">
-          Une erreur est survenue pendant le chargement ou problème de connexion
-        </div>
-      );
-    } */
+  if (loadingData) {
+    return (
+      <div className="fixed bg-[#000]/50 flex flex-col items-center justify-center top-0 right-0 bottom-0 left-0 z-10">
+        Loading...
+      </div>
+    );
+  }
+
+  if (loadingFail) {
+    return (
+      <div className="fixed bg-[#000]/50 flex flex-col items-center justify-center top-0 right-0 bottom-0 left-0 z-10">
+        Une erreur est survenue pendant le chargement ou problème de connexion
+      </div>
+    );
+  }
 
   return (
     <TabsContent value="notification en masse">
