@@ -213,6 +213,7 @@ function ChannelPage() {
           </div>
 
           {channelData &&
+            channelData.length > 0 &&
             channelData.map((value, index) => (
               <Fragment key={index}>
                 <ChannelPageComponent

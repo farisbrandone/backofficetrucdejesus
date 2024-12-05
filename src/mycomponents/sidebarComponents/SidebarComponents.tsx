@@ -35,7 +35,7 @@ function SidebarComponents() {
     "MES VENTES",
     "ANALYTICS",
     "GERER LES MEMBRES",
-    "GERER LES RESSOURCES",
+    /* "GERER LES RESSOURCES", */
     "NOTIFICATION",
   ];
   return (

@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import { globalState, initialState } from "./RessourcesFormulaire";
+import { globalState /* initialState */ } from "./RessourcesFormulaire";
 import { requestToSetUniversalData } from "@/fakeData";
 import { RessourcesDataType } from "@/fakeData";
 import { useToast } from "@/hooks/use-toast";
@@ -10,8 +10,8 @@ import { ReloadIcon } from "@radix-ui/react-icons";
 export default function Formulaire({
   communityId,
   formChoice,
-  setFormChoice,
-}: {
+}: /*  setFormChoice, */
+{
   communityId: string;
   formChoice: globalState;
   setFormChoice: React.Dispatch<React.SetStateAction<globalState>>;
@@ -230,7 +230,7 @@ export default function Formulaire({
           description: "Le groupe à été crée avec success",
         });
         setStartSending(() => false);
-        window.location.replace("/GERER LES RESSOURCES");
+        window.location.replace(`/GERER LES RESSOURCES/${communityId}`);
         return;
       } else {
         toast({
@@ -435,13 +435,13 @@ export default function Formulaire({
         >
           <span className="icon-[fa-solid--save]"></span> <p>ENREGISTRER</p>
         </button>
-        <button
+        {/*  <button
           className="border-[1px] border-[#191919] border-solid hover:border-[#e93e63] hover:text-[#e93e63] p-2 rounded-md flex items-center"
           onClick={() => setFormChoice({ ...initialState })}
         >
           <span className="icon-[material-symbols--arrow-circle-left]"></span>{" "}
           <p>RETOUR</p>
-        </button>
+        </button> */}
       </div>
     </div>
   );

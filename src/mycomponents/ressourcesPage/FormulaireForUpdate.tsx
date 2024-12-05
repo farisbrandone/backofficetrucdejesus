@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { globalState, initialState } from "./RessourcesFormulaire";
+import { globalState /* initialState */ } from "./RessourcesFormulaire";
 import {
   requestToGetRessourcesDataWithId,
   requestToUpdateUniversalDataWithId,
@@ -13,7 +13,7 @@ import { ReloadIcon } from "@radix-ui/react-icons";
 export default function FormulaireForUpdate({
   communityId,
   formChoice,
-  setFormChoice,
+  /*  setFormChoice, */
   ressourceId,
 }: {
   communityId: string;
@@ -242,7 +242,7 @@ export default function FormulaireForUpdate({
           description: "Le groupe à été crée avec success",
         });
         setStartSending(() => false);
-        window.location.replace("/GERER LES RESSOURCES");
+        window.location.replace(`/GERER LES RESSOURCES/${communityId}`);
         return;
       } else {
         toast({
@@ -486,13 +486,13 @@ export default function FormulaireForUpdate({
         >
           <span className="icon-[fa-solid--save]"></span> <p>ENREGISTRER</p>
         </button>
-        <button
+        {/*  <button
           className="border-[1px] border-[#191919] border-solid hover:border-[#e93e63] hover:text-[#e93e63] p-2 rounded-md flex items-center"
           onClick={() => setFormChoice({ ...initialState })}
         >
           <span className="icon-[material-symbols--arrow-circle-left]"></span>{" "}
           <p>RETOUR</p>
-        </button>
+        </button> */}
       </div>
     </div>
   );

@@ -7,9 +7,18 @@ import clsx from "clsx";
 function CreerCommunaute() {
   const [openState, setOpenState] = useState(true);
   const [comunityId, setCommunityId] = useState("");
+  const [startSetTime, setStartSetTime] = useState(false);
   /*  const styleInput = clsx(
     `absolute w-[38px] top-[2px] bottom-[2px] right-[2px] border-[1px] border-solid border-[#000]/50`
   ); */
+
+  const handleSetTime = () => {
+    setStartSetTime(() => true);
+    setTimeout(() => {
+      setStartSetTime(() => false);
+    }, 3000);
+  };
+
   return (
     <>
       <div className="w-full flex flex-col gap-4 max-[840px]:w-full min-[840px]:flex-row min-[840px]:items-center min-[840px]:justify-between mt-10">
@@ -45,12 +54,23 @@ function CreerCommunaute() {
             onClick={() => {
               if (comunityId) {
                 setOpenState(false);
+                return;
               }
+              handleSetTime();
             }}
           >
             <span className="icon-[bx--paint]"></span>
             <p>Personnalisation des couleurs</p>
             {}
+            <div
+              className={clsx(
+                "absolute -top-[70px] p-2 transition-all text-[14px] z-30 bg-white text-[#e91e63] duration-1000 rounded-md border-[2px] border-solid border-[#e91e63]",
+                { "opacity-0": !startSetTime },
+                { "opacity-100": startSetTime }
+              )}
+            >
+              Vous devez d'abord creer une communauté
+            </div>
           </div>
         </div>
         {openState && (

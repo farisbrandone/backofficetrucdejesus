@@ -62,14 +62,13 @@ function ButtonDropDownForMe({ communityId }: { communityId: string }) {
 
   const handleVisible = (event: MouseEvent<HTMLDivElement>) => {
     const clickedElement = event.target as HTMLElement;
-    console.log(stateRotate);
+
     if (stateRotate === "0") {
       setStateRotate("180");
     } else {
       setStateRotate("0");
     }
 
-    console.log(clickedElement.className);
     if (clickedElement.className.includes("mybutton")) {
       return;
     }

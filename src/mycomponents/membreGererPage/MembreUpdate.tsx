@@ -15,8 +15,8 @@ import { NavLink } from "react-router-dom";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import {
-  requestToGetMemberDataWithId,
-  requestToUpdateMembreData,
+  requestToGetAllUniversalDataWithId,
+  requestToUpdateUniversalDataWithId,
 } from "@/fakeData";
 import { MemberDataType } from "./MemberDataComponent";
 import PhoneInput from "react-phone-number-input";
@@ -185,8 +185,7 @@ function MembreUpdate() {
         birthDay: birthDay,
         phone: phoneValue.toString(),
         status: status,
-        dateCreation: "",
-        dateMiseAJour: "",
+
         id: membreId ? membreId : "",
         nombrePartage: 0,
         nombreLikes: 0,
@@ -196,7 +195,11 @@ function MembreUpdate() {
         nombreDeBadge: 0,
       };
       console.log(data);
-      const result = await requestToUpdateMembreData(data);
+      const result = await requestToUpdateUniversalDataWithId(
+        membreId as string,
+        "MemberData",
+        data
+      );
       console.log(result);
 
       if (result.success) {
@@ -230,7 +233,10 @@ function MembreUpdate() {
   useEffect(() => {
     async function getEventDataForUpdateWithId() {
       try {
-        const data = await requestToGetMemberDataWithId(membreId as string);
+        const data = await requestToGetAllUniversalDataWithId<MemberDataType>(
+          membreId as string,
+          "MemberData"
+        );
         setName(data.name);
         setEmail(data.email);
         setMotsDepasse(data.motsDepasse);

@@ -1,9 +1,10 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect } from "react";
-import { requestTogetAllMembreData } from "@/fakeData";
+
 import { format } from "date-fns";
 import { MemberDataType } from "@/mycomponents/membreGererPage/MemberDataComponent";
 import ButtonDropDownForAssignRole from "./ButtonDropDownForAssignRole";
+import { requestTogetAllUniversalData } from "@/fakeData";
 
 interface AssignRoleComponentType {
   value: MemberDataType;
@@ -84,7 +85,9 @@ function AssignRoleComponent({
   useEffect(() => {
     const getAllMembreData = async () => {
       try {
-        const data = await requestTogetAllMembreData();
+        const data = await requestTogetAllUniversalData<MemberDataType>(
+          "MemberData"
+        );
         setMembreData([...data]);
       } catch (error) {
         setLoadingFail(true);
@@ -119,7 +122,7 @@ function AssignRoleComponent({
         {format(new Date(value.birthDay), "dd/MM/yyyy")}
       </div>
       <div className=" place-content-center mx-auto overflow-hidden text-center">
-        {format(new Date(value.dateCreation), "'le' dd MMM yyyy")}
+        {format(new Date(value.dateOfCreation as string), "'le' dd MMM yyyy")}
       </div>
       {/* <div className="place-content-center mx-auto">
         {loadingStatus ? (

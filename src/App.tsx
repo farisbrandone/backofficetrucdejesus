@@ -67,11 +67,31 @@ import ApprouveMembersPage from "./mycomponents/groupePage/groupeAction/Approuve
 import AssignRolePage from "./mycomponents/groupePage/groupeAction/AssignRolePage";
 import CreerCommunaute from "./mycomponents/communautePage/CreerCommunaute";
 /**we configure the loder create in root sidebar component to load data */
+import { createContext } from "react";
+import LoginMother from "./Sign/login/LoginMother";
+import Login from "./Sign/login/Login";
+
+export const context = createContext(null);
+const data =
+  !!localStorage.getItem("user") && localStorage.getItem("user") !== null
+    ? JSON.parse(localStorage.getItem("user") as string)
+    : undefined;
 
 const router = createBrowserRouter([
   {
+    path: "/login",
+    element: <Login />,
+  },
+
+  {
     path: "/",
-    element: <SidebarComponents />,
+    element: (
+      <context.Provider value={data}>
+        <LoginMother>
+          <SidebarComponents />
+        </LoginMother>
+      </context.Provider>
+    ),
     errorElement: <ErrorPage />,
     loader: rootLoader,
     children: [
@@ -106,6 +126,10 @@ const router = createBrowserRouter([
         element: <GroupeMain />,
         children: [
           {
+            path: "/GROUPES",
+            element: <GroupePage />,
+          },
+          {
             path: "/GROUPES/:communityId",
             element: <GroupePage />,
           },
@@ -124,8 +148,9 @@ const router = createBrowserRouter([
         element: <EvenementMain />,
         children: [
           { path: "/EVENEMENTS", element: <EvenementPage /> },
+          { path: "/EVENEMENTS/:communityId", element: <EvenementPage /> },
           {
-            path: "/EVENEMENTS/create-new-event",
+            path: "/EVENEMENTS/create-new-event/:communityId",
             element: <NewEvenementPage />,
           },
           {
@@ -135,9 +160,16 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "/INTEGRATIONS/:communityId",
+        path: "/INTEGRATIONS",
         element: <IntegrationPage />,
+        children: [
+          {
+            path: "/INTEGRATIONS/:communityId",
+            element: <IntegrationPage />,
+          },
+        ],
       },
+
       {
         path: "/GERER LES CLIENTS",
         element: <ClientMain />,
@@ -169,11 +201,15 @@ const router = createBrowserRouter([
         element: <MembreMain />,
         children: [
           {
+            path: "/GERER LES MEMBRES/:communityId",
+            element: <MembreGererPage />,
+          },
+          {
             path: "/GERER LES MEMBRES",
             element: <MembreGererPage />,
           },
           {
-            path: "/GERER LES MEMBRES/ajouter-des-membres",
+            path: "/GERER LES MEMBRES/ajouter-des-membres/:communityId",
             element: <MembreCreer />,
           },
           {

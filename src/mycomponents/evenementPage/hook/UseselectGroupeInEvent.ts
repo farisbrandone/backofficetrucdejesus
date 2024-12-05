@@ -17,7 +17,6 @@ function UseselectGroupeInEvent() {
   >([]);
 
   const handleSelectGroupeEvent = (groupeId: string, titleGroupe: string) => {
-    console.log({ groupeId, titleGroupe });
     const result = groupeForEventSelect.find((value) => {
       return value.groupeId === groupeId;
     });
@@ -50,7 +49,7 @@ function UseselectGroupeInEvent() {
             checked: false,
           };
         });
-        console.log({ resultClean });
+
         setTotalGroupeForEvent([...resultClean]);
         setLoadingGroupeForEvent(false);
       } catch (error) {

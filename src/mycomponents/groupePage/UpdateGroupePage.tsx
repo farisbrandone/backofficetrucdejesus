@@ -41,6 +41,7 @@ function UpdateGroupePage() {
   const [startSending, setStartSending] = useState(false);
   const [loadingFail, setLoadingFail] = useState(false);
   const [typeAccess, setTypeAccess] = useState("Public");
+  const [commData, setCommData] = useState<GroupeDataType>();
   const { groupeId } = useParams<string>();
   const { toast } = useToast();
   const [status, setStatus] = useState("activate");
@@ -125,7 +126,7 @@ function UpdateGroupePage() {
           description: "Le groupe à été mis à jour avec success",
         });
         setStartSending(() => false);
-        window.location.replace("/GROUPES");
+        window.location.replace(`/GROUPES/${commData?.communityId}`);
         return;
       } else {
         toast({
@@ -154,6 +155,7 @@ function UpdateGroupePage() {
           groupeId as string,
           "GroupeData"
         );
+        setCommData(data);
         setLogoUrlGroupe(data.logoUrlGroupe);
         setTitleGroupe(data.titleGroupe);
         setDescriptionGroupe(data.descriptionGroupe);

@@ -89,7 +89,14 @@ const innerButton = [
   },
 ];
 
-function GroupePageAction({ groupeId }: { groupeId: string }) {
+function GroupePageAction({
+  groupeId,
+  communityId,
+}: {
+  groupeId: string;
+  communityId: string | undefined;
+}) {
+  console.log(communityId);
   const [putHidden, setPutHidden] = useState(true);
   const [stateRotate, setStateRotate] = useState("0");
   const [openFacebookGroupeShare, setOpenFacebookGroupeShare] = useState(false);

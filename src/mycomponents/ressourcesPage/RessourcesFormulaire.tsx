@@ -61,6 +61,7 @@ export default function RessourcesFormulaire({
             type="button"
             onClick={() => {
               setOpenState(false);
+              setViewState(initialState);
             }}
           >
             <span className="icon-[ooui--close]"></span>

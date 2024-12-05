@@ -530,7 +530,7 @@ function CreerLessonLibrary() {
             className="p-0 flex items-center justify-center bg-[#e91e63] hover:bg-[#e91e62e0]"
           >
             <NavLink
-              to="/GERER LES LEÇONS"
+              to={`/GERER LES LEÇONS/${communityId}`}
               className="w-full h-full flex items-center justify-center p-2"
             >
               Retour aux leçons

@@ -1,11 +1,17 @@
 import { Switch } from "@/components/ui/switch";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import clsx from "clsx";
 import { useNavigate } from "react-router-dom";
 import { CommunityDataType } from "../CommunityDetails";
 import { AvatarBackoffice } from "@/mycomponents/ui/AvatarBackofice";
 import { DropdownMenuBackoffice } from "@/mycomponents/ui/DropdownMenuBackoffice";
+import { toast } from "@/hooks/use-toast";
+import {
+  requestToChangeStatus,
+  requestTogetAllUniversalData,
+} from "@/fakeData";
+import LoadingTotal from "@/mycomponents/ui/LoadingTotal";
 
 export interface timestamp {
   seconds: number;
@@ -21,11 +27,66 @@ export interface CarteCreerType {
 
 export default function CommunityCard({
   valueCommunity,
+  setCommunityData,
+  setLoadingFail,
 }: {
+  setLoadingFail: React.Dispatch<React.SetStateAction<boolean>>;
+  setCommunityData: React.Dispatch<
+    React.SetStateAction<CommunityDataType[] | undefined>
+  >;
   valueCommunity: CommunityDataType;
 }) {
   const [move, setMove] = useState(false);
+  const [switchState, setSwitchState] = useState(status);
+  const [loadingStatus, setLoadingStatus] = useState(false);
+
   const navigate = useNavigate();
+
+  const handleSwitch = async () => {
+    try {
+      setLoadingStatus(true);
+      let status;
+      if (switchState === "activate") {
+        status = "desactivate";
+      } else {
+        status = "activate";
+      }
+      const result = await requestToChangeStatus(
+        valueCommunity.id as string,
+        status,
+        "CommunityData"
+      );
+      if (result.success) {
+        setSwitchState(status);
+        toast({
+          title: "Success",
+          description: result.message,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: result.message,
+        });
+      }
+
+      setLoadingStatus(false);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    const getAllGroupeData = async () => {
+      try {
+        const data = await requestTogetAllUniversalData<CommunityDataType>(
+          "CommunityData"
+        );
+        setCommunityData([...data]);
+      } catch (error) {
+        setLoadingFail(true);
+      }
+    };
+    getAllGroupeData();
+  }, [switchState]);
 
   return (
     <div
@@ -60,28 +121,48 @@ export default function CommunityCard({
 
       <div
         className={clsx(
-          "object-cover w-full  flex items-center justify-center rounded-t-xl h-[223px] px-1 ",
+          "object-cover w-full  flex items-center justify-center rounded-t-xl h-[230px] px-1 ",
           {
             "-translate-y-16 transition-transform ease-in-out": move,
           },
           { "translate-y-0 transition-transform ease-in-out": !move }
         )} /* className="w-full h-[150px] flex items-center justify-center " */
       >
-        <video autoPlay={true} muted={true} className="rounded-t-xl">
-          <source
-            src="https://d1yei2z3i6k35z.cloudfront.net/5322770/65fc0be058c63_HeaderAppUnTrucdeJESUS.mp4"
-            type="video/mp4"
+        {valueCommunity.banniereUrl &&
+        valueCommunity.banniereUrl.includes(".mp4") ? (
+          <video autoPlay={true} muted={true}>
+            <source src={valueCommunity.banniereUrl} type="video/mp4" />
+            Votre navigateur ne supporte pas la balise vidéo.
+          </video>
+        ) : (
+          <img
+            src={valueCommunity.banniereUrl}
+            alt="Image bannière"
+            className={clsx(
+              "object-cover w-full h-[220px]  ",
+              {
+                "-translate-y-12 transition-transform ease-in-out": move,
+              },
+              { "translate-y-0 transition-transform ease-in-out": !move }
+            )}
           />
-          Votre navigateur ne supporte pas la balise vidéo.
-        </video>
+        )}
       </div>
       <div className="w-full mt-[10px]">
         <div className="flex justify-between items-center w-full h-[25px] p-0">
           <p className="ml-4  max-w-[200px] text-ellipsis overflow-hidden h-[25px] leading-[25px] align-middle ">
             {valueCommunity.title}
           </p>
-          <div className="flex items-center space-x-2 mr-4">
-            <Switch id="airplane-mode" />
+          <div className="flex items-center space-x-2 mr-3">
+            {loadingStatus ? (
+              <LoadingTotal />
+            ) : (
+              <Switch
+                id="airplane-mode"
+                checked={switchState === "activate"}
+                onCheckedChange={handleSwitch}
+              />
+            )}
           </div>
         </div>
         <div className="text-[12px] mt-2 ">

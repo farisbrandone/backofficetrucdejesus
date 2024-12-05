@@ -11,7 +11,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { GroupeDataType, requestTogetAllUniversalData } from "@/fakeData";
 import SearchBarForGroupe from "../ui/searchBarUi/SearchBarForGroupe";
 import ButtonDropDownForMe from "../ui/ButtonDropDownForMe";
-import { CommunityDataType } from "../communautePage/CommunityDetailsUpdate";
+import { CommunityDataType } from "../communautePage/CommunityDetails";
 
 export const groupeIcon = (
   <svg
@@ -41,35 +41,72 @@ export const groupeIcon = (
 function GroupePage() {
   const [groupeData, setGroupeData] = useState<GroupeDataType[]>();
   const [communityData, setCommunityData] = useState<CommunityDataType[]>();
-
+  const [notPossiblbleToCrateGroupe, setNotPossiblbleToCrateGroupe] =
+    useState(false);
   const [loadingFail, setLoadingFail] = useState(false);
   const { communityId } = useParams<string>();
   const [communitySelect, setCommunitySelect] = useState(communityId);
 
-  const handleCommunitySelect = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handleCommunitySelect = async (e: ChangeEvent<HTMLSelectElement>) => {
     e.preventDefault();
     setCommunitySelect(e.target.value);
+    const result1 = await requestTogetAllUniversalData<GroupeDataType>(
+      "GroupeData"
+    );
+    const trueResult = result1.filter(
+      (value) => value.communityId === e.target.value
+    );
+
+    setGroupeData([...trueResult]);
   };
 
   useEffect(() => {
     const getAllGroupeData = async () => {
       try {
         const data = requestTogetAllUniversalData<GroupeDataType>("GroupeData");
+
         const commData =
           requestTogetAllUniversalData<CommunityDataType>("CommunityData");
 
         const [result1, result2] = await Promise.all([data, commData]);
-        const trueResult = result1.filter(
-          (value) => value.communityId === communitySelect
-        );
-        setGroupeData([...trueResult]);
-        setCommunityData([...result2]);
+
+        if (communityId) {
+          const trueResult = result1.filter(
+            (value) => value.communityId === communityId
+          );
+
+          setGroupeData(trueResult);
+          setCommunityData([...result2]);
+        } else {
+          if (result1.length > 0 && result2.length > 0) {
+            setCommunitySelect(result1[0].communityId);
+            const trueResult = result1.filter(
+              (value) => value.communityId === result1[0].communityId
+            );
+            setGroupeData([...trueResult]);
+            setCommunityData([...result2]);
+          } else if (result1.length === 0 && result2.length > 0) {
+            setCommunitySelect(result2[0].id);
+            setCommunityData([...result2]);
+            setGroupeData([...result1]);
+          } else if (result2.length === 0) {
+            setNotPossiblbleToCrateGroupe(true);
+          }
+        }
       } catch (error) {
         setLoadingFail(true);
       }
     };
     getAllGroupeData();
-  }, [communitySelect]);
+  }, []);
+
+  if (notPossiblbleToCrateGroupe) {
+    return (
+      <div className="w-full text-center pt-4">
+        Impossible de créer un groupe car aucune communauté n'a été créée
+      </div>
+    );
+  }
 
   if (!groupeData && !loadingFail) {
     return (
@@ -127,14 +164,13 @@ function GroupePage() {
       </div>
 
       <div className="flex flex-wrap items-center gap-6 mt-16">
-        <NavLink to="/GROUPES/create-new-groupe">
+        <NavLink to={`/GROUPES/create-new-groupe/${communitySelect}`}>
           <CardAddGroup
             icon={groupeIcon}
             text="CREER UN NOUVEAU GROUPE"
             database="GroupeData"
           />
         </NavLink>
-
         {groupeData?.map((value, index) => (
           <div key={index}>
             <CarteCreerForGroup
@@ -149,6 +185,7 @@ function GroupePage() {
               groupeData={groupeData}
               setGroupeData={setGroupeData}
               setLoadingFail={setLoadingFail}
+              communityId={communitySelect}
             />
           </div>
         ))}

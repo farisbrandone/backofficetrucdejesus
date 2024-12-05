@@ -6,7 +6,6 @@ import { requestToSetUniversalData } from "@/fakeData";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import SaveContent from "../ui/SaveContent";
-import RetourContent from "../ui/RetourContent";
 
 const arrayLabel = [
   "Body Color",
@@ -174,16 +173,13 @@ export default function ColorCustumisation() {
         ))}
       </div>
       <div className="flex items-center gap-2 mt-6">
-        <button className="saveButton" onClick={SaveColorCustumData}>
+        <button
+          className="saveButton"
+          onClick={SaveColorCustumData}
+          disabled={startSending}
+        >
           {" "}
           <SaveContent />
-        </button>
-        <button
-          title="Retour"
-          className="buttonRetour"
-          onClick={() => navigate("/COMMUNAUTES")}
-        >
-          <RetourContent />
         </button>
       </div>
     </>

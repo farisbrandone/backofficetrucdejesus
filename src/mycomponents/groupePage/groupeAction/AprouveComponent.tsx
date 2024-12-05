@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import {
   GroupeDataType,
-  requestTogetAllMembreData,
+  requestTogetAllUniversalData,
   requestToGetAllUniversalDataWithId,
   requestToUpdateUniversalDataWithId,
 } from "@/fakeData";
@@ -100,7 +100,9 @@ function AprouveComponent({
     const getAllMembreData = async () => {
       try {
         setLoadingStatus(true);
-        const data = await requestTogetAllMembreData();
+        const data = await requestTogetAllUniversalData<MemberDataType>(
+          "MemberData"
+        );
         const groupeData =
           await requestToGetAllUniversalDataWithId<GroupeDataType>(
             groupeId,
@@ -108,7 +110,7 @@ function AprouveComponent({
           );
         setMyGroupeData({ ...groupeData });
         setMembreData([...data]);
-        if (groupeData.memberId?.includes(value.id)) {
+        if (groupeData.memberId?.includes(value.id as string)) {
           setSwitchState("activate");
         }
         setLoadingStatus(false);
@@ -146,7 +148,7 @@ function AprouveComponent({
         {format(new Date(value.birthDay), "dd/MM/yyyy")}
       </div>
       <div className=" place-content-center mx-auto overflow-hidden text-center">
-        {format(new Date(value.dateCreation), "'le' dd MMM yyyy")}
+        {format(new Date(value.dateOfCreation as string), "'le' dd MMM yyyy")}
       </div>
       <div className="place-content-center mx-auto">
         {loadingStatus ? (
@@ -155,7 +157,7 @@ function AprouveComponent({
           <Switch
             id="airplane-mode"
             checked={switchState === "activate"}
-            onCheckedChange={() => handleSwitch(value.id)}
+            onCheckedChange={() => handleSwitch(value.id as string)}
           />
         )}
       </div>

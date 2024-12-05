@@ -1,6 +1,6 @@
 import SearbarBackOffice from "../ui/SearbarBackOffice";
 import CardAddGroup from "../ui/CardAddGroup";
-import CarteCreer from "../ui/CarteCreer";
+/* import CarteCreer from "../ui/CarteCreer"; */
 
 import { Fragment } from "react/jsx-runtime";
 import { communauteIcon } from "./UpdateCommunaute";
@@ -25,16 +25,17 @@ export const icon = (
 );
 
 function CommunautePage() {
-  const [communityData, setCommunityData] = useState<CommunityDataType[]>([]);
+  const [communityData, setCommunityData] = useState<CommunityDataType[]>();
 
   const [loadingFail, setLoadingFail] = useState(false);
-
+  console.log("blanco");
   useEffect(() => {
     const getAllEventData = async () => {
       try {
         const data = await requestTogetAllUniversalData<CommunityDataType>(
           "CommunityData"
         );
+        console.log(data);
         setCommunityData([...data]);
       } catch (error) {
         setLoadingFail(true);
@@ -88,19 +89,27 @@ function CommunautePage() {
             database="CommunityData"
           />
         </NavLink>
-        <CarteCreer
-          value={0}
-          title="Réseau 100% JÉSUS"
-          date="18 Feb 2024"
-          subTitle="Faisons confiance"
-          valueCommunity={communityData[0]}
-        />
+        {/*  {communityData && communityData.length > 0 && (
+          <CarteCreer
+            value={0}
+            title="Réseau 100% JÉSUS"
+            date="18 Feb 2024"
+            subTitle="Faisons confiance"
+            valueCommunity={communityData[0]}
+          />
+        )} */}
 
-        {communityData.map((value) => (
-          <Fragment key={value.id}>
-            <CommunityCard valueCommunity={value} />
-          </Fragment>
-        ))}
+        {communityData &&
+          communityData.length > 0 &&
+          communityData.map((value) => (
+            <Fragment key={value.id}>
+              <CommunityCard
+                valueCommunity={value}
+                setCommunityData={setCommunityData}
+                setLoadingFail={setLoadingFail}
+              />
+            </Fragment>
+          ))}
       </div>
     </Fragment>
   );

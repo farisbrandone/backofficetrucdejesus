@@ -10,7 +10,10 @@ import { Switch } from "@/components/ui/switch";
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button"; */
-import { requestToChangeStatus, requestTogetAllMembreData } from "@/fakeData";
+import {
+  requestToChangeStatus,
+  requestTogetAllUniversalData,
+} from "@/fakeData";
 import { toast } from "@/hooks/use-toast";
 import LoadingTotal from "../ui/LoadingTotal";
 import { DropdownMenuForGroupe } from "../ui/DropdownMenuBackoffice";
@@ -23,11 +26,12 @@ export interface MemberDataType {
   sexe: string;
   birthDay: string;
   phone: string;
-  dateCreation: string;
-  dateMiseAJour: string;
   status: string;
   image: string;
-  id: string;
+  communityId?: string;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  id?: string;
   nombrePartage: number;
   nombreLikes: number;
   nombreCommentaire: number;
@@ -43,6 +47,7 @@ export interface MemberDataComponentType {
     React.SetStateAction<MemberDataType[] | undefined>
   >;
   setLoadingFail: React.Dispatch<React.SetStateAction<boolean>>;
+  communityId: string | undefined;
 }
 
 export const phoneIcon = (width: string, heigth: string) => {
@@ -62,6 +67,7 @@ export const phoneIcon = (width: string, heigth: string) => {
 };
 
 function MemberDataComponent({
+  communityId,
   value,
   /*  index, */
   setMembreData,
@@ -85,7 +91,7 @@ function MemberDataComponent({
         status = "activate";
       }
       const result = await requestToChangeStatus(
-        value.id,
+        value.id as string,
         status,
         "MembreData"
       );
@@ -109,8 +115,16 @@ function MemberDataComponent({
   useEffect(() => {
     const getAllMembreData = async () => {
       try {
-        const data = await requestTogetAllMembreData();
-        setMembreData([...data]);
+        const data = await requestTogetAllUniversalData<MemberDataType>(
+          "MemberData"
+        );
+        if (communityId) {
+          const trueResult = data.filter(
+            (value) => value.communityId === communityId
+          );
+
+          setMembreData([...trueResult]);
+        }
       } catch (error) {
         setLoadingFail(true);
       }
@@ -125,7 +139,7 @@ function MemberDataComponent({
           <Avatar className={`text-[20px] flex items-center justify-center `}>
             <AvatarImage src={value.image} alt="img" />
             <AvatarFallback>
-              {value.name.charAt(0).toUpperCase()}
+              {value?.name.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
         </div>
@@ -164,10 +178,10 @@ function MemberDataComponent({
         {format(new Date(value.birthDay), "dd/MM/yyyy")}
       </div>
       <div className=" place-content-center mx-auto overflow-hidden text-center">
-        {format(new Date(value.dateCreation), "'le' dd MMM yyyy")}
+        {format(new Date(value.dateOfCreation as string), "'le' dd MMM yyyy")}
       </div>
       <div className="place-content-center mx-auto overflow-hidden text-center">
-        {format(new Date(value.dateMiseAJour), "'le' dd MMM yyyy")}
+        {format(new Date(value.dateOfUpdate as string), "'le' dd MMM yyyy")}
       </div>
       <div className="place-content-center mx-auto">
         {loadingStatus ? (
@@ -206,7 +220,7 @@ function MemberDataComponent({
       <div className=" place-content-center mx-auto ">
         <DropdownMenuForGroupe
           title="..."
-          groupeId={value.id}
+          groupeId={value.id as string}
           baseUrl="GERER LES MEMBRES/update-membre-page"
           groupeForEventSelect={[]}
         />

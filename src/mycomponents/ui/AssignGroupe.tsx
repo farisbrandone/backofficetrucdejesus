@@ -1,18 +1,33 @@
-import { GroupeDataType, requestTogetAllUniversalData } from "@/fakeData";
+import {
+  EventDataType,
+  GroupeDataType,
+  requestTogetAllUniversalData,
+  requestToUpdateUniversalDataWithId,
+} from "@/fakeData";
 import { ChangeEvent, useEffect, useState } from "react";
 import { CommunityDataType } from "../communautePage/CommunityDetails";
+import { toast } from "@/hooks/use-toast";
 
 export default function AssignGroupe({
   setPageForAssignGroupe,
+  eventData,
+  eventId,
+  communityId,
 }: {
+  eventData: EventDataType[];
   setPageForAssignGroupe: (val: boolean) => void;
+  eventId: string;
+  communityId: string;
 }) {
   const [groupeAssign, setGroupeAssign] = useState<GroupeDataType[]>([]);
   const [totalGroupe, setTotalGroupe] = useState<GroupeDataType[]>();
   const [loadingFail, setLoadingFail] = useState(false);
-
-  const handleCheckbox = async (e: ChangeEvent<HTMLInputElement>) => {
+  const [starting, setStarting] = useState(false);
+  /* const navigate = useNavigate(); */
+  console.log(communityId && "chouca chouca");
+  const handleCheckbox = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
+
     const myGroupe = totalGroupe?.find((value) => value.id === e.target.value);
     const otherGroupe = groupeAssign.find(
       (value) => value.id === e.target.value
@@ -30,15 +45,65 @@ export default function AssignGroupe({
     }
   };
 
+  const submitAssignGroupe = async () => {
+    try {
+      setStarting(true);
+      const data = eventData.find((value) => value.id === eventId);
+      const res: EventDataType = {
+        ...(data as EventDataType),
+        groupeForEventSelect: groupeAssign.map((value) => ({
+          groupeId: value.id as string,
+          checked: true,
+          titleGroupe: value.titleGroupe,
+        })),
+      };
+      const result = await requestToUpdateUniversalDataWithId<EventDataType>(
+        eventId,
+        "EventData",
+        res
+      );
+      toast({
+        title: "Success",
+        description: result.message,
+      });
+      setStarting(false);
+      window.location.reload(/* `/EVENEMENTS/${eventData[0].communityId}` */);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Une erreur est survenue, vérifier votre connexion",
+      });
+      setStarting(false);
+    }
+  };
+
   useEffect(() => {
     const getAllMembreData = async () => {
       try {
         const data = await requestTogetAllUniversalData<GroupeDataType>(
           "GroupeData"
         );
-        setTotalGroupe([...data]);
+
+        const tab = eventData[0].groupeForEventSelect.map(
+          (value) => value.groupeId
+        );
+        const trueResult = data.filter(
+          (value) => value.communityId === eventData[0].communityId
+        );
+        const grouGroup = trueResult.filter((value) =>
+          tab.includes(value.id as string)
+        );
+        setGroupeAssign(grouGroup);
+        setTotalGroupe([...trueResult]);
       } catch (error) {
         setLoadingFail(true);
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Une erreur est survenue, vérifier votre connexion",
+        });
+        setPageForAssignGroupe(false);
       }
     };
     getAllMembreData();
@@ -95,11 +160,17 @@ export default function AssignGroupe({
               value={value.id}
               onChange={handleCheckbox}
               checked={findData(groupeAssign, value)}
+              disabled={starting}
             />
             <label htmlFor={value.id}> {value.titleGroupe} </label>
           </div>
         ))}
-        <button className="px-2 py-1.5 bg-[#191919] text-white hover:bg-[#e91e63] flex items-center gap-1 ml-3 rounded-md mt-10 ">
+        {starting && <div>Patienter l'action est en cours d'éxécution...</div>}
+        <button
+          className="px-2 py-1.5 bg-[#191919] text-white hover:bg-[#e91e63] flex items-center gap-1 ml-3 rounded-md mt-10 "
+          onClick={submitAssignGroupe}
+          disabled={starting}
+        >
           <span className="icon-[fa-solid--save]"></span> <p>Enregistrer</p>{" "}
         </button>
       </div>

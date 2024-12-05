@@ -10,18 +10,7 @@ import {
 } from "@/fakeData";
 import { useNavigate } from "react-router-dom";
 import { ChangeEvent, useEffect, useState } from "react";
-export interface CommunityDataType {
-  title: string;
-  description: string;
-  logoUrl: string;
-  banniereUrl: string;
-  communityUrl: string;
-  faviconUrl: string;
-  timeZone: string;
-  dateOfCreation?: string;
-  dateOfUpdate?: string;
-  id?: string;
-}
+import { CommunityDataType } from "./CommunityDetails";
 
 export default function CommunityDetailsUpdate({
   communityId,
@@ -45,6 +34,7 @@ export default function CommunityDetailsUpdate({
   const [loadingFail, setLoadingFail] = useState(false);
   const [loadingData, setLoadingData] = useState(false);
   const [classCommunityUrl, setClassCommunityUrl] = useState(false);
+  const [myStatus, setMyStatus] = useState("desactivate");
   const navigate = useNavigate();
 
   const handleTitle = (e: ChangeEvent<HTMLInputElement>) => {
@@ -112,6 +102,7 @@ export default function CommunityDetailsUpdate({
       communityUrl,
       faviconUrl,
       timeZone,
+      status: myStatus,
     };
 
     if (communityId) {
@@ -159,6 +150,7 @@ export default function CommunityDetailsUpdate({
           setLogoUrl(result.logoUrl);
           setTimeZone(result.timeZone);
           setTitle(result.title);
+          setMyStatus(result.status);
           return;
         }
       } catch (error) {

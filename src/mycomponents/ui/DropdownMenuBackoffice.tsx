@@ -1,4 +1,5 @@
 import {
+  EventDataType,
   requestToDeleteAssetsWithId,
   requestToDeleteEventWithId,
   requestToDeleteLessonLibraryWithId,
@@ -100,14 +101,13 @@ export function DropdownMenuBackoffice({
 
   const handleVisible = (event: MouseEvent<HTMLDivElement>) => {
     const clickedElement = event.target as HTMLElement;
-    console.log(stateRotate);
+
     if (stateRotate === "0") {
       setStateRotate("180");
     } else {
       setStateRotate("0");
     }
 
-    console.log(clickedElement.className);
     if (clickedElement.className.includes("mybutton")) {
       return;
     }
@@ -234,11 +234,14 @@ export function DropdownMenuForGroupe({
   baseUrl,
   groupeForEventSelect,
   setOpenStateForUpdate,
+  eventData,
+  communityId,
 }: {
   title: string;
   groupeId: string;
   baseUrl: string;
   groupeForEventSelect: stateGroupeEvent[];
+  eventData?: EventDataType[];
   setOpenStateForUpdate?: React.Dispatch<React.SetStateAction<boolean>>;
   communityId?: string;
 }) {
@@ -255,14 +258,13 @@ export function DropdownMenuForGroupe({
 
   const handleVisible = (event: MouseEvent<HTMLDivElement>) => {
     const clickedElement = event.target as HTMLElement;
-    console.log(stateRotate);
+
     if (stateRotate === "0") {
       setStateRotate("180");
     } else {
       setStateRotate("0");
     }
 
-    console.log(clickedElement.className);
     if (clickedElement.className.includes("mybutton")) {
       return;
     }
@@ -358,8 +360,13 @@ export function DropdownMenuForGroupe({
   );
   return (
     <div>
-      {pageForAssignGroupe && (
-        <AssignGroupe setPageForAssignGroupe={setPageForAssignGroupe} />
+      {pageForAssignGroupe && eventData && (
+        <AssignGroupe
+          setPageForAssignGroupe={setPageForAssignGroupe}
+          eventId={groupeId}
+          communityId={communityId as string}
+          eventData={eventData}
+        />
       )}
       {pageForAssignGroupeForMember && (
         <AssignGroupeForMember

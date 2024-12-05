@@ -47,8 +47,8 @@ import {
 import "react-day-picker/style.css";
 import {
   EventDataType,
-  requestToGetEventDataWithId,
-  requestToSetEventDataWithId,
+  requestToGetAllUniversalDataWithId,
+  requestToUpdateUniversalDataWithId,
 } from "@/fakeData";
 import UseselectGroupeInEvent from "./hook/UseselectGroupeInEvent";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -79,6 +79,7 @@ function UpdateEvenement() {
   const [startSending, setStartSending] = useState(false);
   const [typeAccess, setTypeAccess] = useState("Public");
   const [loadingFail, setLoadingFail] = useState(false);
+  const [dataEvent, setDataEvent] = useState<EventDataType>();
   const { toast } = useToast();
   const {
     groupeForEventSelect,
@@ -89,7 +90,7 @@ function UpdateEvenement() {
   } = UseselectGroupeInEvent();
 
   const { eventId } = useParams<string>();
-  console.log({ eventId });
+
   const handleTitleEvent = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setTitleEvent(() => e.target.value);
@@ -122,12 +123,10 @@ function UpdateEvenement() {
   };
 
   const handleTypeEvent = (value: string) => {
-    console.log({ typeEvent: value });
     setTypeEvent(() => value);
   };
 
   const handleChangeStatus = () => {
-    console.log(status);
     if (status === "activate") {
       setStatus("desactivate");
       return;
@@ -136,12 +135,10 @@ function UpdateEvenement() {
   };
 
   const handleChangeRadioEvent = (val: string) => {
-    console.log({ radioEvent: val });
     setTypeAccess(() => val);
   };
 
   const updateEventWithId = async () => {
-    console.log("banga");
     const dateString = dateOfEvent?.toString() as string;
     setStartSending(() => true);
     if (!titleEvent || !descriptionEvent) {
@@ -160,7 +157,6 @@ function UpdateEvenement() {
       return;
     }
     try {
-      console.log("inside try");
       if (!eventId) {
         return;
       }
@@ -176,20 +172,22 @@ function UpdateEvenement() {
         textCTAEvent: textCTAEvent,
         locationOfEvent: locationOfEvent,
         groupeForEventSelect: groupeForEventSelect,
-        date: "",
+        communityId: dataEvent?.communityId as string,
         id: eventId,
       };
-      const result = await requestToSetEventDataWithId(data);
-      console.log(result);
+      const result = await requestToUpdateUniversalDataWithId<EventDataType>(
+        eventId,
+        "EventData",
+        data
+      );
 
       if (result.success) {
-        console.log("shunga");
         toast({
           title: "Success",
           description: "L'événement a été mis à jour avec success",
         });
         setStartSending(() => false);
-        window.location.replace("/EVENEMENTS");
+        window.location.replace(`/EVENEMENTS/${dataEvent?.communityId}`);
         return;
       } else {
         toast({
@@ -207,14 +205,17 @@ function UpdateEvenement() {
           "Une erreur est survenue pendant la mise à jour de l'événement, vérifier votre connexion",
       });
       setStartSending(() => false);
-      console.error("");
     }
   };
 
   useEffect(() => {
     async function getEventDataForUpdateWithId() {
       try {
-        const data = await requestToGetEventDataWithId(eventId as string);
+        const data = await requestToGetAllUniversalDataWithId<EventDataType>(
+          eventId as string,
+          "EventData"
+        );
+        setDataEvent(data);
         setTitleEvent(data.titleEvent);
         setDescriptionEvent(data.descriptionEvent);
         setLocationOfEvent(data.locationOfEvent);
@@ -242,7 +243,6 @@ function UpdateEvenement() {
   }
 
   if (loadingFail) {
-    console.log("drumadère");
     return (
       <div className="w-full text-center pt-4">
         Une erreur est survenue pendant le chargement ou problème de connexion

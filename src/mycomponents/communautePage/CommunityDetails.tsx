@@ -19,6 +19,7 @@ export interface CommunityDataType {
   communityUrl: string;
   faviconUrl: string;
   timeZone: string;
+  status: string;
   dateOfCreation?: string;
   dateOfUpdate?: string;
   id?: string;
@@ -86,7 +87,7 @@ export default function CommunityDetails({
   const SaveCommunityData = async () => {
     console.log("banga");
     setStartSending(() => true);
-    if (!title || !communityUrl || description) {
+    if (!title || !communityUrl || !description) {
       if (!title) {
         setClassTitle(true);
       }
@@ -112,7 +113,10 @@ export default function CommunityDetails({
       communityUrl,
       faviconUrl,
       timeZone,
+      status: "desactivate",
     };
+
+    console.log({ data: data });
 
     if (comunityId) {
       const result =
@@ -246,7 +250,15 @@ export default function CommunityDetails({
               setStateDownloadProps={setStateDownloadProps}
               stateDownloadProps={stateDownloadProps}
             />
-            {logoUrl && <img src={logoUrl} alt="AV" height={36} width={36} />}
+            {logoUrl && (
+              <img
+                src={logoUrl}
+                alt="AV"
+                className="object-cover w-[36px] h-[36px] ml-1 "
+                height={36}
+                width={36}
+              />
+            )}
           </div>
           <p className="text-[12px] ">
             Maximum Size(px): 200*50 [Format PNG or JPEG]
@@ -276,7 +288,13 @@ export default function CommunityDetails({
               stateDownloadProps={stateDownloadProps2}
             />
             {banniereUrl && (
-              <img src={banniereUrl} alt="BA" width={150} height={36} />
+              <img
+                src={banniereUrl}
+                alt="BA"
+                className="object-cover w-[36px] h-[36px] ml-1 "
+                width={36}
+                height={36}
+              />
             )}
           </div>
           <p className="text-[12px] ">
@@ -305,7 +323,7 @@ export default function CommunityDetails({
               disabled={startSending}
             />
             <p className="h-[36px] font-bold flex items-center justify-center px-1 bg-[#e9ecef] border-[1px] border-solid border-[#e9ecef]">
-              vercel.com
+              .vercel.com
             </p>
           </div>
         </div>
@@ -333,7 +351,13 @@ export default function CommunityDetails({
               stateDownloadProps={stateDownloadProps3}
             />
             {faviconUrl && (
-              <img src={faviconUrl} alt="FA" width={36} height={36} />
+              <img
+                src={faviconUrl}
+                alt="FA"
+                className="object-cover w-[36px] h-[36px] ml-1 "
+                width={36}
+                height={36}
+              />
             )}
           </div>
           <p className="text-[12px] ">
@@ -341,8 +365,15 @@ export default function CommunityDetails({
           </p>
         </div>
       </div>
+      {startSending && (
+        <div>Patienter l'action est en cours d'éxécution...</div>
+      )}
       <div className="flex items-center gap-2 mb-6">
-        <button className="saveButton" onClick={SaveCommunityData}>
+        <button
+          className="saveButton"
+          onClick={SaveCommunityData}
+          disabled={startSending}
+        >
           {" "}
           <SaveContent />
         </button>
@@ -350,6 +381,7 @@ export default function CommunityDetails({
           title="Retour"
           className="buttonRetour"
           onClick={() => navigate("/COMMUNAUTES")}
+          disabled={startSending}
         >
           <RetourContent />
         </button>

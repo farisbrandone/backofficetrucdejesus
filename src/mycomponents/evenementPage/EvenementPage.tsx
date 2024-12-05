@@ -1,9 +1,10 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import CardAddGroup from "../ui/CardAddGroup";
 import { CarteCreerForEvent } from "../ui/CarteCreer";
-import { EventDataType, requestTogetAllEventData } from "@/fakeData";
-import { useEffect, useState } from "react";
+import { EventDataType, requestTogetAllUniversalData } from "@/fakeData";
+import { ChangeEvent, useEffect, useState } from "react";
 import SearchBarForEvenement from "../ui/searchBarUi/SearchBarForEvenement";
+import { CommunityDataType } from "../communautePage/CommunityDetails";
 
 export const eventIcon = (width: string, heigth: string) => (
   <svg
@@ -23,18 +24,85 @@ function EvenementPage() {
   const [eventData, setEventData] = useState<EventDataType[]>();
 
   const [loadingFail, setLoadingFail] = useState(false);
+  const [communityData, setCommunityData] = useState<CommunityDataType[]>();
+  const { communityId } = useParams<string>();
+  const [communitySelect, setCommunitySelect] = useState(communityId);
+  const [notPossiblbleToCrateGroupe, setNotPossiblbleToCrateGroupe] =
+    useState(false);
 
-  useEffect(() => {
+  const handleCommunitySelect = async (e: ChangeEvent<HTMLSelectElement>) => {
+    e.preventDefault();
+    setCommunitySelect(e.target.value);
+    const result1 = await requestTogetAllUniversalData<EventDataType>(
+      "EventData"
+    );
+    const trueResult = result1.filter(
+      (value) => value.communityId === communitySelect
+    );
+
+    setEventData([...trueResult]);
+  };
+
+  /*  useEffect(() => {
     const getAllEventData = async () => {
       try {
-        const data = await requestTogetAllEventData();
+        const data = await requestTogetAllUniversalData<EventDataType>(
+          "EventData"
+        );
         setEventData([...data]);
       } catch (error) {
         setLoadingFail(true);
       }
     };
     getAllEventData();
-  }, []);
+  }, []); */
+
+  useEffect(() => {
+    const getAllGroupeData = async () => {
+      try {
+        const data = requestTogetAllUniversalData<EventDataType>("EventData");
+        const commData =
+          requestTogetAllUniversalData<CommunityDataType>("CommunityData");
+
+        const [result1, result2] = await Promise.all([data, commData]);
+
+        if (communitySelect) {
+          const trueResult = result1.filter(
+            (value) => value.communityId === communitySelect
+          );
+
+          setEventData([...trueResult]);
+          setCommunityData([...result2]);
+        } else {
+          if (result1.length > 0 && result2.length > 0) {
+            setCommunitySelect(result1[0].communityId);
+            const trueResult = result1.filter(
+              (value) => value.communityId === result1[0].communityId
+            );
+            setEventData([...trueResult]);
+            setCommunityData([...result2]);
+          } else if (result1.length === 0 && result2.length > 0) {
+            setCommunitySelect(result2[0].id);
+            setCommunityData([...result2]);
+            setEventData([...result1]);
+          } else if (result2.length === 0) {
+            setNotPossiblbleToCrateGroupe(true);
+          }
+        }
+      } catch (error) {
+        setLoadingFail(true);
+      }
+    };
+    getAllGroupeData();
+  }, [communitySelect]);
+
+  if (notPossiblbleToCrateGroupe) {
+    return (
+      <div className="w-full text-center pt-4">
+        Impossible de créer un événement car aucune communauté n'a été créée
+      </div>
+    );
+  }
 
   if (!eventData && !loadingFail) {
     return (
@@ -75,8 +143,12 @@ function EvenementPage() {
             title="Select element"
             id="countries"
             className=" w-[200px] bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500   p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            value={communitySelect}
+            onChange={handleCommunitySelect}
           >
-            <option selected>Un Truc de Jesus!</option>
+            {communityData?.map((value) => (
+              <option value={value.id}>{value.title}</option>
+            ))}
           </select>
           <SearchBarForEvenement
             placeholder="Recherche par nom d'événement"
@@ -85,7 +157,7 @@ function EvenementPage() {
         </div>
       </div>
       <div className="flex flex-wrap gap-3 mt-6 px-5">
-        <NavLink to="/EVENEMENTS/create-new-event">
+        <NavLink to={`/EVENEMENTS/create-new-event/${communitySelect}`}>
           <CardAddGroup
             icon={eventIcon("130", "130")}
             text="CREER UN NOUVEAU ÉVÉNEMENT"
@@ -106,11 +178,13 @@ function EvenementPage() {
               textCTAEvent={value.textCTAEvent}
               locationOfEvent={value.locationOfEvent}
               groupeForEventSelect={value.groupeForEventSelect}
-              eventId={value.id}
-              date={value.date}
+              eventId={value.id as string}
+              date={value.dateOfUpdate as string}
               eventData={eventData}
               setEventData={setEventData}
               setLoadingFail={setLoadingFail}
+              communityId={communityId}
+              communitySelect={communitySelect}
             />
           </div>
         ))}

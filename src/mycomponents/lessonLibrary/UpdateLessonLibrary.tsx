@@ -14,8 +14,8 @@ import { NavLink, useParams } from "react-router-dom";
 import { ChangeEvent, useState, Fragment, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import {
-  requestToGetLessonLibraryDataWithId,
-  requestToUpdateLessonLibraryData,
+  requestToGetAllUniversalDataWithId,
+  requestToUpdateUniversalDataWithId,
 } from "@/fakeData";
 import { LessonLibraryDataType } from "@/fakeData";
 /* import {
@@ -98,6 +98,7 @@ function UpdateLessonLibrary() {
   const [status, setStatus] = useState("activate");
   const { toast } = useToast();
   const { lessonLibraryId } = useParams<string>();
+  const [dataLesson, setDataLesson] = useState<LessonLibraryDataType>();
   /* const editor = useRef(null);
 
   const config = useMemo(
@@ -211,10 +212,15 @@ function UpdateLessonLibrary() {
         shortDescriptionLessonLibrary: shortDescriptionLessonLibrary,
         urlLessonLibrary: urlLessonLibrary,
         status: status,
-        id: lessonLibraryId ? lessonLibraryId : "",
+        /* id: lessonLibraryId ? lessonLibraryId : "", */
       };
       console.log(data);
-      const result = await requestToUpdateLessonLibraryData(data);
+      const result =
+        await requestToUpdateUniversalDataWithId<LessonLibraryDataType>(
+          lessonLibraryId as string,
+          "LessonLibraryData",
+          data
+        );
       console.log(result);
 
       if (result.success) {
@@ -223,7 +229,7 @@ function UpdateLessonLibrary() {
           description: "Le membre a été crée avec success",
         });
         setStartSending(() => false);
-        window.location.replace("/GERER LES LEÇONS");
+        window.location.replace(`/GERER LES LEÇONS/${dataLesson?.communityId}`);
         return;
       } else {
         toast({
@@ -247,9 +253,12 @@ function UpdateLessonLibrary() {
   useEffect(() => {
     async function getEventDataForUpdateWithId() {
       try {
-        const data = await requestToGetLessonLibraryDataWithId(
-          lessonLibraryId as string
-        );
+        const data =
+          await requestToGetAllUniversalDataWithId<LessonLibraryDataType>(
+            "LessonLibraryData",
+            lessonLibraryId as string
+          );
+        setDataLesson(data);
         setTitleLessonLibrary(data.titleLessonLibrary);
         setDescriptionLessonLibrary(data.descriptionLessonLibrary);
         setShortDescriptionLessonLibrary(data.shortDescriptionLessonLibrary);
@@ -568,7 +577,7 @@ function UpdateLessonLibrary() {
             className="p-0 flex items-center justify-center bg-[#e91e63] hover:bg-[#e91e62e0]"
           >
             <NavLink
-              to="/GERER LES LEÇONS"
+              to={`/GERER LES LEÇONS/${dataLesson?.communityId}`}
               className="w-full h-full flex items-center justify-center p-2"
             >
               Retour aux leçons

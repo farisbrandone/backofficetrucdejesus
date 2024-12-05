@@ -1,11 +1,16 @@
 import { Fragment, useEffect, useState } from "react";
-import { requestTogetAllMembreData } from "@/fakeData";
+
 import { NavLink, useParams } from "react-router-dom";
 
 import AprouveComponent from "./AprouveComponent";
 import { MemberDataType } from "@/mycomponents/membreGererPage/MemberDataComponent";
 import { FooterBackoffice } from "@/mycomponents/acceuilPage/FooterBackoffice";
 import SearchBarForMembre from "@/mycomponents/ui/searchBarUi/SearchBarForMembre";
+import {
+  GroupeDataType,
+  requestTogetAllUniversalData,
+  requestToGetAllUniversalDataWithId,
+} from "@/fakeData";
 
 function ApprouveMembersPage() {
   const [membreData, setMembreData] = useState<MemberDataType[]>();
@@ -15,8 +20,20 @@ function ApprouveMembersPage() {
   useEffect(() => {
     const getAllMembreData = async () => {
       try {
-        const data = await requestTogetAllMembreData();
-        setMembreData([...data]);
+        const data = await requestTogetAllUniversalData<MemberDataType>(
+          "MemberData"
+        );
+        const groupeData =
+          await requestToGetAllUniversalDataWithId<GroupeDataType>(
+            groupeId as string,
+            "GroupeData"
+          );
+        const trueResult = data.filter(
+          (value) => value.communityId === groupeData.communityId
+        );
+        if (trueResult) {
+          setMembreData([...trueResult]);
+        }
       } catch (error) {
         setLoadingFail(true);
       }

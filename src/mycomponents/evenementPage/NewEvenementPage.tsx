@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import ButtonUploadFile from "../ui/ButtonUploadFile";
 import { Button } from "@/components/ui/button";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { ChangeEvent, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { eventIcon } from "./EvenementPage";
@@ -39,10 +39,8 @@ import {
 } from "@/components/ui/select";
 
 import "react-day-picker/style.css";
-import { EventDataType, requestToSetEventData } from "@/fakeData";
+import { EventDataType, requestToSetUniversalData } from "@/fakeData";
 import UseselectGroupeInEvent from "./hook/UseselectGroupeInEvent";
-import { Checkbox } from "@/components/ui/checkbox";
-import LoadingTotal from "../ui/LoadingTotal";
 import DateTimePicker from "react-datetime-picker";
 import "react-datetime-picker/dist/DateTimePicker.css";
 import "react-calendar/dist/Calendar.css";
@@ -68,14 +66,11 @@ function NewEvenementPage() {
   const [classDescription, setClassDescription] = useState(false);
   const [startSending, setStartSending] = useState(false);
   const [typeAccess, setTypeAccess] = useState("Public");
+  const { communityId } = useParams<string>();
   const { toast } = useToast();
 
-  const {
-    groupeForEventSelect,
-    loadinggroupeForEvent,
-    totalgroupeForEvent,
-    handleSelectGroupeEvent,
-  } = UseselectGroupeInEvent();
+  const { groupeForEventSelect, totalgroupeForEvent } =
+    UseselectGroupeInEvent();
   console.log({ totalgroupeForEvent });
   const handleTitleEvent = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -109,12 +104,10 @@ function NewEvenementPage() {
   };
 
   const handleTypeEvent = (value: string) => {
-    console.log({ typeEvent: value });
     setTypeEvent(() => value);
   };
 
   const handleChangeStatus = () => {
-    console.log(status);
     if (status === "activate") {
       setStatus("desactivate");
       return;
@@ -123,12 +116,10 @@ function NewEvenementPage() {
   };
 
   const handleChangeRadioEvent = (val: string) => {
-    console.log({ radioEvent: val });
     setTypeAccess(() => val);
   };
 
   const CreateNewEvent = async () => {
-    console.log({ mystring: new Date(dateOfEvent?.toString() as string) });
     const dateString = dateOfEvent?.toString() as string;
     setStartSending(() => true);
     if (!titleEvent || !descriptionEvent) {
@@ -147,7 +138,6 @@ function NewEvenementPage() {
       return;
     }
     try {
-      console.log("inside try");
       var data: EventDataType = {
         titleEvent: titleEvent,
         descriptionEvent: descriptionEvent,
@@ -160,20 +150,20 @@ function NewEvenementPage() {
         textCTAEvent: textCTAEvent,
         locationOfEvent: locationOfEvent,
         groupeForEventSelect: groupeForEventSelect,
-        date: "",
-        id: "",
+        communityId: communityId as string,
       };
-      const result = await requestToSetEventData(data);
-      console.log(result);
+      const result = await requestToSetUniversalData<EventDataType>(
+        "EventData",
+        data
+      );
 
       if (result.success) {
-        console.log("shunga");
         toast({
           title: "Success",
           description: "L'événement à été crée avec success",
         });
         setStartSending(() => false);
-        window.location.replace("/EVENEMENTS");
+        window.location.replace(`/EVENEMENTS/${communityId}`);
         return;
       } else {
         toast({
@@ -191,7 +181,6 @@ function NewEvenementPage() {
           "Une erreur est survenue pendant la creation de l'événement, vérifier votre connexion",
       });
       setStartSending(() => false);
-      console.error("");
     }
   };
 
@@ -231,7 +220,7 @@ function NewEvenementPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-2 text-[16px] sm:text-[18px] flex flex-col gap-3">
-          {loadinggroupeForEvent ? (
+          {/*  {loadinggroupeForEvent ? (
             <LoadingTotal />
           ) : (
             <div className="space-y-1 w-[350px] h-[250px] rounded-xl shadow-2xl bg-[#eeeded] text-[#191919] overflow-y-scroll flex flex-col items-center gap-3 ">
@@ -261,7 +250,7 @@ function NewEvenementPage() {
                   ))}
               </div>
             </div>
-          )}
+          )} */}
 
           <div className="space-y-1">
             <Label htmlFor="titleEvent">

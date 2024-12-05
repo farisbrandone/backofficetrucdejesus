@@ -112,13 +112,13 @@ export async function seedData(): Promise<User[]> {
   let notifications: User[] = [];
   try {
     const querySnapshot = await getDocs(collection(db, "Notifications"));
-    console.log({ length: querySnapshot.docs.length });
+
     querySnapshot.forEach((doc) => {
       const id = doc.id;
       const { title, body, iconUrl, actionUrl, date } = doc.data();
       notifications.push({ id, iconUrl, title, body, actionUrl, date });
     });
-    console.log({ drdr_drdr: notifications[0].id });
+
     return notifications;
   } catch (error) {
     throw new Error(
@@ -241,7 +241,6 @@ export async function requestToChangeStatus(
   status: string,
   database: string
 ) {
-  console.log({ status });
   const GroupeDataRef = collection(db, database);
   const date = new Date().toUTCString();
   try {
@@ -266,7 +265,6 @@ export async function requestToChangeStatusChannel(
   status: string,
   database: string
 ) {
-  console.log({ status });
   const GroupeDataRef = collection(db, database);
   const dateUpdatedChannel = new Date().toUTCString();
   try {
@@ -353,7 +351,6 @@ export async function seedDataWithId(dataId: string): Promise<User> {
     const docRef = doc(db, "Notifications", dataId);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      console.log("Document data:", docSnap.data());
       const { id, title, body, iconUrl, actionUrl, date } = docSnap.data();
       return { id, title, body, iconUrl, actionUrl, date };
     } else {
@@ -438,11 +435,13 @@ export interface EventDataType {
   textCTAEvent: string;
   locationOfEvent: string;
   groupeForEventSelect: stateGroupeEvent[];
-  date: string;
-  id: string;
+  communityId: string;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  id?: string;
 }
 
-export async function requestToSetEventData({
+/* export async function requestToSetEventData({
   titleEvent,
   descriptionEvent,
   imageUrlEvent,
@@ -491,9 +490,9 @@ export async function requestToSetEventData({
       "Une erreur est survenue pendant la récupération des données"
     );
   }
-}
+} */
 
-export async function requestToGetEventDataWithId(
+/* export async function requestToGetEventDataWithId(
   groupeId: string
 ): Promise<EventDataType> {
   try {
@@ -631,7 +630,7 @@ export async function requestTogetAllEventData(): Promise<EventDataType[]> {
       "Une erreur est survenue pendant la récupération des données"
     );
   }
-}
+} */
 
 export async function requestToDeleteEventWithId(
   dataId: string,
@@ -737,7 +736,6 @@ export async function requestToSetChannelData(
 
     return { message: "La chaine a été créer avec success", success: true };
   } catch (error) {
-    console.log(error);
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );
@@ -748,7 +746,7 @@ export async function requestTogetAllClientData(): Promise<ClientDataType[]> {
   let clientData: ClientDataType[] = [];
   try {
     const querySnapshot = await getDocs(collection(db, "ClientData"));
-    console.log({ length: querySnapshot.docs.length });
+
     if (querySnapshot.docs.length !== 0) {
       querySnapshot.forEach((doc) => {
         const id = doc.id;
@@ -778,7 +776,6 @@ export async function requestTogetAllClientData(): Promise<ClientDataType[]> {
 
     return [];
   } catch (error) {
-    console.log({ error: error });
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );
@@ -791,9 +788,8 @@ export async function requestTogetAllChannelData(
   let channelData: ChannelPageDataType[] = [];
 
   try {
-    console.log({ groupeId });
     const querySnapshot = await getDocs(collection(db, "ChannelData"));
-    console.log({ length: querySnapshot.docs.length });
+
     if (querySnapshot.docs.length !== 0) {
       querySnapshot.forEach((doc) => {
         const id = doc.id;
@@ -828,13 +824,12 @@ export async function requestTogetAllChannelData(
       const result = channelData.filter(
         (channel) => channel.groupeIdChannel === groupeId
       );
-      console.log(result);
+
       return result;
     }
 
     return [];
   } catch (error) {
-    console.log({ error: error });
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );
@@ -930,7 +925,6 @@ export async function requestToGetClientDataWithId(
       throw new Error("Le document n'existe pas");
     }
   } catch (error) {
-    console.log({ error: error });
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );
@@ -976,7 +970,6 @@ export async function requestToGetChannelDataWithId(
       throw new Error("Le document n'existe pas");
     }
   } catch (error) {
-    console.log({ error: error });
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );
@@ -1130,9 +1123,9 @@ export const fetchPage = async (indexStart: number, limitofPage: number) => {
       startAt(indexStart),
       limit(limitofPage)
     );
-    console.log({ q });
+
     const querySnapshot = await getDocs(q);
-    console.log({ querySnapshot });
+
     querySnapshot.forEach((doc) => {
       const id = doc.id;
       const { iconUrl, title, body, date, actionUrl } = doc.data();
@@ -1159,7 +1152,7 @@ export const requestToGetClientDataBySearchValue = async (
   searchValue: string
 ) => {
   let clientData: ClientDataType[] = [];
-  console.log("tete");
+
   try {
     const clientRef = collection(db, "ClientData");
     /*   const q = query(
@@ -1169,7 +1162,7 @@ export const requestToGetClientDataBySearchValue = async (
       orderBy("dateUpdated")
     ); */
     const querySnapshot = await getDocs(clientRef);
-    console.log({ querySnapshot: querySnapshot.docs });
+
     querySnapshot.forEach((doc) => {
       const id = doc.id;
       const {
@@ -1200,7 +1193,6 @@ export const requestToGetClientDataBySearchValue = async (
     return filteredDocuments;
     //return clientData;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -1213,7 +1205,7 @@ export const requestToGetMembreDataBySearchValue = async (
   try {
     const clientRef = collection(db, "MemberData");
     const querySnapshot = await getDocs(clientRef);
-    console.log({ querySnapshot });
+
     querySnapshot.forEach((doc) => {
       const id = doc.id;
       const {
@@ -1223,8 +1215,6 @@ export const requestToGetMembreDataBySearchValue = async (
         sexe,
         birthDay,
         phone,
-        dateCreation,
-        dateMiseAJour,
         status,
         image,
         nombrePartage,
@@ -1242,8 +1232,6 @@ export const requestToGetMembreDataBySearchValue = async (
         sexe,
         birthDay,
         phone,
-        dateCreation,
-        dateMiseAJour,
         status,
         image,
         nombrePartage,
@@ -1277,7 +1265,7 @@ export const requestToGetUniversalDataBySearchValue = async <T>(
     const clientRef = collection(db, database);
 
     const querySnapshot = await getDocs(clientRef);
-    console.log({ querySnapshot });
+
     querySnapshot.forEach((doc) => {
       const id = doc.id;
       const dataGet = doc.data();
@@ -1310,7 +1298,7 @@ export const requestToGetEventDataBySearchValue = async (
     const clientRef = collection(db, "EventData");
 
     const querySnapshot = await getDocs(clientRef);
-    console.log({ querySnapshot });
+
     querySnapshot.forEach((doc) => {
       const id = doc.id;
       const {
@@ -1325,7 +1313,7 @@ export const requestToGetEventDataBySearchValue = async (
         textCTAEvent,
         locationOfEvent,
         groupeForEventSelect,
-        date,
+        communityId,
       } = doc.data();
       eventData.push({
         id,
@@ -1340,7 +1328,7 @@ export const requestToGetEventDataBySearchValue = async (
         textCTAEvent,
         locationOfEvent,
         groupeForEventSelect,
-        date,
+        communityId,
       });
     });
     const filteredDocuments = eventData.filter((doc) =>
@@ -1367,7 +1355,7 @@ export const requestToGetChannelDataBySearchValue = async (
       where("titleEvent", ">=", searchValue)
     ); */
     const querySnapshot = await getDocs(clientRef);
-    console.log({ querySnapshot });
+
     querySnapshot.forEach((doc) => {
       const id = doc.id;
       const {
@@ -1422,7 +1410,7 @@ export const requestToGetGroupeDataBySearchValue = async (
       where("titleGroupe", ">=", searchValue)
     ); */
     const querySnapshot = await getDocs(clientRef);
-    console.log({ querySnapshot });
+
     querySnapshot.forEach((doc) => {
       const id = doc.id;
       const {
@@ -1479,7 +1467,7 @@ export const requestToGetCommunityDataBySearchValue = async (
       where("title", ">=", searchValue)
     ); */
     const querySnapshot = await getDocs(clientRef);
-    console.log({ querySnapshot });
+
     querySnapshot.forEach((doc) => {
       const id = doc.id;
       const {
@@ -1490,6 +1478,7 @@ export const requestToGetCommunityDataBySearchValue = async (
         communityUrl,
         faviconUrl,
         timeZone,
+        status,
       } = doc.data();
       communityData.push({
         id,
@@ -1500,6 +1489,7 @@ export const requestToGetCommunityDataBySearchValue = async (
         communityUrl,
         faviconUrl,
         timeZone,
+        status,
       });
     });
     const filteredDocuments = communityData.filter((doc) =>
@@ -1567,14 +1557,13 @@ export async function requestToSetMembreData({
 
     return { message: "Le groupe a été créer avec success", success: true };
   } catch (error) {
-    console.log(error);
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );
   }
 }
 
-export async function requestToUpdateMembreData({
+/* export async function requestToUpdateMembreData({
   id,
   name,
   email,
@@ -1587,16 +1576,7 @@ export async function requestToUpdateMembreData({
 }: MemberDataType) {
   try {
     const docRef = doc(db, "MembreData", id);
-    console.log({
-      name,
-      email,
-      motsDepasse,
-      image,
-      sexe,
-      birthDay,
-      phone,
-      status,
-    });
+
     const dateMiseAJour = new Date().toUTCString();
     await updateDoc(docRef, {
       name,
@@ -1609,17 +1589,16 @@ export async function requestToUpdateMembreData({
       status,
       dateMiseAJour,
     });
-    console.log("counde2");
+
     return { message: "Le groupe a été créer avec success", success: true };
   } catch (error) {
-    console.log("counde3");
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );
   }
-}
+} */
 
-export async function requestToGetMemberDataWithId(
+/* export async function requestToGetMemberDataWithId(
   membreId: string
 ): Promise<MemberDataType> {
   try {
@@ -1668,18 +1647,17 @@ export async function requestToGetMemberDataWithId(
       throw new Error("Le document n'existe pas");
     }
   } catch (error) {
-    console.log({ error: error });
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );
   }
-}
+} */
 
-export async function requestTogetAllMembreData(): Promise<MemberDataType[]> {
+/* export async function requestTogetAllMembreData(): Promise<MemberDataType[]> {
   let membreData: MemberDataType[] = [];
   try {
     const querySnapshot = await getDocs(collection(db, "MembreData"));
-    console.log({ length: querySnapshot.docs.length });
+
     if (querySnapshot.docs.length !== 0) {
       querySnapshot.forEach((doc) => {
         const id = doc.id;
@@ -1727,12 +1705,11 @@ export async function requestTogetAllMembreData(): Promise<MemberDataType[]> {
 
     return [];
   } catch (error) {
-    console.log({ error: error });
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );
   }
-}
+} */
 
 export async function requestToDeleteMembreWithId(dataId: string) {
   const docRef = doc(db, "MembreData", dataId);
@@ -1809,7 +1786,7 @@ export async function requestTogetAllRessourcesData(): Promise<
   let ressourcesData: RessourcesDataType[] = [];
   try {
     const querySnapshot = await getDocs(collection(db, "RessourcesData"));
-    console.log({ length: querySnapshot.docs.length });
+
     if (querySnapshot.docs.length !== 0) {
       querySnapshot.forEach((doc) => {
         const id = doc.id;
@@ -1853,7 +1830,6 @@ export async function requestTogetAllRessourcesData(): Promise<
 
     return [];
   } catch (error) {
-    console.log({ error: error });
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );
@@ -1905,7 +1881,6 @@ export async function requestToGetRessourcesDataWithId(
       throw new Error("Le document n'existe pas");
     }
   } catch (error) {
-    console.log({ error: error });
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );
@@ -1986,7 +1961,7 @@ export const requestToGetRessourcesDataBySearchValue = async (
       where("titleEvent", ">=", searchValue)
     ); */
     const querySnapshot = await getDocs(clientRef);
-    console.log({ querySnapshot });
+
     querySnapshot.forEach((doc) => {
       const id = doc.id;
       const {
@@ -2086,7 +2061,7 @@ export async function requestTogetAllLessonLibraryData(): Promise<
   let lessonLibraryData: LessonLibraryDataType[] = [];
   try {
     const querySnapshot = await getDocs(collection(db, "LessonLibraryData"));
-    console.log({ length: querySnapshot.docs.length });
+
     if (querySnapshot.docs.length !== 0) {
       querySnapshot.forEach((doc) => {
         const id = doc.id;
@@ -2120,7 +2095,6 @@ export async function requestTogetAllLessonLibraryData(): Promise<
 
     return [];
   } catch (error) {
-    console.log({ error: error });
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );
@@ -2136,7 +2110,7 @@ export const requestToGetLessonLibraryDataBySearchValue = async (
     const clientRef = collection(db, "LessonLibraryData");
 
     const querySnapshot = await getDocs(clientRef);
-    console.log({ querySnapshot });
+
     querySnapshot.forEach((doc) => {
       const id = doc.id;
       const {
@@ -2208,7 +2182,6 @@ export async function requestToGetLessonLibraryDataWithId(
       throw new Error("Le document n'existe pas");
     }
   } catch (error) {
-    console.log({ error: error });
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );
@@ -2315,7 +2288,7 @@ export async function requestTogetAllAssetsData(): Promise<AssetsDataType[]> {
   let assetsData: AssetsDataType[] = [];
   try {
     const querySnapshot = await getDocs(collection(db, "AssetsData"));
-    console.log({ length: querySnapshot.docs.length });
+
     if (querySnapshot.docs.length !== 0) {
       querySnapshot.forEach((doc) => {
         const id = doc.id;
@@ -2347,7 +2320,6 @@ export async function requestTogetAllAssetsData(): Promise<AssetsDataType[]> {
 
     return [];
   } catch (error) {
-    console.log({ error: error });
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );
@@ -2363,7 +2335,7 @@ export const requestToGetAssetsDataBySearchValue = async (
     const clientRef = collection(db, "AssetsData");
 
     const querySnapshot = await getDocs(clientRef);
-    console.log({ querySnapshot });
+
     querySnapshot.forEach((doc) => {
       const id = doc.id;
       const {
@@ -2431,7 +2403,6 @@ export async function requestToGetAssetsDataWithId(
       throw new Error("Le document n'existe pas");
     }
   } catch (error) {
-    console.log({ error: error });
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );
@@ -2535,7 +2506,7 @@ export async function requestTogetAllEmailNotificationData(): Promise<
     const querySnapshot = await getDocs(
       collection(db, "EmailNotificationData")
     );
-    console.log({ length: querySnapshot.docs.length });
+
     if (querySnapshot.docs.length !== 0) {
       querySnapshot.forEach((doc) => {
         const id = doc.id;
@@ -2563,7 +2534,6 @@ export async function requestTogetAllEmailNotificationData(): Promise<
 
     return [];
   } catch (error) {
-    console.log({ error: error });
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );
@@ -3184,11 +3154,11 @@ export async function requestTogetAllUniversalData<T>(
   let data: T[] = [];
   try {
     const querySnapshot = await getDocs(collection(db, databaseName));
-    console.log({ length: querySnapshot.docs.length });
+
     if (querySnapshot.docs.length !== 0) {
       querySnapshot.forEach((doc) => {
         const id = doc.id;
-        console.log(id);
+
         const partialdata = doc.data();
         data.push({
           id,
@@ -3201,7 +3171,6 @@ export async function requestTogetAllUniversalData<T>(
 
     return [];
   } catch (error) {
-    console.log({ error: error });
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );
@@ -3243,7 +3212,6 @@ export async function requestToGetAllUniversalDataWithId<T>(
       throw new Error("Le document n'existe pas");
     }
   } catch (error) {
-    console.log({ error: error });
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"
     );

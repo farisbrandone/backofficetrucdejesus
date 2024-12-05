@@ -10,7 +10,6 @@ import {
   EventDataType,
   GroupeDataType,
   requestToChangeStatus,
-  requestTogetAllEventData,
   requestTogetAllUniversalData,
 } from "@/fakeData";
 import { toast } from "@/hooks/use-toast";
@@ -21,8 +20,8 @@ import GroupePageAction from "../groupePage/groupeAction/GroupePageAction";
 import clsx from "clsx";
 
 import { useNavigate } from "react-router-dom";
-import AssignGroupe from "./AssignGroupe";
-import { CommunityDataType } from "../communautePage/CommunityDetailsUpdate";
+/* import AssignGroupe from "./AssignGroupe"; */
+import { CommunityDataType } from "../communautePage/CommunityDetails";
 
 export interface timestamp {
   seconds: number;
@@ -135,6 +134,7 @@ export default function CarteCreer({
 }
 
 export interface CarteCreerForGroupType {
+  communityId?: string;
   titleGroupe: string;
   descriptionGroupe: string;
   typeAccess: string;
@@ -161,12 +161,13 @@ export function CarteCreerForGroup({
   status,
   setGroupeData,
   setLoadingFail,
+  communityId,
 }: CarteCreerForGroupType) {
-  console.log({ titleGroupe, status });
   const [switchState, setSwitchState] = useState(status);
   const [loadingStatus, setLoadingStatus] = useState(false);
   const [move, setMove] = useState(false);
   const navigate = useNavigate();
+  console.log({ communityId });
   const handleSwitch = async () => {
     try {
       setLoadingStatus(true);
@@ -196,16 +197,25 @@ export function CarteCreerForGroup({
       }
 
       setLoadingStatus(false);
-    } catch (error) {}
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Une erreur est survenue, vérifier votre conexion",
+      });
+    }
   };
 
   useEffect(() => {
     const getAllGroupeData = async () => {
       try {
-        const data = await requestTogetAllUniversalData<GroupeDataType>(
+        const result1 = await requestTogetAllUniversalData<GroupeDataType>(
           "GroupeData"
         );
-        setGroupeData([...data]);
+        const trueResult = result1.filter(
+          (value) => value.communityId === communityId
+        );
+        setGroupeData([...trueResult]);
       } catch (error) {
         setLoadingFail(true);
       }
@@ -302,7 +312,7 @@ export function CarteCreerForGroup({
             baseUrl="GROUPES/update-groupe-page"
             groupeForEventSelect={[]}
           /> */}
-          <GroupePageAction groupeId={groupeId} />
+          <GroupePageAction groupeId={groupeId} communityId={communityId} />
         </div>
       </div>
     </div>
@@ -310,6 +320,7 @@ export function CarteCreerForGroup({
 }
 
 export interface CarteCreerForEventType {
+  communityId?: string;
   titleEvent: string;
   descriptionEvent: string;
   imageUrlEvent: string;
@@ -328,9 +339,12 @@ export interface CarteCreerForEventType {
     React.SetStateAction<EventDataType[] | undefined>
   >;
   setLoadingFail: React.Dispatch<React.SetStateAction<boolean>>;
+  communitySelect: string | undefined;
 }
 
 export function CarteCreerForEvent({
+  communitySelect,
+  communityId,
   titleEvent,
   descriptionEvent,
   imageUrlEvent,
@@ -346,49 +360,33 @@ export function CarteCreerForEvent({
 
   setEventData,
   setLoadingFail,
+  eventData,
 }: CarteCreerForEventType) {
-  console.log({
-    titleEvent,
-    descriptionEvent,
-    imageUrlEvent,
-    /*  typeAccess , */
-    status,
-    dateOfEvent,
-    /*  typeEvent ,
-                 urlOfEvent ,
-                 textCTAEvent , */
-    /*  locationOfEvent , */
-    groupeForEventSelect,
-    eventId,
-  });
   const [switchState, setSwitchState] = useState(status);
   const [loadingStatus, setLoadingStatus] = useState(false);
   const [pageForAssignGroupe, setPageForAssignGroupe] = useState(false);
+  console.log(pageForAssignGroupe);
   const [move, setMove] = useState(false);
   const navigate = useNavigate();
-  console.log({ switchState, status });
+
   const handleSwitch = async () => {
     try {
       setLoadingStatus(true);
       let statuss;
-      console.log({ firstTry: { switchState, status } });
+
       if (status === "activate") {
-        console.log("hoube houba");
         statuss = "desactivate";
       } else {
         statuss = "activate";
       }
-      console.log({ secondTry: { switchState, status, statuss } });
+
       const result = await requestToChangeStatus(eventId, statuss, "EventData");
-      console.log(statuss);
       if (result.success) {
-        console.log("inside");
         setSwitchState(() => statuss);
         toast({
           title: "Success",
           description: result.message,
         });
-        console.log({ ternary: { switchState, status, statuss } });
       } else {
         toast({
           variant: "destructive",
@@ -402,24 +400,33 @@ export function CarteCreerForEvent({
   };
   useEffect(() => {
     const getAllEventData = async () => {
+      console.log("aloaloa");
       try {
-        const data = await requestTogetAllEventData();
-        setEventData([...data]);
+        const data = await requestTogetAllUniversalData<EventDataType>(
+          "EventData"
+        );
+        const trueResult = data.filter(
+          (value) => value.communityId === communitySelect
+        );
+        setEventData([...trueResult]);
       } catch (error) {
         setLoadingFail(true);
       }
     };
     getAllEventData();
-  }, [switchState]);
+  }, [switchState, communityId]);
   return (
     <div
       className={` relative flex flex-col w-[400px] h-[370px] py-3 items-center shadow-2xl rounded-xl border-[2px] `}
       onMouseEnter={() => setMove(true)}
       onMouseLeave={() => setMove(false)}
     >
-      {pageForAssignGroupe && (
-        <AssignGroupe setPageForAssignGroupe={setPageForAssignGroupe} />
-      )}
+      {/*  {pageForAssignGroupe && (
+        <AssignGroupe
+          setPageForAssignGroupe={setPageForAssignGroupe}
+          eventData={eventData}
+        />
+      )} */}
 
       <div className=" absolute flex items-center justify-center gap-2  top-[180px] w-full ">
         <button
@@ -477,7 +484,7 @@ export function CarteCreerForEvent({
           <p>
             l'événement aura lieu{" "}
             {dateOfEvent &&
-              format(new Date(dateOfEvent), "' le' dd MMM yyyy 'à' hh/mm ")}
+              format(new Date(dateOfEvent), "' le' dd MMM yyyy 'à' HH:mm ")}
           </p>
           <p className="">
             Nombre de groupes associés à cet événement:{" "}
@@ -502,6 +509,7 @@ export function CarteCreerForEvent({
             groupeId={eventId}
             baseUrl="EVENEMENTS/update-event-page"
             groupeForEventSelect={groupeForEventSelect}
+            eventData={eventData}
           />
         </div>
       </div>

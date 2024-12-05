@@ -53,7 +53,6 @@ function NewGroupePageCreate() {
   };
 
   const handleChangeStatus = () => {
-    console.log(status);
     if (status === "activate") {
       setStatus("desactivate");
       return;
@@ -67,7 +66,6 @@ function NewGroupePageCreate() {
   };
 
   const CreateNewGroupe = async () => {
-    console.log("banga");
     setStartSending(() => true);
     if (!titleGroupe || !descriptionGroupe) {
       if (!titleGroupe) {
@@ -85,7 +83,6 @@ function NewGroupePageCreate() {
       return;
     }
     try {
-      console.log("inside try");
       var data: GroupeDataType = {
         titleGroupe: titleGroupe,
         descriptionGroupe: descriptionGroupe,
@@ -113,7 +110,7 @@ function NewGroupePageCreate() {
           description: "Le groupe à été crée avec success",
         });
         setStartSending(() => false);
-        window.location.replace("/GROUPES");
+        window.location.replace(`/GROUPES/${communityId}`);
         return;
       } else {
         toast({

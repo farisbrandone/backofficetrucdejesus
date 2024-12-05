@@ -11,10 +11,10 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import ButtonUploadFile from "../ui/ButtonUploadFile";
 import { Button } from "@/components/ui/button";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { ChangeEvent, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { requestToSetMembreData } from "@/fakeData";
+import { requestToSetUniversalData } from "@/fakeData";
 import { MemberDataType } from "./MemberDataComponent";
 import PhoneInput from "react-phone-number-input";
 import {
@@ -87,7 +87,7 @@ function MembreCreer() {
   const [startSending, setStartSending] = useState(false);
   const [status, setStatus] = useState("activate");
   const { toast } = useToast();
-
+  const { communityId } = useParams();
   const handleNomMembre = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setNom(() => e.target.value);
@@ -179,9 +179,7 @@ function MembreCreer() {
         birthDay: birthDay,
         phone: phoneValue.toString(),
         status: status,
-        dateCreation: "",
-        dateMiseAJour: "",
-        id: "",
+        communityId: communityId,
         nombrePartage: 0,
         nombreLikes: 0,
         nombreCommentaire: 0,
@@ -190,7 +188,7 @@ function MembreCreer() {
         nombreDeBadge: 0,
       };
       console.log(data);
-      const result = await requestToSetMembreData(data);
+      const result = await requestToSetUniversalData("MemberData", data);
 
       if (result.success) {
         toast({
