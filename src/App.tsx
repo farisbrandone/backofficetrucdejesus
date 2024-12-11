@@ -70,6 +70,7 @@ import CreerCommunaute from "./mycomponents/communautePage/CreerCommunaute";
 import { createContext } from "react";
 import LoginMother from "./Sign/login/LoginMother";
 import Login from "./Sign/login/Login";
+import MembreWaitingGererPage from "./mycomponents/membreWaitingGerer/MembreWaitingGererPage";
 
 export const context = createContext(null);
 const data =
@@ -361,9 +362,14 @@ const router = createBrowserRouter([
         element: <AssignRolePage />,
         children: [],
       },
+      {
+        path: "/MEMBRE_EN_ATTENTE/:communityId",
+        element: <MembreWaitingGererPage />,
+        children: [],
+      },
     ],
   },
-  /* POPUPBANNERS/update-popupbanners-page
+  /*MembreWaitingGererPage   POPUPBANNERS/update-popupbanners-page
     path: "/notification",
     element: <NotificationPage />,
     errorElement: <ErrorPage />,

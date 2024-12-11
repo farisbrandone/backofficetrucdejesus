@@ -4,16 +4,18 @@ import { faker } from "@faker-js/faker";
 import SearbarBackOffice from "../ui/SearbarBackOffice"; */
 import { membreIcon } from "../acceuilPage/Icon";
 import { Fragment } from "react/jsx-runtime";
-import MemberDataComponent, { MemberDataType } from "./MemberDataComponent";
-import { ChangeEvent, useEffect, useState } from "react";
-import { requestTogetAllUniversalData } from "@/fakeData";
-import { NavLink, useParams } from "react-router-dom";
-import { PlusIcon } from "../clientGererPage/ClientGerer";
-import SearchBarForMembre from "../ui/searchBarUi/SearchBarForMembre";
-import { CommunityDataType } from "../communautePage/CommunityDetails";
 
-function MembreGererPage() {
-  const [membreData, setMembreData] = useState<MemberDataType[]>();
+import { ChangeEvent, useEffect, useState } from "react";
+import {
+  MemberWaitingDataType,
+  requestTogetAllUniversalData,
+} from "@/fakeData";
+import { useParams } from "react-router-dom";
+import { CommunityDataType } from "../communautePage/CommunityDetails";
+import MemberWaitingDataComponent from "./MemberWaitingDataComponent";
+
+function MembreWaitingGererPage() {
+  const [membreData, setMembreData] = useState<MemberWaitingDataType[]>();
   const [loadingFail, setLoadingFail] = useState(false);
   const { communityId } = useParams<string>();
   const [communityData, setCommunityData] = useState<CommunityDataType[]>();
@@ -24,8 +26,8 @@ function MembreGererPage() {
   const handleCommunitySelect = async (e: ChangeEvent<HTMLSelectElement>) => {
     e.preventDefault();
     setCommunitySelect(e.target.value);
-    const result1 = await requestTogetAllUniversalData<MemberDataType>(
-      "MemberData"
+    const result1 = await requestTogetAllUniversalData<MemberWaitingDataType>(
+      "MemberWaitingData"
     );
     const trueResult = result1.filter(
       (value) => value.communityId === e.target.value
@@ -34,24 +36,11 @@ function MembreGererPage() {
     setMembreData([...trueResult]);
   };
 
-  /*  useEffect(() => {
-    const getAllMembreData = async () => {
-      try {
-        const data = await requestTogetAllUniversalData<MemberDataType>(
-          "MemberData"
-        );
-        setMembreData([...data]);
-      } catch (error) {
-        setLoadingFail(true);
-      }
-    };
-    getAllMembreData();
-  }, []); */
-
   useEffect(() => {
     const getAllGroupeData = async () => {
       try {
-        const data = requestTogetAllUniversalData<MemberDataType>("MemberData");
+        const data =
+          requestTogetAllUniversalData<MemberWaitingDataType>("MemberData");
 
         const commData =
           requestTogetAllUniversalData<CommunityDataType>("CommunityData");
@@ -91,9 +80,7 @@ function MembreGererPage() {
 
   if (notPossiblbleToCrateGroupe) {
     return (
-      <div className="w-full text-center pt-4">
-        Impossible de créer un groupe car aucune communauté n'a été créée
-      </div>
+      <div className="w-full text-center pt-4">Aucune donnée disponible</div>
     );
   }
 
@@ -108,7 +95,7 @@ function MembreGererPage() {
   if (loadingFail) {
     return (
       <div className="w-full text-center pt-4">
-        Une fferreur est survenue pendant le chargement ou problème de connexion
+        Une erreur est survenue pendant le chargement ou problème de connexion
       </div>
     );
   }
@@ -124,7 +111,7 @@ function MembreGererPage() {
             <div className=" flex items-center gap-2 text-[#e91e63] mt-3">
               {membreIcon}
               <h1 className=" text-[#344767] font-bold text-[18px] ">
-                GERER LES MEMBRES
+                GERER LES MEMBRES EN ATTENTES
               </h1>
             </div>
           </div>
@@ -133,7 +120,7 @@ function MembreGererPage() {
           </p>
         </div>
         <div className="flex gap-3">
-          <div className="flex items-center justify-center">
+          {/*  <div className="flex items-center justify-center">
             <button
               type="button"
               title="Ajouter des clients"
@@ -147,22 +134,7 @@ function MembreGererPage() {
                 Ajouter des membres
               </NavLink>
             </button>
-          </div>
-
-          <div className="flex items-center justify-center">
-            <button
-              type="button"
-              title="Ajouter des clients"
-              className="flex items-center"
-            >
-              <NavLink
-                to={`/MEMBRE_EN_ATTENTE/${communitySelect}`}
-                className="px-2 py-2 hover:bg-[#e91e63] bg-[#191919] text-white font-bold rounded-md transition-colors"
-              >
-                Membres en attente
-              </NavLink>
-            </button>
-          </div>
+          </div> */}
 
           <p className="align-middle self-center">Communauté</p>
           <select
@@ -176,10 +148,10 @@ function MembreGererPage() {
               <option value={value.id}>{value.title}</option>
             ))}
           </select>
-          <SearchBarForMembre
+          {/*  <SearchBarForMembre
             placeholder="Recherche par nom de membre..."
             setMemberData={setMembreData}
-          />
+          /> */}
         </div>
       </div>
 
@@ -204,7 +176,7 @@ function MembreGererPage() {
           {membreData?.length &&
             membreData?.map((value, index) => (
               <Fragment key={index}>
-                <MemberDataComponent
+                <MemberWaitingDataComponent
                   value={value}
                   index={index}
                   setMembreData={setMembreData}
@@ -219,4 +191,4 @@ function MembreGererPage() {
   );
 }
 
-export default MembreGererPage;
+export default MembreWaitingGererPage;
