@@ -19,6 +19,7 @@ import {
 import { NavLink } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import LoadingTotal from "../ui/LoadingTotal";
+import { format } from "date-fns";
 
 export interface UserDataType {
   name: string;
@@ -64,7 +65,7 @@ ChannelPageComponentType) {
         status = "activate";
       }
       const result = await requestToChangeStatusChannel(
-        value.id,
+        value.id as string,
         status,
         "ChannelData"
       );
@@ -89,7 +90,7 @@ ChannelPageComponentType) {
   const deleteChannel = async () => {
     setStateSuppression(() => true);
     const result = await requestTodeletenChannelDataWithId(
-      value.id,
+      value.id as string,
       value.groupeIdChannel
     );
     if (result && !result.success) {
@@ -116,7 +117,7 @@ ChannelPageComponentType) {
   useEffect(() => {
     const getAllClientData = async () => {
       try {
-        const data = await requestToGetChannelDataWithId(value.id);
+        const data = await requestToGetChannelDataWithId(value.id as string);
         setChannelOne({ ...data });
       } catch (error) {
         setLoadingFail(true);
@@ -193,10 +194,12 @@ ChannelPageComponentType) {
         {channelOne.amountChannel}
       </div>
       <div className=" place-content-center mx-auto">
-        {channelOne.dateCreatedChannel}
+        {channelOne.dateOfCreation}
+
+        {format(new Date(channelOne.dateOfCreation as string), "dd MMM yyyy")}
       </div>
       <div className="place-content-center mx-auto ">
-        {channelOne.dateUpdatedChannel}
+        {format(new Date(channelOne.dateOfUpdate as string), "dd MMM yyyy")}
       </div>
       <div className=" place-content-center mx-auto flex items-center space-x-2">
         {loadingStatus ? (

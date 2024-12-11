@@ -82,6 +82,7 @@ function MembreGererPage() {
           }
         }
       } catch (error) {
+        console.log("sss");
         setLoadingFail(true);
       }
     };
@@ -107,7 +108,7 @@ function MembreGererPage() {
   if (loadingFail) {
     return (
       <div className="w-full text-center pt-4">
-        Une erreur est survenue pendant le chargement ou problème de connexion
+        Une fferreur est survenue pendant le chargement ou problème de connexion
       </div>
     );
   }

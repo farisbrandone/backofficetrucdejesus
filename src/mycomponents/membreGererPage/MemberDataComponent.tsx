@@ -93,7 +93,7 @@ function MemberDataComponent({
       const result = await requestToChangeStatus(
         value.id as string,
         status,
-        "MembreData"
+        "MemberData"
       );
       if (result.success) {
         setSwitchState(status);

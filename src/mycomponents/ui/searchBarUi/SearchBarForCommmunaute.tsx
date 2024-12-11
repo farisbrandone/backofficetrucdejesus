@@ -1,6 +1,6 @@
 import { requestToGetCommunityDataBySearchValue } from "@/fakeData";
 import { toast } from "@/hooks/use-toast";
-import { CommunityDataType } from "@/mycomponents/communautePage/CommunityDetailsUpdate";
+import { CommunityDataType } from "@/mycomponents/communautePage/CommunityDetails";
 
 import { ChangeEvent, FormEvent, useState } from "react";
 

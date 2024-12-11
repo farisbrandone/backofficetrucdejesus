@@ -22,18 +22,8 @@ import {
   RessourcesDataType,
 } from "@/fakeData";
 import { channelIcon } from "./ChannelPage";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import LoadingTotal from "../ui/LoadingTotal";
 
 export const cardenaIcon = (width: string, heigth: string) => {
   return (
@@ -72,7 +62,7 @@ function ChannelPageCreer() {
   const [totalRessources, setTotalRessources] = useState<RessourcesDataType[]>(
     []
   );
-  const [loadingTotalRessources, setLoadingTotalRessources] = useState(true);
+  const [loadingTotalRessources, setLoadingTotalRessources] = useState(false);
   const { toast } = useToast();
   const { groupeId } = useParams<string>();
 
@@ -106,12 +96,19 @@ function ChannelPageCreer() {
     e.preventDefault();
     setImageChannel(() => e.target.value);
   };
-  const handleTypeAccessChannel = (value: string) => {
-    setTypeAccessChannel(() => value);
+  const handleTypeAccessChannel = (e: ChangeEvent<HTMLSelectElement>) => {
+    setTypeAccessChannel(e.target.value);
   };
 
-  const handleTypeChannel = (value: string) => {
-    setTypeChannel(() => value);
+  const handleTypeChannel = async (e: ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value;
+    if (val === "Ressources") {
+      setTypeChannel(val);
+      setLoadingTotalRessources(true);
+      return;
+    }
+    setTypeChannel(val);
+    setLoadingTotalRessources(false);
   };
 
   const handleAddRessources = (value: RessourcesDataType) => {
@@ -156,10 +153,7 @@ function ChannelPageCreer() {
         statusChannel: statusChannel,
         typeAccessChannel: typeAccessChannel,
         amountChannel: amountChannel,
-        dateCreatedChannel: "",
-        dateUpdatedChannel: "",
-        id: "",
-        channelRessources: channelRessources,
+        channelRessources: loadingTotalRessources ? channelRessources : [],
       };
 
       const result = await requestToSetChannelData(data, groupeId);
@@ -170,7 +164,7 @@ function ChannelPageCreer() {
           description: "Le client a été crée avec success",
         });
         setStartSending(() => false);
-        window.location.replace("/GROUPES");
+        window.location.replace(`/GERER LES CHAINES/${groupeId}`);
         return;
       } else {
         toast({
@@ -195,10 +189,8 @@ function ChannelPageCreer() {
   useEffect(() => {
     const getRessourcesData = async () => {
       try {
-        setLoadingTotalRessources(true);
         const result = await requestTogetAllRessourcesData();
         setTotalRessources([...result]);
-        setLoadingTotalRessources(false);
       } catch (error) {
         toast({
           variant: "destructive",
@@ -206,7 +198,6 @@ function ChannelPageCreer() {
           description:
             "Les ressources n'ont pas pu etre télécharger, vérifier votre connexion",
         });
-        setStartSending(() => false);
       }
     };
     getRessourcesData();
@@ -226,16 +217,6 @@ function ChannelPageCreer() {
             </div>
           </div>
         </div>
-        <div className="flex gap-3">
-          <p className="align-middle self-center">Communauté</p>
-          <select
-            title="Select element"
-            id="countries"
-            className=" w-[200px] bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500   p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          >
-            <option selected>{faker.word.words(2)}</option>
-          </select>
-        </div>
       </div>
 
       <Card>
@@ -247,130 +228,128 @@ function ChannelPageCreer() {
             Remplir les champs suivants et ajouter une nouvelle chaine
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-2 text-[16px] sm:text-[18px]">
-          {loadingTotalRessources ? (
-            <LoadingTotal />
-          ) : (
-            <div className="space-y-1 w-[350px] h-[250px] rounded-xl shadow-2xl bg-[#eeeded] text-[#191919] overflow-y-scroll flex flex-col items-center gap-3 ">
-              <p className="text-[18px] pl-3">
-                Selectionner les ressources à associer à cet chaine
-              </p>
-              <div className=" flex flex-col items-center gap-2 overflow-y-auto">
-                {totalRessources.length &&
-                  totalRessources?.map((value, index) => (
-                    <div className="flex items-center space-x-2" key={index}>
-                      <Checkbox
-                        id="terms"
-                        onCheckedChange={() => handleAddRessources(value)}
-                      />
-                      <label
-                        htmlFor="terms"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        {value.titleRessource}
-                      </label>
-                    </div>
-                  ))}
-              </div>
-            </div>
-          )}
-
-          <div className="space-y-1">
-            <Label htmlFor="nomChannel">
+        <CardContent className="space-y-2 flex flex-col gap-3 text-[16px] sm:text-[18px]">
+          <div className="space-y-1 flex flex-col gap-1">
+            <label htmlFor="nomChannel">
               Nom de la chaine <span className="text-[#e91e63] ">*</span>{" "}
-            </Label>
-            <Input
+            </label>
+            <input
               id="nomChannel"
               name="nomChannel"
               type="text"
               value={nomChannel}
               placeholder="Entrer le nom du groupe"
               onChange={handleNomChannel}
-              className={`${classNomChannel ? "border-red-600" : ""}`}
+              className={`${
+                classNomChannel
+                  ? " inputStyle rounded-r-md border-red-600"
+                  : "inputStyle rounded-r-md"
+              }`}
               disabled={startSending}
             />
           </div>
-          <div className="space-y-1">
-            <Label htmlFor="descriptionGroupe">
+          <div className="space-y-1 flex flex-col gap-1">
+            <label htmlFor="descriptionGroupe">
               Description de la chaine <span className="text-[#e91e63]">*</span>
-            </Label>
-            <Textarea
+            </label>
+            <textarea
+              cols={2}
               id="descriptionGroupe"
               name="descriptionGroupe"
               value={descriptionChannel}
               placeholder="Entrer une description du groupe"
               onChange={handleDescriptionChannel}
               required
-              className={`${classDescriptionChannel ? "border-red-600" : ""}`}
+              className={`${
+                classDescriptionChannel
+                  ? "textareaStyle border-red-600"
+                  : "textareaStyle"
+              }`}
               disabled={startSending}
             />
           </div>
 
-          <div className="space-y-1">
-            <Label htmlFor="amountChannel">
+          <div className="space-y-1 flex flex-col gap-1">
+            <label htmlFor="amountChannel">
               Entrer le montant associé à cet chaine{" "}
-            </Label>
-            <div className="flex items-center ">
-              <Input
-                id="amountChannel"
-                name="amountChannel"
-                type="text"
-                value={amountChannel}
-                placeholder="Montant associé à cette chaine"
-                onChange={handleAmountChannel}
-                disabled={startSending}
-              />
-            </div>
+            </label>
+
+            <input
+              id="amountChannel"
+              name="amountChannel"
+              type="text"
+              value={amountChannel}
+              placeholder="Montant associé à cette chaine"
+              onChange={handleAmountChannel}
+              disabled={startSending}
+              className="inputStyle rounded-r-md"
+            />
           </div>
 
-          <div className="space-y-1">
-            <Label htmlFor="typeChannel">
+          <div className="space-y-1 flex flex-col gap-1 ">
+            <label htmlFor="typeChannel">
               Type de chaine <span className="text-[#e91e63] ">*</span>{" "}
-            </Label>
+            </label>
 
-            <Select
+            <select
+              className="inputStyle rounded-r-md"
+              id="typeChannel"
               value={typeChannel}
-              onValueChange={(value: string) => handleTypeChannel(value)}
+              onChange={handleTypeChannel}
             >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Type de chaine" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Type de chaines</SelectLabel>
-                  <SelectItem value="Blog">Blog</SelectItem>
-                  <SelectItem value="Ressources">Ressources</SelectItem>
-                  <SelectItem value="Assets">Assets</SelectItem>
-                  <SelectItem value="Cours">Cours</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+              <option value="Blog">Blog</option>
+              <option value="Ressources">Ressources</option>
+              <option value="Assets">Assets</option>
+              <option value="Cours">Cours</option>
+            </select>
+
+            {loadingTotalRessources && (
+              <div className="space-y-1 w-[350px] max-h-[250px] rounded-xl shadow-2xl bg-[#eeeded] text-[#191919] overflow-y-scroll flex flex-col items-center gap-3 ">
+                <p className="text-[18px] pl-3">
+                  Selectionner les ressources à associer à cet chaine
+                </p>
+                <div className=" flex flex-col items-center gap-2 overflow-y-auto">
+                  {!!totalRessources.length ? (
+                    totalRessources?.map((value, index) => (
+                      <div className="flex items-center space-x-2" key={index}>
+                        <Checkbox
+                          id="terms"
+                          onCheckedChange={() => handleAddRessources(value)}
+                        />
+                        <label
+                          htmlFor="terms"
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          {value.titleRessource}
+                        </label>
+                      </div>
+                    ))
+                  ) : (
+                    <div>Pas de ressource</div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
-          <div className="space-y-1">
-            <Label htmlFor="typeAccessChannel">
+          <div className="space-y-1 flex flex-col gap-1">
+            <label htmlFor="typeAccessChannel">
               Entrer le Type d'access associé à cette chaine{" "}
               <span className="text-[#e91e63] ">*</span>{" "}
-            </Label>
+            </label>
 
-            <Select
+            <select
+              className="inputStyle rounded-r-md"
+              id="typeAccessChannel"
               value={typeAccessChannel}
-              onValueChange={(value: string) => handleTypeAccessChannel(value)}
+              onChange={handleTypeAccessChannel}
             >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Type d'access" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Type d'access</SelectLabel>
-                  <SelectItem value="Gratuit">Gratuit</SelectItem>
-                  <SelectItem value="Payant">Payant</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+              <option value="Gratuit">Gratuit</option>
+              <option value="Payant">Payant</option>
+            </select>
           </div>
 
-          <div className="felx flex-col items-center mt-3">
+          <div className="flex mt-3">
             <input
               type="checkbox"
               id="statusId"
@@ -386,12 +365,12 @@ function ChannelPageCreer() {
             </label>
           </div>
 
-          <div className="space-y-1 " key="button1">
-            <Label htmlFor="logoClient">
+          <div className="space-y-1 flex flex-col gap-1 " key="button1">
+            <label htmlFor="logoClient">
               Insérer une image associé à la chaine {" (optionnel)"}
-            </Label>
-            <div className="flex items-center gap-2" key="button21">
-              <Input
+            </label>
+            <div className="flex items-center max-w-[800px]" key="button21">
+              <input
                 key="button11"
                 id="logoClient"
                 name="logoClient"
@@ -399,6 +378,7 @@ function ChannelPageCreer() {
                 placeholder="Entrer une image représentant le logo du groupe"
                 onChange={handleImageChannel}
                 disabled={stateDownload || startSending}
+                className="border-[#191919] focus:border-[#e91e63] border-[1px] border-solid focus:outline-none rounded-l-md h-[36px] px-2 flex-1"
               />
               <ButtonUploadFile
                 name="file1"

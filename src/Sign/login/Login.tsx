@@ -43,15 +43,18 @@ export default function Login() {
       return;
     }
     try {
+      setStartSending(true);
       const data = {
         email,
         password,
       };
       const result = JSON.stringify(data);
-      const resultat: dataLoginServerType = await axios.post(
+      console.log("bounga");
+      const resultat = await axios.post(
         "https://serverbackofficetrucdejesus.onrender.com/api/backoffice/login",
         data
       );
+      console.log(resultat);
       if (resultat.status === 200) {
         localStorage.setItem("user", result);
         window.location.replace("/");
@@ -101,7 +104,7 @@ export default function Login() {
               id="email"
               value={email}
               onChange={handleEmail}
-              className={`inputStyle3 py-1.5 w-full ${
+              className={`inputStyle3 py-1.5 w-full disabled:opacity-75 ${
                 classEmail ? " border-[#ff1717]" : ""
               } `}
               disabled={startSending}
@@ -114,14 +117,17 @@ export default function Login() {
               id="password"
               value={password}
               onChange={handlePassword}
-              className={`inputStyle3 py-1.5 w-full ${
+              className={`inputStyle3 py-1.5 w-full disabled:opacity-75 ${
                 classPassword ? " border-[#ff1717]" : ""
               } `}
               disabled={startSending}
             />
           </div>
+          {startSending && (
+            <div>Patienter, l'action est en cours d'éxécution...</div>
+          )}
           <button
-            className="flex items-center justify-center text-white bg-[#E6C068] hover:bg-[#E6C068]/60 w-full py-1.5 mt-2 rounded-md"
+            className="flex items-center justify-center text-white bg-[#E6C068] hover:bg-[#E6C068]/60 w-full py-1.5 mt-2 rounded-md disabled:opacity-75"
             onClick={onsubmitData}
             disabled={startSending}
           >

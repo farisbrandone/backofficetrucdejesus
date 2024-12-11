@@ -69,11 +69,11 @@ export interface ChannelPageDataType {
   imageChannel: string;
   amountChannel: string;
   groupeIdChannel: string;
-  dateUpdatedChannel: string;
-  dateCreatedChannel: string;
   statusChannel: string;
   channelRessources: RessourcesDataType[];
-  id: string;
+  dateOfCreation?: string;
+  dateOfUpdate?: string;
+  id?: string;
 }
 
 export interface RessourcesDataType {
@@ -94,19 +94,27 @@ export interface RessourcesDataType {
   id?: string;
 }
 
-/* export interface LessonLibraryDataType {
-  titleLessonLibrary: string;
-  descriptionLessonLibrary: string;
-  imageLessonLibrary: string;
-  textButtonLessonLibrary: string;
-  typeLessonLibrary: string;
-  urlLessonLibrary: string;
-  communityId:string
+export interface MemberWaitingDataType {
+  name: string;
+  email: string;
+  motsDepasse: string;
+  sexe: string;
+  birthDay: string;
+  phone: string;
   status: string;
+  image: string;
+  communityId?: string;
+  groupeId?: string;
   dateOfCreation?: string;
   dateOfUpdate?: string;
-  id?:string;
-} */
+  id?: string;
+  nombrePartage: number;
+  nombreLikes: number;
+  nombreCommentaire: number;
+  nombreDeMerciBenis: number;
+  nombreDactivite: number;
+  nombreDeBadge: number;
+}
 
 export async function seedData(): Promise<User[]> {
   let notifications: User[] = [];
@@ -127,115 +135,6 @@ export async function seedData(): Promise<User[]> {
   }
 }
 
-/* export async function requestTogetAllGroupeData(): Promise<GroupeDataType[]> {
-  let groupeData: GroupeDataType[] = [];
-  try {
-    const querySnapshot = await getDocs(collection(db, "GroupeData"));
-    console.log({ length: querySnapshot.docs.length });
-    if (querySnapshot.docs.length !== 0) {
-      querySnapshot.forEach((doc) => {
-        const id = doc.id;
-        const {
-          titleGroupe,
-          descriptionGroupe,
-          logoUrlGroupe,
-          banniereUrlGroupe,
-          typeAccess,
-          status,
-          date,
-          nombreDePartages,
-          nombreDevenements,
-          nombreDeChaines,
-          nombreDePassionnner,
-        } = doc.data();
-        groupeData.push({
-          id,
-          titleGroupe,
-          descriptionGroupe,
-          logoUrlGroupe,
-          banniereUrlGroupe,
-          typeAccess,
-          date,
-          status,
-          nombreDePartages,
-          nombreDevenements,
-          nombreDeChaines,
-          nombreDePassionnner,
-        });
-      });
-      console.log({ drdr_drdr: groupeData[0].id });
-      return groupeData;
-    }
-
-    return [];
-  } catch (error) {
-    console.log({ error: error });
-    throw new Error(
-      "Une erreur est survenue pendant la récupération des données"
-    );
-  }
-} */
-/* export async function requestToSetGroupeData({
-  titleGroupe,
-  descriptionGroupe,
-  logoUrlGroupe,
-  banniereUrlGroupe,
-  typeAccess,
-  status,
-}: GroupeDataType) {
-  try {
-    const NotifRef = collection(db, "GroupeData");
-    const date = new Date().toUTCString();
-    await setDoc(doc(NotifRef), {
-      titleGroupe,
-      descriptionGroupe,
-      logoUrlGroupe,
-      banniereUrlGroupe,
-      typeAccess,
-      date,
-      status,
-    });
-    return { message: "Le groupe a été créer avec success", success: true };
-  } catch (error) {
-    throw new Error(
-      "Une erreur est survenue pendant la récupération des données"
-    );
-  }
-}
-
-export async function requestToUpdateGroupeData(
-  singleGroupeData: GroupeDataType
-) {
-  const GroupeDataRef = collection(db, "GroupeData");
-  const date = new Date().toUTCString();
-  try {
-    const {
-      titleGroupe,
-      descriptionGroupe,
-      typeAccess,
-      id,
-      banniereUrlGroupe,
-      logoUrlGroupe,
-      status,
-    } = singleGroupeData;
-    await updateDoc(doc(GroupeDataRef, id), {
-      titleGroupe,
-      descriptionGroupe,
-      typeAccess,
-      date,
-      banniereUrlGroupe,
-      logoUrlGroupe,
-      status,
-    });
-    return { message: "La donnée a été envoyé avec success", success: true };
-  } catch (error) {
-    return {
-      message: "Un problème est survenu pendant l'envoie des données",
-      success: false,
-    };
-  }
-}
- */
 export async function requestToChangeStatus(
   id: string,
   status: string,
@@ -284,68 +183,6 @@ export async function requestToChangeStatusChannel(
   }
 }
 
-/* export async function requestToGetGroupDataWithId(
-  groupeId: string
-): Promise<GroupeDataType> {
-  try {
-    const docRef = doc(db, "GroupeData", groupeId);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      console.log("Document data:", docSnap.data());
-      const {
-        id,
-        titleGroupe,
-        descriptionGroupe,
-        typeAccess,
-        banniereUrlGroupe,
-        logoUrlGroupe,
-        date,
-        status,
-        nombreDePartages,
-        nombreDevenements,
-        nombreDeChaines,
-        nombreDePassionnner,
-      } = docSnap.data();
-      return {
-        id,
-        titleGroupe,
-        descriptionGroupe,
-        typeAccess,
-        banniereUrlGroupe,
-        logoUrlGroupe,
-        date,
-        status,
-        nombreDePartages,
-        nombreDevenements,
-        nombreDeChaines,
-        nombreDePassionnner,
-      };
-    } else {
-      throw new Error("Le document n'existe pas");
-    }
-  } catch (error) {
-    throw new Error(
-      "Une erreur est survenue pendant la récupération des données"
-    );
-  }
-}
-
-export async function requestToDeleteGroupeWithId(dataId: string) {
-  const docRef = doc(db, "GroupeData", dataId);
-  try {
-    await deleteDoc(docRef);
-    return {
-      message: "le document à été supprimer avec success",
-      success: true,
-    };
-  } catch (error) {
-    return {
-      message: "Un problème est survenu pendant la suppression",
-      success: false,
-    };
-  }
-} */
-
 export async function seedDataWithId(dataId: string): Promise<User> {
   try {
     const docRef = doc(db, "Notifications", dataId);
@@ -362,25 +199,7 @@ export async function seedDataWithId(dataId: string): Promise<User> {
     );
   }
 }
-/* export async function seedCommunityDataWithId(): Promise<CommunityDataType> {
-  try {
-    const docRef = doc(db, "CommunityData", "RH7E1UQKdNJ42iBtAOku");
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      const id = docSnap.id;
-      console.log("Document data:", docSnap.data());
-      const { title, description, logoUrl, banniereUrl } = docSnap.data();
-      return { id, title, description, logoUrl, banniereUrl };
-    } else {
-      throw new Error("Le document n'existe pas");
-    }
-  } catch (error) {
-    throw new Error(
-      "Une erreur est survenue pendant la récupération des données"
-    );
-  }
-}
- */
+
 export async function setDataWithId(singleData: User) {
   const NotifRef = collection(db, "Notifications");
   try {
@@ -417,12 +236,6 @@ export async function deleteDataWithId(dataId: string) {
   }
 }
 
-//export const USERS = [...notifications]
-
-/*export const USERS = faker.helpers.multiple(createRandomUser, {
-  count: 30,
-});*/
-
 export interface EventDataType {
   titleEvent: string;
   descriptionEvent: string;
@@ -440,197 +253,6 @@ export interface EventDataType {
   dateOfUpdate?: string;
   id?: string;
 }
-
-/* export async function requestToSetEventData({
-  titleEvent,
-  descriptionEvent,
-  imageUrlEvent,
-  typeAccess,
-  status,
-  dateOfEvent,
-  typeEvent,
-  urlOfEvent,
-  textCTAEvent,
-  locationOfEvent,
-  groupeForEventSelect,
-}: EventDataType) {
-  try {
-    const NotifRef = collection(db, "EventData");
-    const date = new Date().toUTCString();
-    const promise1 = setDoc(doc(NotifRef), {
-      titleEvent,
-      descriptionEvent,
-      imageUrlEvent,
-      typeAccess,
-      status,
-      dateOfEvent,
-      typeEvent,
-      urlOfEvent,
-      textCTAEvent,
-      locationOfEvent,
-      groupeForEventSelect,
-      date,
-    });
-    if (groupeForEventSelect.length !== 0) {
-      const newval = groupeForEventSelect.map((value) => {
-        const groupeDataRef = doc(db, "GroupeData", value.groupeId);
-        const promise2 = updateDoc(groupeDataRef, {
-          nombreDevenements: increment(1),
-        });
-        return promise2;
-      });
-      await Promise.all([promise1, ...newval]);
-      return { message: "Le groupe a été créer avec success", success: true };
-    }
-
-    await promise1;
-    return { message: "Le groupe a été créer avec success", success: true };
-  } catch (error) {
-    throw new Error(
-      "Une erreur est survenue pendant la récupération des données"
-    );
-  }
-} */
-
-/* export async function requestToGetEventDataWithId(
-  groupeId: string
-): Promise<EventDataType> {
-  try {
-    console.log({ groupeId });
-    const docRef = doc(db, "EventData", groupeId);
-    const docSnap = await getDoc(docRef);
-    console.log("bounga1");
-    if (docSnap.exists()) {
-      console.log("Document data:", docSnap.data());
-      const {
-        id,
-        titleEvent,
-        descriptionEvent,
-        imageUrlEvent,
-        typeAccess,
-        status,
-        dateOfEvent,
-        typeEvent,
-        urlOfEvent,
-        textCTAEvent,
-        locationOfEvent,
-        groupeForEventSelect,
-        date,
-      } = docSnap.data();
-      return {
-        id,
-        titleEvent,
-        descriptionEvent,
-        imageUrlEvent,
-        typeAccess,
-        status,
-        dateOfEvent,
-        typeEvent,
-        urlOfEvent,
-        textCTAEvent,
-        locationOfEvent,
-        groupeForEventSelect,
-        date,
-      };
-    } else {
-      throw new Error("Le document n'existe pas");
-    }
-  } catch (error) {
-    throw new Error(
-      "Une erreur est survenue pendant la récupération des données"
-    );
-  }
-}
-
-export async function requestToSetEventDataWithId({
-  titleEvent,
-  descriptionEvent,
-  imageUrlEvent,
-  typeAccess,
-  status,
-  dateOfEvent,
-  typeEvent,
-  urlOfEvent,
-  textCTAEvent,
-  locationOfEvent,
-  groupeForEventSelect,
-  id,
-}: EventDataType) {
-  try {
-    const NotifRef = collection(db, "EventData");
-    const date = new Date().toUTCString();
-    await setDoc(doc(NotifRef, id), {
-      titleEvent,
-      descriptionEvent,
-      imageUrlEvent,
-      typeAccess,
-      status,
-      dateOfEvent,
-      typeEvent,
-      urlOfEvent,
-      textCTAEvent,
-      locationOfEvent,
-      groupeForEventSelect,
-      date,
-    });
-    return { message: "Le groupe a été créer avec success", success: true };
-  } catch (error) {
-    throw new Error(
-      "Une erreur est survenue pendant la récupération des données"
-    );
-  }
-}
-
-export async function requestTogetAllEventData(): Promise<EventDataType[]> {
-  let groupeData: EventDataType[] = [];
-  try {
-    const querySnapshot = await getDocs(collection(db, "EventData"));
-    console.log({ length: querySnapshot.docs.length });
-    if (querySnapshot.docs.length !== 0) {
-      querySnapshot.forEach((doc) => {
-        const id = doc.id;
-        const {
-          titleEvent,
-          descriptionEvent,
-          imageUrlEvent,
-          typeAccess,
-          status,
-          dateOfEvent,
-          typeEvent,
-          urlOfEvent,
-          textCTAEvent,
-          locationOfEvent,
-          groupeForEventSelect,
-          date,
-        } = doc.data();
-        groupeData.push({
-          id,
-          titleEvent,
-          descriptionEvent,
-          imageUrlEvent,
-          typeAccess,
-          status,
-          dateOfEvent,
-          typeEvent,
-          urlOfEvent,
-          textCTAEvent,
-          locationOfEvent,
-          groupeForEventSelect,
-          date,
-        });
-      });
-      console.log({ drdr_drdr: groupeData[0].id });
-      return groupeData;
-    }
-
-    return [];
-  } catch (error) {
-    console.log({ error: error });
-    throw new Error(
-      "Une erreur est survenue pendant la récupération des données"
-    );
-  }
-} */
 
 export async function requestToDeleteEventWithId(
   dataId: string,
@@ -710,9 +332,9 @@ export async function requestToSetChannelData(
 ) {
   try {
     const NotifRef = collection(db, "ChannelData");
-    const dateCreatedChannel = new Date().toUTCString();
+    const dateOfCreation = new Date().toUTCString();
 
-    const dateUpdatedChannel = new Date().toUTCString();
+    const dateOfUpdate = new Date().toUTCString();
     const promise1 = setDoc(doc(NotifRef), {
       nomChannel,
       descriptionChannel,
@@ -722,8 +344,8 @@ export async function requestToSetChannelData(
       statusChannel,
       typeAccessChannel,
       amountChannel,
-      dateCreatedChannel,
-      dateUpdatedChannel,
+      dateOfCreation,
+      dateOfUpdate,
       channelRessources,
     });
 
@@ -799,8 +421,8 @@ export async function requestTogetAllChannelData(
           typeChannel,
           imageChannel,
           groupeIdChannel,
-          dateUpdatedChannel,
-          dateCreatedChannel,
+          dateOfCreation,
+          dateOfUpdate,
           statusChannel,
           typeAccessChannel,
           amountChannel,
@@ -813,8 +435,8 @@ export async function requestTogetAllChannelData(
           typeChannel,
           imageChannel,
           groupeIdChannel,
-          dateUpdatedChannel,
-          dateCreatedChannel,
+          dateOfCreation,
+          dateOfUpdate,
           statusChannel,
           typeAccessChannel,
           amountChannel,
@@ -875,7 +497,7 @@ export async function requestToUpdateChannelData({
   try {
     const NotifRef = collection(db, "ChannelData");
 
-    const dateUpdatedChannel = new Date().toUTCString();
+    const dateOfUpdate = new Date().toUTCString();
     await updateDoc(doc(NotifRef, id), {
       nomChannel,
       descriptionChannel,
@@ -884,7 +506,7 @@ export async function requestToUpdateChannelData({
       statusChannel,
       typeAccessChannel,
       amountChannel,
-      dateUpdatedChannel,
+      dateOfUpdate,
     });
     return { message: "Le groupe a été créer avec success", success: true };
   } catch (error) {
@@ -947,8 +569,8 @@ export async function requestToGetChannelDataWithId(
         imageChannel,
         amountChannel,
         groupeIdChannel,
-        dateUpdatedChannel,
-        dateCreatedChannel,
+        dateOfCreation,
+        dateOfUpdate,
         statusChannel,
         channelRessources,
       } = docSnap.data();
@@ -961,8 +583,8 @@ export async function requestToGetChannelDataWithId(
         imageChannel,
         amountChannel,
         groupeIdChannel,
-        dateUpdatedChannel,
-        dateCreatedChannel,
+        dateOfCreation,
+        dateOfUpdate,
         statusChannel,
         channelRessources,
       };
@@ -1364,8 +986,8 @@ export const requestToGetChannelDataBySearchValue = async (
         typeChannel,
         imageChannel,
         groupeIdChannel,
-        dateUpdatedChannel,
-        dateCreatedChannel,
+        dateOfCreation,
+        dateOfUpdate,
         statusChannel,
         typeAccessChannel,
         amountChannel,
@@ -1378,8 +1000,8 @@ export const requestToGetChannelDataBySearchValue = async (
         typeChannel,
         imageChannel,
         groupeIdChannel,
-        dateUpdatedChannel,
-        dateCreatedChannel,
+        dateOfCreation,
+        dateOfUpdate,
         statusChannel,
         typeAccessChannel,
         amountChannel,
@@ -1517,9 +1139,10 @@ export async function requestToSetMembreData({
   nombreDeMerciBenis,
   nombreDactivite,
   nombreDeBadge,
+  communityId,
 }: MemberDataType) {
   try {
-    const NotifRef = collection(db, "MembreData");
+    const NotifRef = collection(db, "MemberData");
     const dateCreation = new Date().toUTCString();
 
     const dateMiseAJour = new Date().toUTCString();
@@ -1540,6 +1163,7 @@ export async function requestToSetMembreData({
       nombreDeMerciBenis,
       nombreDactivite,
       nombreDeBadge,
+      communityId,
     });
 
     const dataGroupe = await requestTogetAllUniversalData<GroupeDataType>(
@@ -1563,156 +1187,8 @@ export async function requestToSetMembreData({
   }
 }
 
-/* export async function requestToUpdateMembreData({
-  id,
-  name,
-  email,
-  motsDepasse,
-  image,
-  sexe,
-  birthDay,
-  phone,
-  status,
-}: MemberDataType) {
-  try {
-    const docRef = doc(db, "MembreData", id);
-
-    const dateMiseAJour = new Date().toUTCString();
-    await updateDoc(docRef, {
-      name,
-      email,
-      motsDepasse,
-      image,
-      sexe,
-      birthDay,
-      phone,
-      status,
-      dateMiseAJour,
-    });
-
-    return { message: "Le groupe a été créer avec success", success: true };
-  } catch (error) {
-    throw new Error(
-      "Une erreur est survenue pendant la récupération des données"
-    );
-  }
-} */
-
-/* export async function requestToGetMemberDataWithId(
-  membreId: string
-): Promise<MemberDataType> {
-  try {
-    const docRef = doc(db, "MembreData", membreId);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      const {
-        id,
-        name,
-        email,
-        motsDepasse,
-        image,
-        sexe,
-        birthDay,
-        phone,
-        status,
-        dateCreation,
-        dateMiseAJour,
-        nombrePartage,
-        nombreLikes,
-        nombreCommentaire,
-        nombreDeMerciBenis,
-        nombreDactivite,
-        nombreDeBadge,
-      } = docSnap.data();
-      return {
-        id,
-        name,
-        email,
-        motsDepasse,
-        image,
-        sexe,
-        birthDay,
-        phone,
-        status,
-        dateCreation,
-        dateMiseAJour,
-        nombrePartage,
-        nombreLikes,
-        nombreCommentaire,
-        nombreDeMerciBenis,
-        nombreDactivite,
-        nombreDeBadge,
-      };
-    } else {
-      throw new Error("Le document n'existe pas");
-    }
-  } catch (error) {
-    throw new Error(
-      "Une erreur est survenue pendant la récupération des données"
-    );
-  }
-} */
-
-/* export async function requestTogetAllMembreData(): Promise<MemberDataType[]> {
-  let membreData: MemberDataType[] = [];
-  try {
-    const querySnapshot = await getDocs(collection(db, "MembreData"));
-
-    if (querySnapshot.docs.length !== 0) {
-      querySnapshot.forEach((doc) => {
-        const id = doc.id;
-        const {
-          name,
-          email,
-          motsDepasse,
-          image,
-          sexe,
-          birthDay,
-          phone,
-          status,
-          dateCreation,
-          dateMiseAJour,
-          nombrePartage,
-          nombreLikes,
-          nombreCommentaire,
-          nombreDeMerciBenis,
-          nombreDactivite,
-          nombreDeBadge,
-        } = doc.data();
-        membreData.push({
-          id,
-          name,
-          email,
-          motsDepasse,
-          image,
-          sexe,
-          birthDay,
-          phone,
-          status,
-          dateCreation,
-          dateMiseAJour,
-          nombrePartage,
-          nombreLikes,
-          nombreCommentaire,
-          nombreDeMerciBenis,
-          nombreDactivite,
-          nombreDeBadge,
-        });
-      });
-
-      return membreData;
-    }
-
-    return [];
-  } catch (error) {
-    throw new Error(
-      "Une erreur est survenue pendant la récupération des données"
-    );
-  }
-} */
-
 export async function requestToDeleteMembreWithId(dataId: string) {
-  const docRef = doc(db, "MembreData", dataId);
+  const docRef = doc(db, "MemberData", dataId);
   try {
     const promise1 = deleteDoc(docRef);
     const dataGroupe = await requestTogetAllUniversalData<GroupeDataType>(
@@ -2584,107 +2060,6 @@ export interface AchatNotificationDataType {
   id?: string;
 }
 
-/* export async function requestToSetAchatNotificationData({
-  titleAchat,
-  emailAuthorAchat,
-  subjectAchat,
-  messageOfEmailAchat,
-  statusAchat,
-}: AchatNotificationDataType) {
-  try {
-    const NotifRef = collection(db, "AchatNotificationData");
-    const date = new Date().toUTCString();
-    await setDoc(doc(NotifRef), {
-      titleAchat,
-      emailAuthorAchat,
-      subjectAchat,
-      messageOfEmailAchat,
-      statusAchat,
-      date,
-    });
-    return { message: " success", success: true };
-  } catch (error) {
-    throw new Error(
-      "Une erreur est survenue pendant la récupération des données"
-    );
-  }
-}
-
-export async function requestTogetAllAchatNotificationData(): Promise<
-  AchatNotificationDataType[]
-> {
-  let AchatNotificationData: AchatNotificationDataType[] = [];
-  try {
-    const querySnapshot = await getDocs(
-      collection(db, "AchatNotificationData")
-    );
-    console.log({ length: querySnapshot.docs.length });
-    if (querySnapshot.docs.length !== 0) {
-      querySnapshot.forEach((doc) => {
-        const id = doc.id;
-        const {
-          titleAchat,
-          emailAuthorAchat,
-          subjectAchat,
-          messageOfEmailAchat,
-          statusAchat,
-          date,
-        } = doc.data();
-        AchatNotificationData.push({
-          id,
-          titleAchat,
-          emailAuthorAchat,
-          subjectAchat,
-          messageOfEmailAchat,
-          statusAchat,
-          date,
-        });
-      });
-
-      return AchatNotificationData;
-    }
-
-    return [];
-  } catch (error) {
-    console.log({ error: error });
-    throw new Error(
-      "Une erreur est survenue pendant la récupération des données"
-    );
-  }
-}
-
-export async function requestToUpdateAchatNotificationData({
-  titleAchat,
-  emailAuthorAchat,
-  subjectAchat,
-  messageOfEmailAchat,
-  statusAchat,
-  id,
-}: AchatNotificationDataType) {
-  try {
-    const docRef = doc(db, "AchatNotificationData", id);
-
-    const date = new Date().toUTCString();
-    await updateDoc(docRef, {
-      titleAchat,
-      emailAuthorAchat,
-      subjectAchat,
-      messageOfEmailAchat,
-      statusAchat,
-      date,
-    });
-
-    return {
-      message: " success",
-      success: true,
-    };
-  } catch (error) {
-    throw new Error(
-      "Une erreur est survenue pendant la récupération des données"
-    );
-  }
-} */
-
 /* ------------------------------------------------------------ */
 
 export interface MembreNotificationDataType {
@@ -2699,107 +2074,6 @@ export interface MembreNotificationDataType {
   id?: string;
 }
 
-/* export async function requestToSetMembreNotificationData({
-  titleMembre,
-  emailAuthorMembre,
-  subjectMembre,
-  messageOfEmailMembre,
-  statusMembre,
-}: MembreNotificationDataType) {
-  try {
-    const NotifRef = collection(db, "MembreNotificationData");
-    const date = new Date().toUTCString();
-    await setDoc(doc(NotifRef), {
-      titleMembre,
-      emailAuthorMembre,
-      subjectMembre,
-      messageOfEmailMembre,
-      statusMembre,
-      date,
-    });
-    return { message: " success", success: true };
-  } catch (error) {
-    throw new Error(
-      "Une erreur est survenue pendant la récupération des données"
-    );
-  }
-}
-
-export async function requestTogetAllMembreNotificationData(): Promise<
-  MembreNotificationDataType[]
-> {
-  let MembreNotificationData: MembreNotificationDataType[] = [];
-  try {
-    const querySnapshot = await getDocs(
-      collection(db, "MembreNotificationData")
-    );
-    console.log({ length: querySnapshot.docs.length });
-    if (querySnapshot.docs.length !== 0) {
-      querySnapshot.forEach((doc) => {
-        const id = doc.id;
-        const {
-          titleMembre,
-          emailAuthorMembre,
-          subjectMembre,
-          messageOfEmailMembre,
-          statusMembre,
-          date,
-        } = doc.data();
-        MembreNotificationData.push({
-          id,
-          titleMembre,
-          emailAuthorMembre,
-          subjectMembre,
-          messageOfEmailMembre,
-          statusMembre,
-          date,
-        });
-      });
-
-      return MembreNotificationData;
-    }
-
-    return [];
-  } catch (error) {
-    console.log({ error: error });
-    throw new Error(
-      "Une erreur est survenue pendant la récupération des données"
-    );
-  }
-}
-
-export async function requestToUpdateMembreNotificationData({
-  titleMembre,
-  emailAuthorMembre,
-  subjectMembre,
-  messageOfEmailMembre,
-  statusMembre,
-  id,
-}: MembreNotificationDataType) {
-  try {
-    const docRef = doc(db, "MembreNotificationData", id);
-
-    const date = new Date().toUTCString();
-    await updateDoc(docRef, {
-      titleMembre,
-      emailAuthorMembre,
-      subjectMembre,
-      messageOfEmailMembre,
-      statusMembre,
-      date,
-    });
-
-    return {
-      message: " success",
-      success: true,
-    };
-  } catch (error) {
-    throw new Error(
-      "Une erreur est survenue pendant la récupération des données"
-    );
-  }
-}
- */
 /* --------------------------------------------------------------------- */
 
 export interface BulkNotificationDataType {
@@ -2813,107 +2087,6 @@ export interface BulkNotificationDataType {
   dateOfUpdate?: string;
   id?: string;
 }
-
-/* export async function requestToSetBulkNotificationData({
-  titleBulk,
-  emailAuthorBulk,
-  subjectBulk,
-  messageOfEmailBulk,
-  statusBulk,
-}: BulkNotificationDataType) {
-  try {
-    const NotifRef = collection(db, "BulkNotificationData");
-    const date = new Date().toUTCString();
-    await setDoc(doc(NotifRef), {
-      titleBulk,
-      emailAuthorBulk,
-      subjectBulk,
-      messageOfEmailBulk,
-      statusBulk,
-      date,
-    });
-    return { message: " success", success: true };
-  } catch (error) {
-    throw new Error(
-      "Une erreur est survenue pendant la récupération des données"
-    );
-  }
-}
-
-export async function requestTogetAllBulkNotificationData(): Promise<
-  BulkNotificationDataType[]
-> {
-  let BulkNotificationData: BulkNotificationDataType[] = [];
-  try {
-    const querySnapshot = await getDocs(collection(db, "BulkNotificationData"));
-    console.log({ length: querySnapshot.docs.length });
-    if (querySnapshot.docs.length !== 0) {
-      querySnapshot.forEach((doc) => {
-        const id = doc.id;
-        const {
-          titleBulk,
-          emailAuthorBulk,
-          subjectBulk,
-          messageOfEmailBulk,
-          statusBulk,
-          date,
-        } = doc.data();
-        BulkNotificationData.push({
-          id,
-          titleBulk,
-          emailAuthorBulk,
-          subjectBulk,
-          messageOfEmailBulk,
-          statusBulk,
-          date,
-        });
-      });
-
-      return BulkNotificationData;
-    }
-
-    return [];
-  } catch (error) {
-    console.log({ error: error });
-    throw new Error(
-      "Une erreur est survenue pendant la récupération des données"
-    );
-  }
-}
-
-export async function requestToUpdateBulkNotificationData({
-  titleBulk,
-  emailAuthorBulk,
-  subjectBulk,
-  messageOfEmailBulk,
-  statusBulk,
-  id,
-}: BulkNotificationDataType) {
-  try {
-    const docRef = doc(db, "BulkNotificationData", id);
-
-    const date = new Date().toUTCString();
-    await updateDoc(docRef, {
-      titleBulk,
-      emailAuthorBulk,
-      subjectBulk,
-      messageOfEmailBulk,
-      statusBulk,
-      date,
-    });
-
-    return {
-      message: " success",
-      success: true,
-    };
-  } catch (error) {
-    throw new Error(
-      "Une erreur est survenue pendant la récupération des données"
-    );
-  }
-}
-
-requestToSetAutoresponderData; */
 
 export interface AutoresponderDataType {
   webinarValue: string;
@@ -3099,55 +2272,6 @@ export interface BannersAdsDataType {
   dateOfUpdate?: string;
 }
 
-/* export async function requestTogetAllPopupBannersData(): Promise<
-  PopupBannersDataType[]
-> {
-  let PopupBannersData: PopupBannersDataType[] = [];
-  try {
-    const querySnapshot = await getDocs(collection(db, "BulkNotificationData"));
-    console.log({ length: querySnapshot.docs.length });
-    if (querySnapshot.docs.length !== 0) {
-      querySnapshot.forEach((doc) => {
-        const id = doc.id;
-        const {
-          title,
-          targetUrl,
-          image,
-          types,
-          status,
-          statusCommunityPage,
-          statusGroupePage,
-          groupePageAssociate,
-          dateOfCreation,
-          dateOfUpdate,
-        } = doc.data();
-        PopupBannersData.push({
-          id,
-          title,
-          targetUrl,
-          image,
-          types,
-          status,
-          statusCommunityPage,
-          statusGroupePage,
-          groupePageAssociate,
-          dateOfCreation,
-          dateOfUpdate,
-        });
-      });
-
-      return PopupBannersData;
-    }
-
-    return [];
-  } catch (error) {
-    console.log({ error: error });
-    throw new Error(
-      "Une erreur est survenue pendant la récupération des données"
-    );
-  }
-} */
-
 export async function requestTogetAllUniversalData<T>(
   databaseName: string
 ): Promise<T[]> {
@@ -3155,7 +2279,7 @@ export async function requestTogetAllUniversalData<T>(
   try {
     const querySnapshot = await getDocs(collection(db, databaseName));
 
-    if (querySnapshot.docs.length !== 0) {
+    if (!querySnapshot.empty) {
       querySnapshot.forEach((doc) => {
         const id = doc.id;
 
@@ -3167,9 +2291,12 @@ export async function requestTogetAllUniversalData<T>(
       });
 
       return data;
+    } else {
+      return [];
+      /* throw new Error(
+        "Une erreur est survenue pendant la récupération des données"
+      ); */
     }
-
-    return [];
   } catch (error) {
     throw new Error(
       "Une erreur est survenue pendant la récupération des données"

@@ -93,6 +93,11 @@
   .inputStyle2 {
     @apply border-[#191919] focus:border-[#e91e63] border-[1px] border-solid focus:outline-none rounded-l-md h-[36px] px-2;
   }
+
+  .textareaStyle {
+    @apply border-[#191919] focus:border-[#e91e63] border-[1px] border-solid focus:outline-none rounded-md px-2 max-w-[800px];
+  }
+
   .inputStyle3 {
     @apply border-[#191919] focus:border-[#BD10E0] border-[1px] border-solid focus:outline-none rounded-md px-2;
   }
