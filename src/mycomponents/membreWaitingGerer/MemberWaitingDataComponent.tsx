@@ -8,7 +8,6 @@ import {
   requestToChangeStatus,
   requestToDeleteUniversalDataWithId,
   requestTogetAllUniversalData,
-  requestToSetUniversalData,
 } from "@/fakeData";
 import { toast } from "@/hooks/use-toast";
 import LoadingTotal from "../ui/LoadingTotal";
@@ -100,7 +99,7 @@ function MemberWaitingDataComponent({
     setStartSending(() => true);
 
     try {
-      const result = await requestToSetUniversalData(
+      /*   const result = await requestToSetUniversalData(
         "MemberWaitingData",
         value
       );
@@ -110,37 +109,29 @@ function MemberWaitingDataComponent({
           title: "Success",
           description: "Le membre a été crée avec success",
         });
-        setStartSending(() => false);
+        setStartSending(() => false); */
 
-        const result = await axios.post<axiosType, axiosType>(
-          "https://serverbackofficetrucdejesus.onrender.com/api/frontoffice/acceptsignup",
-          value
-        );
+      const result = await axios.post<axiosType, axiosType>(
+        "https://serverbackofficetrucdejesus.onrender.com/api/frontoffice/acceptsignup",
+        value
+      );
 
-        if (result.alreadyExist) {
-          toast({
-            variant: "destructive",
-            title: "Erreur",
-            description: result.success,
-          });
-        }
+      if (result.alreadyExist) {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: result.success,
+        });
+      }
 
-        const deleteResult = await requestToDeleteUniversalDataWithId(
-          value.id as string,
-          "MemberWaitingData"
-        );
-        console.log({ result, deleteResult });
-        if (deleteResult.success) {
-          window.location.replace(`/GERER LES MEMBRES/${value.communityId}`);
-          return;
-        } else {
-          toast({
-            variant: "destructive",
-            title: "Erreur",
-            description: "Une erreur est survenue cotée serveur",
-          });
-          setStartSending(() => false);
-        }
+      const deleteResult = await requestToDeleteUniversalDataWithId(
+        value.id as string,
+        "MemberWaitingData"
+      );
+      console.log({ result, deleteResult });
+      if (deleteResult.success) {
+        window.location.replace(`/GERER LES MEMBRES/${value.communityId}`);
+        return;
       } else {
         toast({
           variant: "destructive",
@@ -149,6 +140,14 @@ function MemberWaitingDataComponent({
         });
         setStartSending(() => false);
       }
+      /*  } else {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Une erreur est survenue cotée serveur",
+        });
+        setStartSending(() => false);
+      } */
     } catch (error) {
       toast({
         variant: "destructive",
