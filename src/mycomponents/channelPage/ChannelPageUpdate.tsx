@@ -159,8 +159,6 @@ function ChannelPageUpdate() {
         statusChannel: statusChannel,
         typeAccessChannel: typeAccessChannel,
         amountChannel: amountChannel,
-        dateCreatedChannel: "",
-        dateUpdatedChannel: "",
         id: channelId,
         channelRessources: channelRessources,
       };

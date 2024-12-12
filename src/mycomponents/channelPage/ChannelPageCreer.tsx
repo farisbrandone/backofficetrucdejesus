@@ -1,5 +1,5 @@
 import { Fragment } from "react/jsx-runtime";
-import { faker } from "@faker-js/faker";
+
 import {
   Card,
   CardContent,
@@ -8,8 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import ButtonUploadFile from "../ui/ButtonUploadFile";
 import { Button } from "@/components/ui/button";
 import { NavLink, useParams } from "react-router-dom";
@@ -22,7 +20,6 @@ import {
   RessourcesDataType,
 } from "@/fakeData";
 import { channelIcon } from "./ChannelPage";
-import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export const cardenaIcon = (width: string, heigth: string) => {

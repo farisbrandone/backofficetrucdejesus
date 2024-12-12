@@ -69,10 +69,14 @@ export default function CarteCreer({
           <span className="icon-[fa6-solid--people-group] mr-1"></span>
           <p>Groupes</p>
         </button>
-        <button className="flex items-center text-[11px] font-bold text-center p-[2px]  px-[4px]  rounded-sm bg-[#191919] hover:bg-[#e91e63] text-white transition-colors duration-500">
+        <a
+          className="flex items-center text-[11px] font-bold text-center p-[2px]  px-[4px]  rounded-sm bg-[#191919] hover:bg-[#e91e63] text-white transition-colors duration-500"
+          href={`https://reseausocial-trucdejesus.vercel.app/community/${valueCommunity.id}`}
+          target="_blank"
+        >
           <span className="icon-[mynaui--arrow-up-right-square-solid] text-[12px] mr-1"></span>
           <p>Visit</p>
-        </button>
+        </a>
         <button className="flex items-center text-[11px] font-bold text-center p-[2px]  px-[4px]  rounded-sm bg-[#191919] hover:bg-[#e91e63] text-white transition-colors duration-500">
           <span className="icon-[bi--rocket-takeoff] mr-1"></span>
           <p>Lauch Community</p>
@@ -244,10 +248,14 @@ export function CarteCreerForGroup({
           <span className="icon-[fa--television] mr-1"></span>
           <p>Channels</p>
         </button>
-        <button className="flex items-center text-[11px] font-bold text-center p-[2px]  px-[4px]  rounded-sm bg-[#191919] hover:bg-[#e91e63] text-white transition-colors duration-500">
+        <a
+          className="flex items-center text-[11px] font-bold text-center p-[2px]  px-[4px]  rounded-sm bg-[#191919] hover:bg-[#e91e63] text-white transition-colors duration-500"
+          href={`https://reseausocial-trucdejesus.vercel.app/community/${communityId}/${groupeId} `}
+          target="_blank"
+        >
           <span className="icon-[mynaui--arrow-up-right-square-solid] text-[12px] mr-1"></span>
           <p>Visit</p>
-        </button>
+        </a>
       </div>
 
       <div className="w-full  h-[190px] flex items-center justify-center px-2 ">
