@@ -88,9 +88,7 @@ const router = createBrowserRouter([
     path: "/",
     element: (
       <context.Provider value={data}>
-        <LoginMother>
-          <SidebarComponents />
-        </LoginMother>
+        <SidebarComponents />
       </context.Provider>
     ),
     errorElement: <ErrorPage />,
@@ -102,7 +100,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/",
-        element: <AcceuilPage />,
+        element: (
+          <LoginMother>
+            <AcceuilPage />
+          </LoginMother>
+        ),
       },
       {
         path: "/COMMUNAUTES",

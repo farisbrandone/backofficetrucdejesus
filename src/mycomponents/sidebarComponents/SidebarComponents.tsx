@@ -38,6 +38,7 @@ function SidebarComponents() {
     /* "GERER LES RESSOURCES", */
     "NOTIFICATION",
   ];
+
   return (
     <div className="flex gap-0 w-[100vw] ">
       <div
