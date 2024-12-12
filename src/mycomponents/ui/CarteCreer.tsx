@@ -250,7 +250,7 @@ export function CarteCreerForGroup({
         </button>
         <a
           className="flex items-center text-[11px] font-bold text-center p-[2px]  px-[4px]  rounded-sm bg-[#191919] hover:bg-[#e91e63] text-white transition-colors duration-500"
-          href={`https://reseausocial-trucdejesus.vercel.app/community/${communityId}/${groupeId} `}
+          href={`https://reseausocial-trucdejesus.vercel.app/community/${communityId}/${groupeId}`}
           target="_blank"
         >
           <span className="icon-[mynaui--arrow-up-right-square-solid] text-[12px] mr-1"></span>
