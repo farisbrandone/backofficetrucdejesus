@@ -186,6 +186,7 @@ function MembreCreer() {
         nombreDeMerciBenis: 0,
         nombreDactivite: 0,
         nombreDeBadge: 0,
+        groupeId: [],
       };
       console.log(data);
       const result = await requestToSetUniversalData("MemberData", data);

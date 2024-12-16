@@ -29,6 +29,7 @@ export interface MemberDataType {
   status: string;
   image: string;
   communityId?: string;
+  groupeId?: string[];
   dateOfCreation?: string;
   dateOfUpdate?: string;
   id?: string;
