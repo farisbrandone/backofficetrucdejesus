@@ -32,8 +32,6 @@ function AssetsComponent({
   const [switchState, setSwitchState] = useState(value.status);
   const [loadingStatus, setLoadingStatus] = useState(false);
 
-  console.log({ value });
-
   const handleSwitch = async () => {
     try {
       setLoadingStatus(true);

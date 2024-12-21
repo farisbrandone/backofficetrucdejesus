@@ -71,7 +71,6 @@ function MembreWaitingGererPage() {
           }
         }
       } catch (error) {
-        console.log("sss");
         setLoadingFail(true);
       }
     };
@@ -99,7 +98,7 @@ function MembreWaitingGererPage() {
       </div>
     );
   }
-  console.log(membreData?.length);
+
   return (
     <Fragment>
       {/*  <HeaderForAllBackOffice /> */}

@@ -107,7 +107,6 @@ function CreerAssets() {
     }; */
 
   const handleChangeStatusAssetss = () => {
-    console.log(status);
     if (status === "activate") {
       setStatus("desactivate");
       return;
@@ -158,12 +157,11 @@ function CreerAssets() {
         status,
         communityId: communityId as string,
       };
-      console.log(data);
+
       const result = await requestToSetUniversalData<AssetsDataType>(
         databaseName,
         data
       );
-      console.log(result);
 
       if (result.success) {
         toast({

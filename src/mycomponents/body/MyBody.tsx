@@ -77,7 +77,6 @@ export function MyBody() {
         /* "http://localhost:4000/api/firebase/send-multiple-notification", */
         data
       );
-      console.log(result);
 
       if (result.status === 200) {
         toast({

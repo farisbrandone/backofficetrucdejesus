@@ -41,7 +41,7 @@ function NotificationTabContent({ communityId }: { communityId: string }) {
   const [loadingFail, setLoadingFail] = useState(false);
   const [loadingData, setLoadingData] = useState(false);
   const { toast } = useToast();
-  console.log(loadingFail);
+
   const handleSwitch = async () => {
     try {
       setLoadingStatus(true);

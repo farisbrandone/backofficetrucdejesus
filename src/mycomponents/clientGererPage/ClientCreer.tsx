@@ -75,7 +75,6 @@ function ClientCreer() {
   };
 
   const handleChangeStatusClient = () => {
-    console.log(statusClient);
     if (statusClient === "activate") {
       setStatusClient("desactivate");
       return;
@@ -89,7 +88,6 @@ function ClientCreer() {
   };
 
   const CreateNewClient = async () => {
-    console.log("banga");
     setStartSending(() => true);
     if (
       !nomClient ||
@@ -129,9 +127,8 @@ function ClientCreer() {
         dateUpdated: "",
         id: "",
       };
-      console.log(data);
+
       const result = await requestToSetClientData(data);
-      console.log(result);
 
       if (result.success) {
         toast({

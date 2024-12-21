@@ -77,16 +77,14 @@ export default function ColorCustumisation() {
         menuHoverAndActiveColor,
         chooseLayout,
       };
-      console.log(data);
+
       const result =
         await requestToSetUniversalData<ColorCustumisationDataType>(
           "ColorCustumisationData",
           data
         );
-      console.log(result);
 
       if (result.success) {
-        console.log("shunga");
         toast({
           title: "Success",
           description: "Le groupe à été crée avec success",

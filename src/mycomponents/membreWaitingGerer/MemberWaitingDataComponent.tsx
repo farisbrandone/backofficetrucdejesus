@@ -112,9 +112,13 @@ function MemberWaitingDataComponent({
         setStartSending(() => false); */
 
       const result = await axios.post<axiosType, axiosType>(
-        "https://serverbackofficetrucdejesus.onrender.com/api/frontoffice/acceptsignup",
+        " https://serverbackofficetrucdejesus.onrender.com/api/frontoffice/acceptsignup",
         value
       );
+
+      /* 
+      http://localhost:4000
+      https://serverbackofficetrucdejesus.onrender.com */
 
       if (result.alreadyExist) {
         toast({

@@ -85,7 +85,6 @@ export default function CommunityDetails({
   };
 
   const SaveCommunityData = async () => {
-    console.log("banga");
     setStartSending(() => true);
     if (!title || !communityUrl || !description) {
       if (!title) {
@@ -115,8 +114,6 @@ export default function CommunityDetails({
       timeZone,
       status: "desactivate",
     };
-
-    console.log({ data: data });
 
     if (comunityId) {
       const result =

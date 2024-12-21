@@ -94,10 +94,8 @@ export default function ColorCustumisationUpdate({
           "ColorCustumisationData",
           data
         );
-      console.log(result);
 
       if (result.success) {
-        console.log("shunga");
         toast({
           title: "Success",
           description: " success",

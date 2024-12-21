@@ -81,7 +81,6 @@ function ChannelPageCreer() {
   };
 
   const handleChangeStatusChannel = () => {
-    console.log(statusChannel);
     if (statusChannel === "activate") {
       setStatusChannel("desactivate");
       return;

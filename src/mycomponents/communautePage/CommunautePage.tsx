@@ -28,14 +28,14 @@ function CommunautePage() {
   const [communityData, setCommunityData] = useState<CommunityDataType[]>();
 
   const [loadingFail, setLoadingFail] = useState(false);
-  console.log("blanco");
+
   useEffect(() => {
     const getAllEventData = async () => {
       try {
         const data = await requestTogetAllUniversalData<CommunityDataType>(
           "CommunityData"
         );
-        console.log(data);
+
         setCommunityData([...data]);
       } catch (error) {
         setLoadingFail(true);

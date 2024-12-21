@@ -97,7 +97,6 @@ function UpdateAssets() {
   };
 
   const handleChangeStatusAssetss = () => {
-    console.log(status);
     if (status === "activate") {
       setStatus("desactivate");
       return;
@@ -148,9 +147,8 @@ function UpdateAssets() {
         status,
         id: assetsId ? assetsId : "",
       };
-      console.log(data);
+
       const result = await requestToUpdateAssetsData(data);
-      console.log(result);
 
       if (result.success) {
         toast({

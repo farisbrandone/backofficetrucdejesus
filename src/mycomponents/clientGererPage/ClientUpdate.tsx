@@ -81,7 +81,6 @@ function ClientUpdate() {
   };
 
   const handleChangeStatusClient = () => {
-    console.log(statusClient);
     if (statusClient === "activate") {
       setStatusClient("desactivate");
       return;
@@ -95,7 +94,6 @@ function ClientUpdate() {
   };
 
   const updateClient = async () => {
-    console.log("banga");
     setStartSending(() => true);
     if (
       !nomClient ||
@@ -138,9 +136,8 @@ function ClientUpdate() {
         dateUpdated: "",
         id: clientId,
       };
-      console.log(data);
+
       const result = await requestToUpdateClientData(data);
-      console.log(result);
 
       if (result.success) {
         toast({

@@ -72,12 +72,10 @@ function UpdateGroupePage() {
   };
 
   const handleChangeRadioGroupe = (val: string) => {
-    console.log({ radioGroupe: val });
     setTypeAccess(() => val);
   };
 
   const updateGroupeWithId = async () => {
-    console.log("banga");
     setStartSending(() => true);
     if (!titleGroupe || !descriptionGroupe) {
       if (!titleGroupe) {
@@ -98,7 +96,7 @@ function UpdateGroupePage() {
       if (!groupeId) {
         return;
       }
-      console.log("inside try");
+
       var data: GroupeDataType = {
         titleGroupe: titleGroupe,
         descriptionGroupe: descriptionGroupe,
@@ -117,10 +115,8 @@ function UpdateGroupePage() {
         "GroupeData",
         data
       );
-      console.log(result);
 
       if (result.success) {
-        console.log("shunga");
         toast({
           title: "Success",
           description: "Le groupe à été mis à jour avec success",

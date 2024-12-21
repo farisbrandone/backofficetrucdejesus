@@ -41,7 +41,7 @@ function MembreNotification({ communityId }: { communityId: string }) {
   const [loadingData, setLoadingData] = useState(false);
   const [idEmailNotification, setIdEmailNotification] = useState("");
   const { toast } = useToast();
-  console.log(loadingFail);
+
   const handleSwitch = async () => {
     try {
       setLoadingStatus(true);

@@ -103,6 +103,7 @@ export interface MemberWaitingDataType {
   phone: string;
   status: string;
   image: string;
+  pays?: string;
   communityId?: string;
   groupeId?: string;
   dateOfCreation?: string;
@@ -140,6 +141,7 @@ export async function requestToChangeStatus(
   status: string,
   database: string
 ) {
+  console.log({ id, status, database });
   const GroupeDataRef = collection(db, database);
   const date = new Date().toUTCString();
   try {

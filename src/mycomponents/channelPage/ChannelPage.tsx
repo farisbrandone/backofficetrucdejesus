@@ -92,8 +92,6 @@ function ChannelPage() {
         const result = [...data];
 
         setChannelData(() => {
-          console.log("nono");
-          console.log(groupeId);
           return [...result];
         });
       } catch (error) {

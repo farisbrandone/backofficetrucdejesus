@@ -28,6 +28,7 @@ export interface MemberDataType {
   phone: string;
   status: string;
   image: string;
+  pays?: string;
   communityId?: string;
   groupeId?: string[];
   dateOfCreation?: string;
@@ -74,6 +75,7 @@ function MemberDataComponent({
   setMembreData,
   setLoadingFail,
 }: MemberDataComponentType) {
+  console.log({ adada: value.status });
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [switchState, setSwitchState] = useState(value.status);
   const [loadingStatus, setLoadingStatus] = useState(false);

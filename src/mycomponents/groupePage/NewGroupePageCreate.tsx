@@ -61,7 +61,6 @@ function NewGroupePageCreate() {
   };
 
   const handleChangeRadioGroupe = (val: string) => {
-    console.log({ radioGroupe: val });
     setTypeAccess(() => val);
   };
 
@@ -96,15 +95,13 @@ function NewGroupePageCreate() {
         nombreDeChaines: 0,
         nombreDePassionnner: 0,
       };
-      console.log(data);
+
       const result = await requestToSetUniversalData<GroupeDataType>(
         "GroupeData",
         data
       );
-      console.log(result);
 
       if (result.success) {
-        console.log("shunga");
         toast({
           title: "Success",
           description: "Le groupe à été crée avec success",

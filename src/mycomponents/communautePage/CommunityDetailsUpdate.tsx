@@ -74,7 +74,6 @@ export default function CommunityDetailsUpdate({
   };
 
   const SaveCommunityData = async () => {
-    console.log("banga");
     setStartSending(() => true);
     if (!title || !communityUrl || description) {
       if (!title) {

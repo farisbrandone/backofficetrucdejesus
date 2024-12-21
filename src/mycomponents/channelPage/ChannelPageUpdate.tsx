@@ -97,7 +97,6 @@ function ChannelPageUpdate() {
   };
 
   const handleChangeStatusChannel = () => {
-    console.log(statusChannel);
     if (statusChannel === "activate") {
       setStatusChannel("desactivate");
       return;
@@ -162,9 +161,8 @@ function ChannelPageUpdate() {
         id: channelId,
         channelRessources: channelRessources,
       };
-      console.log(data);
+
       const result = await requestToUpdateChannelData(data);
-      console.log(result);
 
       if (result.success) {
         toast({
