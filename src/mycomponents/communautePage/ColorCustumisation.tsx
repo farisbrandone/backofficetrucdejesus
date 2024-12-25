@@ -46,9 +46,14 @@ export interface ColorCustumisationDataType {
   dateOfCreation?: string;
   dateOfUpdate?: string;
   id?: string;
+  communityId: string;
 }
 
-export default function ColorCustumisation() {
+export default function ColorCustumisation({
+  communityId,
+}: {
+  communityId: string;
+}) {
   const [bodyColor, setBodyColor] = useState("#000");
   const [custumFonts, setCustumFonts] = useState("Sora");
   const [fontColor, setFontColor] = useState("#000");
@@ -76,6 +81,7 @@ export default function ColorCustumisation() {
         pageSec2Color,
         menuHoverAndActiveColor,
         chooseLayout,
+        communityId,
       };
 
       const result =

@@ -7,9 +7,10 @@ import {
   requestToUpdateUniversalDataWithId,
 } from "@/fakeData";
 import { toast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
+
 import SaveContent from "../ui/SaveContent";
-import RetourContent from "../ui/RetourContent";
+
+import { ColorCustumisationDataType } from "./ColorCustumisation";
 
 const arrayLabel = [
   "Body Color",
@@ -37,25 +38,12 @@ const custumFontValue = [
 ];
 const chooseLayoutValue = ["Layout 1", "Layout 2"];
 
-export interface ColorCustumisationDataType {
-  bodyColor: string;
-  custumFonts: string;
-  fontColor: string;
-  buttonColor: string;
-  pageSec1Color: string;
-  menuFontColor: string;
-  pageSec2Color: string;
-  menuHoverAndActiveColor: string;
-  chooseLayout: string;
-  dateOfCreation?: string;
-  dateOfUpdate?: string;
-  id?: string;
-}
-
 export default function ColorCustumisationUpdate({
   communityId,
+  colorId,
 }: {
   communityId: string;
+  colorId: string;
 }) {
   const [bodyColor, setBodyColor] = useState("#000");
   const [custumFonts, setCustumFonts] = useState("Sora");
@@ -70,7 +58,6 @@ export default function ColorCustumisationUpdate({
   const [startSending, setStartSending] = useState(false);
   const [loadingFail, setLoadingFail] = useState(false);
   const [loadingData, setLoadingData] = useState(false);
-  const navigate = useNavigate();
 
   const SaveColorCustumData = async () => {
     setStartSending(() => true);
@@ -86,11 +73,12 @@ export default function ColorCustumisationUpdate({
         pageSec2Color,
         menuHoverAndActiveColor,
         chooseLayout,
+        communityId,
       };
 
       const result =
         await requestToUpdateUniversalDataWithId<ColorCustumisationDataType>(
-          communityId,
+          colorId,
           "ColorCustumisationData",
           data
         );
@@ -101,7 +89,7 @@ export default function ColorCustumisationUpdate({
           description: " success",
         });
         setStartSending(() => false);
-        navigate("/COMMUNAUTES");
+        /*  navigate("/COMMUNAUTES"); */
         return;
       } else {
         toast({
@@ -127,9 +115,10 @@ export default function ColorCustumisationUpdate({
     const getAllData = async () => {
       try {
         setLoadingData(true);
+        console.log("papou");
         const result =
           await requestToGetAllUniversalDataWithId<ColorCustumisationDataType>(
-            communityId,
+            colorId,
             "ColorCustumisationData"
           );
         setLoadingData(false);
@@ -231,13 +220,13 @@ export default function ColorCustumisationUpdate({
           {" "}
           <SaveContent />
         </button>
-        <button
+        {/*  <button
           title="Retour"
           className="buttonRetour"
           onClick={() => navigate("/COMMUNAUTES")}
         >
           <RetourContent />
-        </button>
+        </button> */}
       </div>
     </>
   );

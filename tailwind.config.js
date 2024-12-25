@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
-const defaultTheme = require("tailwindcss/defaultTheme");
-const { addDynamicIconSelectors } = require("@iconify/tailwind");
+import defaultTheme from "tailwindcss/defaultTheme";
+import { addDynamicIconSelectors } from "@iconify/tailwind";
+import tailwindAnimate from "tailwindcss-animate";
 export default {
   darkMode: ["class"],
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
@@ -58,5 +59,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), addDynamicIconSelectors()],
+  plugins: [tailwindAnimate, addDynamicIconSelectors()],
 };

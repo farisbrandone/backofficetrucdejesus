@@ -80,7 +80,7 @@ function CreerCommunaute() {
           />
         )}
 
-        {!openState && <ColorCustumisation />}
+        {!openState && <ColorCustumisation communityId={comunityId} />}
       </div>
     </>
   );

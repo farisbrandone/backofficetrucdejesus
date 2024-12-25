@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { useParams } from "react-router-dom";
 import CommunityDetailsUpdate from "./CommunityDetailsUpdate";
 import ColorCustumisationUpdate from "./ColorCustumisationUpdate";
+import { requestTogetAllUniversalData } from "@/fakeData";
+import { ColorCustumisationDataType } from "./ColorCustumisation";
 
 export const communauteIcon = (width: string, heigth: string) => (
   <svg
@@ -20,8 +22,47 @@ export const communauteIcon = (width: string, heigth: string) => (
 
 function UpdateCommunaute() {
   const [openState, setOpenState] = useState(true);
-
+  const [loadingFail, setLoadingFail] = useState(false);
+  const [loadingData, setLoadingData] = useState(false);
   const { communityId } = useParams<string>();
+  const [colorId, setColorId] = useState("");
+
+  useEffect(() => {
+    const getAllData = async () => {
+      try {
+        setLoadingData(true);
+        const result = (
+          await requestTogetAllUniversalData<ColorCustumisationDataType>(
+            "ColorCustumisationData"
+          )
+        ).filter((value) => value.communityId === communityId);
+
+        setLoadingData(false);
+        if (result) {
+          setColorId(result[0].id as string);
+        }
+      } catch (error) {
+        setLoadingFail(false);
+      }
+    };
+    getAllData();
+  }, []);
+
+  if (loadingData) {
+    return (
+      <div className="fixed bg-[#000]/50 flex flex-col items-center justify-center top-0 right-0 bottom-0 left-0 z-10">
+        Loading...
+      </div>
+    );
+  }
+
+  if (loadingFail) {
+    return (
+      <div className="fixed bg-[#000]/50 flex flex-col items-center justify-center top-0 right-0 bottom-0 left-0 z-10">
+        Une erreur est survenue pendant le chargement ou problème de connexion
+      </div>
+    );
+  }
 
   return (
     <>
@@ -71,7 +112,10 @@ function UpdateCommunaute() {
         )}
 
         {!openState && communityId && (
-          <ColorCustumisationUpdate communityId={communityId} />
+          <ColorCustumisationUpdate
+            communityId={communityId}
+            colorId={colorId}
+          />
         )}
       </div>
     </>

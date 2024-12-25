@@ -75,7 +75,7 @@ export default function CommunityDetailsUpdate({
 
   const SaveCommunityData = async () => {
     setStartSending(() => true);
-    if (!title || !communityUrl || description) {
+    if (!title || !communityUrl || !description) {
       if (!title) {
         setClassTitle(true);
       }
