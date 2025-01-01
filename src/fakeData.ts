@@ -2452,3 +2452,9 @@ export async function requestToUpdateUniversalDataWithId<T>(
     );
   }
 }
+
+export async function requestToGetTotalCountOfUniversalData(baseName: string) {
+  const datacount = collection(db, baseName);
+  const snapshot = await getCountFromServer(datacount);
+  return snapshot.data().count;
+}

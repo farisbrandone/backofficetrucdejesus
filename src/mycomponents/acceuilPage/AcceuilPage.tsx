@@ -1,21 +1,30 @@
 import { Button } from "@/components/ui/button";
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import {
   analyticsIcon,
-  arrayCard,
+  /* arrayCard, */
   clockIcon,
   communauteIcon,
   doubleArrowIcon,
+  eventIcon,
   houseIcon,
+  membreIcon,
+  myicon,
   mySaleIcon,
   userIcon,
 } from "./Icon";
 import CardGlogalData from "./CardGlobal";
 import { ChartAcceuil } from "./ChartComponent";
 import { format } from "date-fns";
-import { faker } from "@faker-js/faker";
+//import { faker } from "@faker-js/faker";
 import HeaderForAllBackOffice from "../ui/HeaderForAllBackOffice";
 import { FooterBackoffice } from "./FooterBackoffice";
+import {
+  requestTogetAllUniversalData,
+  requestToGetTotalCountOfUniversalData,
+} from "../../fakeData";
+//import { CommunityDataType } from "../communautePage/CommunityDetails";
+import { MemberDataType } from "../membreGererPage/MemberDataComponent";
 
 export const arrayChart = [
   {
@@ -43,7 +52,7 @@ export const arrayChart = [
     subTitle: "Monthly Data",
   },
 ];
-const dataUser = [
+/* const dataUser = [
   {
     name: faker.person.firstName(),
     date: format(
@@ -100,13 +109,89 @@ const dataUser = [
       "'il ya' dd 'jours à' kk:mm"
     ),
   },
-];
+]; */
 
-communauteIcon;
+/* communauteIcon;
 mySaleIcon;
-analyticsIcon;
+analyticsIcon; */
 
 export default function AcceuilPage() {
+  const [memberCount, setMemberCount] = useState<number>();
+  const [groupeCount, setGroupeCount] = useState<number>();
+  const [chaineCount, setChaineCount] = useState<number>();
+  const [communauteCount, setCommunauteCount] = useState<number>();
+  const [membreData, setMembreData] = useState<MemberDataType[]>();
+  const [loadingFail, setLoadingFail] = useState(false);
+
+  const arrayCard = [
+    {
+      title: "Communauté",
+      icon: communauteIcon,
+      inscrit: communauteCount,
+    },
+    {
+      title: "Groupes",
+      icon: myicon,
+      inscrit: groupeCount,
+    },
+    {
+      title: "Chaine",
+      icon: eventIcon,
+      inscrit: chaineCount,
+    },
+    {
+      title: "Membres",
+      icon: membreIcon,
+      inscrit: memberCount,
+    },
+  ];
+
+  useEffect(() => {
+    const getAllEventData = async () => {
+      try {
+        const com = requestToGetTotalCountOfUniversalData("CommunityData");
+        const group = requestToGetTotalCountOfUniversalData("GroupeData");
+
+        const mem = requestToGetTotalCountOfUniversalData("MemberData");
+        const chan = requestToGetTotalCountOfUniversalData("ChannelData");
+
+        const memberdata =
+          requestTogetAllUniversalData<MemberDataType>("MemberData");
+        const [com1, group1, mem1, chan1, memberdata1] = await Promise.all([
+          com,
+          group,
+          mem,
+          chan,
+          memberdata,
+        ]);
+        setCommunauteCount(com1);
+        setGroupeCount(group1);
+        setMemberCount(mem1);
+        setChaineCount(chan1);
+        setMembreData(memberdata1);
+      } catch (error) {
+        setLoadingFail(true);
+      }
+    };
+    getAllEventData();
+  }, []);
+
+  if (!memberCount && !loadingFail) {
+    return (
+      <div className="w-full text-center pt-4">
+        Le document est en cours de chargement ...
+      </div>
+    );
+  }
+
+  if (loadingFail) {
+    return (
+      <div className="w-full text-center pt-4">
+        Une erreur est survenue pendant le chargement ou problème de connexion
+      </div>
+    );
+  }
+
   return (
     <div className=" flex flex-col pl-8 text-[#344767]">
       <HeaderForAllBackOffice />
@@ -151,7 +236,7 @@ export default function AcceuilPage() {
             <CardGlogalData
               title={value.title}
               icon={value.icon}
-              inscrit={value.inscrit}
+              inscrit={value.inscrit as number}
             />
           </Fragment>
         ))}
@@ -205,18 +290,27 @@ export default function AcceuilPage() {
           </div>
 
           <div className="flex flex-col gap-3 mt-3 ">
-            {dataUser.map((value, index) => (
-              <div key={index} className="flex items-center gap-3">
-                <div>{userIcon}</div>
-                <div>
-                  <p className="font-bold">
-                    {value.name}{" "}
-                    <span className="ml-2">joined Réseau 100% JÉSUS</span>
-                  </p>
-                  <p className="text-[10px] "> {value.date} </p>
-                </div>
-              </div>
-            ))}
+            {membreData &&
+              membreData
+                .filter((_, index) => index <= 10)
+                .map((value, index) => (
+                  <div key={index} className="flex items-center gap-3">
+                    <div>{userIcon}</div>
+                    <div>
+                      <p className="font-bold">
+                        {value.name}{" "}
+                        <span className="ml-2">joined Réseau 100% JÉSUS</span>
+                      </p>
+                      <p className="text-[10px] ">
+                        {" "}
+                        {format(
+                          value.dateOfCreation as string,
+                          "'il ya' dd 'jours à' kk:mm"
+                        )}{" "}
+                      </p>
+                    </div>
+                  </div>
+                ))}
           </div>
         </div>
       </div>

@@ -178,7 +178,9 @@ function MemberDataComponent({
         {value.phone}
       </div>
       <div className=" place-content-center mx-auto overflow-hidden">
-        {value.birthDay}
+        {value.birthDay.length > 10
+          ? format(new Date(value.dateOfCreation as string), " dd/MM/yyyy")
+          : value.birthDay}
       </div>
       <div className=" place-content-center mx-auto overflow-hidden text-center">
         {format(new Date(value.dateOfCreation as string), "'le' dd MMM yyyy")}

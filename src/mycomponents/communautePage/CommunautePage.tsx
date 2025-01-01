@@ -1,10 +1,10 @@
 import SearbarBackOffice from "../ui/SearbarBackOffice";
-import CardAddGroup from "../ui/CardAddGroup";
+//import CardAddGroup from "../ui/CardAddGroup";
 /* import CarteCreer from "../ui/CarteCreer"; */
 
 import { Fragment } from "react/jsx-runtime";
 import { communauteIcon } from "./UpdateCommunaute";
-import { NavLink } from "react-router-dom";
+//import { NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { CommunityDataType } from "./CommunityDetails";
 import { requestTogetAllUniversalData } from "@/fakeData";
@@ -82,13 +82,13 @@ function CommunautePage() {
         </div>
       </div>
       <div className="flex flex-wrap gap-3 mt-[100px] px-5">
-        <NavLink to="/COMMUNAUTES/create-new-community">
+        {/*  <NavLink to="/COMMUNAUTES/create-new-community">
           <CardAddGroup
             icon={icon}
             text="CREER UNE NOUVELLE COMMUNAUTE"
             database="CommunityData"
           />
-        </NavLink>
+        </NavLink> */}
         {/*  {communityData && communityData.length > 0 && (
           <CarteCreer
             value={0}

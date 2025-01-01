@@ -1,6 +1,7 @@
 import { Fragment } from "react/jsx-runtime";
 import { ButtonSideBar } from "./ui/ButtonSideBar";
 import { Outlet, useNavigation } from "react-router-dom";
+import LoginMother from "@/Sign/login/LoginMother";
 
 export async function loader() {
   //we load data for routes pages
@@ -78,7 +79,9 @@ function SidebarComponents() {
             : "flex-1 relative"
         }
       >
-        <Outlet />
+        <LoginMother>
+          <Outlet />
+        </LoginMother>
       </div>
     </div>
   );

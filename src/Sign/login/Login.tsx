@@ -2,6 +2,9 @@ import { toast } from "@/hooks/use-toast";
 import axios from "axios";
 import { format } from "date-fns";
 import { ChangeEvent, useState } from "react";
+import { createUser } from "./CreateUser";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../../firebaseConfig";
 
 export interface dataLoginServerType {
   token?: string;
@@ -54,9 +57,42 @@ export default function Login() {
         "https://serverbackofficetrucdejesus.onrender.com/api/backoffice/login",
         data
       );
-      console.log(resultat);
+
       if (resultat.status === 200) {
         localStorage.setItem("user", result);
+
+        const dd = await createUser(email, password, auth);
+
+        console.log(dd);
+        /* createUserWithEmailAndPassword(auth, email, motsDepasse)
+          .then((u) => {
+            console.log(u);
+          })
+          .catch((error) => {
+            console.log(error.code);
+            switch (error.code) {
+              case "auth/email-already-in-use":
+                existValuealue.current = true;
+                console.log(error.code);
+                return;
+              case "auth/invalid-email":
+                throw error;
+
+              case "auth/operation-not-allowed":
+                throw error;
+
+              case "auth/weak-password":
+                throw error;
+
+              default:
+                throw error;
+            }
+          }); */
+
+        //await createUserWithEmailAndPassword(auth, email, motsDepasse);
+
+        const tt = await signInWithEmailAndPassword(auth, email, password);
+        console.log(tt);
         window.location.replace("/");
       } else {
         toast({
